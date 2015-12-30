@@ -14,52 +14,42 @@
 
     <div class="row panel-body">
         <div class="row">&nbsp;</div>
-        <div class="row">
-            <div class="col-lg-4 col-md-6">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <i class="fa fa-database fa-5x"></i>
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <div class="huge">Retial Data</div>
-                                <div>Retail market basket data</div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#">
-                        <div class="panel-footer">
-                            <span class="pull-left">View Details</span>
-                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                            <div class="clearfix"></div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <i class="fa fa-folder-open fa-5x"></i>
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <div class="huge">A Folder</div>
-                                <div>Dataset Folder</div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#">
-                        <div class="panel-footer">
-                            <span class="pull-left">View Details</span>
-                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                            <div class="clearfix"></div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
+        <%
+        for (i=0; i<locals.models.length; ++i) {
+            var count = i;
+            var id = locals.models[i].id;
+            var name = locals.models[i].name;
+            var comment = locals.models[i].comment;
+            var icon = locals.models[i].icon;
+            var panel_type = locals.models[i].panel_type;
+
+            var name_words = name.split(" ");
+            if ( name_words.length > 3 ) {
+                name_words[2] = "...";
+            }
+
+            name = "";
+
+            for (j=0; j<Math.min(3, name_words.length); ++j) {
+                if (j != 0) {
+                    name += " ";
+                }
+                if (name_words[j].length > 12) {
+                    name += name_words[j].slice(0, 6) + "...";
+                } else {
+                    name += name_words[j];
+                }
+            }
+
+            var is_last = false;
+            if (i==locals.models.length-1) {
+                is_last = true;
+            }
+        %>
+        <%- include('panel', {is_last: is_last, count: count, id: id, name: name, comment: comment, icon: icon, panel_type: panel_type}); %>
+        <%
+        }
+        %>
     </div>
 
 </div>
