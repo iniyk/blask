@@ -17,6 +17,10 @@ router.get('/data', function(req, res, next) {
     res.render('data', { project_name: 'Blask', title: 'Data Management', current_page: 'data', models: datas});
 });
 
+router.get('/data/u/:uid(\\d+)', function(req, res, next) {
+    res.render('data/data', { project_name: 'Blask', title: 'Data Management', current_page: 'data', uid: req.params.uid});
+});
+
 /* GET data mining modules page. */
 router.get('/mining', function(req, res, next) {
     var models = [];
