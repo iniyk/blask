@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= project_name %></title>
+    <% include css.ejs %>
+    <!-- link rel='stylesheet' href='/stylesheets/style.css'/ -->
+</head>
+<body>
+    <div class="container">
+        <% include navbar.ejs %>
+
+        <div class="row">
+            <div id="div_search" class="col-md-12"><div class="jumbotron"><div class="input-group">
+                <form class="form-group">
+                    <input type="text" class="form-control" />
+                </form>
+                <span class="input-group-btn">
+                    <button class="btn btn-primary">Search</button>
+                </span>
+            </div></div></div>
+        </div>
+
+
+        <div class="row"><div class="panel panel-default">
+            <div class="panel-heading">
+                <h3><i class="glyphicon glyphicon-list"></i> Datas and Missions</h3>
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <ul class="timeline">
+                    <li>
+                        <div class="timeline-badge info"><i class="fa fa-database"></i>
+                        </div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4 class="timeline-title">Retail market basket data</h4>
+                                <p><small class="text-muted"><i class="fa fa-clock-o"></i> 11 hours ago</small>
+                                </p>
+                            </div>
+                            <div class="timeline-body">
+                                <p>The following dataset was donated by Tom Brijs and contains the (anonymized) retail market basket data from an anonymous Belgian retail store. Basically, any use of the data is allowed as long as the proper acknowledgment is provided and a copy of the work is provided to Tom Brijs.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-badge info"><i class="fa fa-database"></i>
+                        </div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4 class="timeline-title">Traffic accidents data</h4>
+                                <p><small class="text-muted"><i class="fa fa-clock-o"></i> 13 hours ago</small>
+                                </p>
+                            </div>
+                            <div class="timeline-body">
+                                <p>The following dataset was donated by Karolien Geurts and contains (anonymized) traffic accident data. Basically, any use of the data is allowed as long as the proper acknowledgement is provided and a copy of the work is provided to Karolien Geurts.</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.panel-body -->
+        </div></div>
+    </div>
+</body>
+<% include js.ejs %>
+</html>
