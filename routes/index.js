@@ -8,8 +8,12 @@ router.get('/', function(req, res, next) {
 
 /* GET data management page. */
 router.get('/data', function(req, res, next) {
-    //res.send("Data");
     res.render('data', { project_name: 'Blask', title: 'Data Management', current_page: 'data'});
+});
+
+/* GET data mining modules page. */
+router.get('/mining', function(req, res, next) {
+    res.render('mining', { project_name: 'Blask', title: 'Data Mining', current_page: 'mining'});
 });
 
 module.exports = router;
