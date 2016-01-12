@@ -1,6 +1,11 @@
 /**
  * Created by iniyk on 15/12/30.
  */
+
+/**
+ * A class to control panel.
+ * @class
+ */
 var Panel = {
     Panel: function() {
         var panel = {};
@@ -32,4 +37,4 @@ var Panel = {
     }
 };
 
-module.exports = Panel;
+exports = module.exports = Panel;

@@ -35,9 +35,13 @@ node_modules
 
 # Temp files
 *.tmp
+pattern/main.js
 
 # Modules downloaded
 third_modules
 
 # WebStorm files
 .idea
+
+# stash uncompeled files
+stash/
