@@ -146,6 +146,8 @@ Address:	172.168.1.201
 
 ## Hadoop Cluster
 
+![Hadoop Logo] (./hadoop-logo.jpg)
+
 ### ssh免密钥登录
 
 Hadoop首先需要配置ssh免密码登陆，需要在每一台机器上生成公私玥对，并收集所有的公钥存放于每一台机器的`~/.ssh/authorized_keys`下。
@@ -165,6 +167,8 @@ ssh-keygen
 一路回车（不要设置二次密钥），而后会在`~/.ssh/`文件夹下保存着该次生成的密钥对，将所有的`~/.ssh/id_rsa.pub`收集并每行一个保存在名为`authorized_keys`的文件中，再分别发送到每一台机器的`~/.ssh/`目录下。尝试其中两台互相ssh登陆，成功即代表配置完成。
 
 ### Java安装
+
+![Java Logo] (./java-logo.jpg)
 
 在[这个页面] (http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)下载jdk-8u65-linux-x64.tar.gz（或其它对应的版本），不建议下载rpm版本，很多系统上这个版本并不完善。
 
@@ -209,10 +213,229 @@ cd /usr/java/jdk1.8.0_65/jre/lib
 
 ### Scala安装
 
+![Scala Logo] (./scala-logo.gif)
 
+在Spark 1.6.0的官方文档中声明需要Scala的2.10.X版本，建议下载[Scala 2.10.6] (http://www.scala-lang.org/download/2.10.6.html)，或者根据官方文档的建议，在Scala的最新版本中重新编译Spark。
+
+解压下载的Scala安装包，设置`SCALA_HOME`，并加入`PATH`，在终端运行`scala`以测试安装是否正确。
 
 ### 安装配置Hadoop
 
+[下载] (https://hadoop.apache.org/releases.html)最新Release版的Hadoop并解压。其中一共有7个文件需要配置：
+
+配置文件 | 描述 |
+--------|------|
+hadoop-env.sh | Hadoop启动环境配置脚本 |
+yarn-env.sh | Yarn启动环境配置脚本 |
+core-site.xml | 基本配置 |
+hdfs-site.xml | HDFS配置 |
+maprd-site.xml | 分布式任务分配模型配置 |
+yarn-site.xml | Yarn框架配置 |
+slaves | slave节点配置 |
+
+对于`hadoop-env.sh`及`yarn-env.sh`只需要修改其中的`JAVA_HOME`项使其指向Java安装目录即可。其它配置文件示例如下：
+
+> core-site.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/home/jury/hadoop/tmp</value>
+    </property>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://master.hadark.clt:9000</value>
+    </property>
+    <property>
+        <name>io.file.buffer.size</name>
+        <value>131072</value>
+    </property>
+    <property>
+        <name>hadoop.proxyuser.hue.hosts</name>
+        <value>*</value>
+    </property>
+    <property>
+        <name>hadoop.proxyuser.hue.groups</name>
+        <value>*</value>
+    </property>
+</configuration>
+
+```
+
+> hdfs-site.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/home/jury/hadoop_dfs/name</value>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>/home/jury/hadoop_dfs/data</value>
+    </property>
+    <property>
+        <name>dfs.replication</name>
+        <value>2</value>
+    </property>
+    <property>
+        <name>dfs.namenode.secondary.http-address</name>
+        <value>master.hadark.clt:9001</value>
+    </property>
+    <property>
+        <name>dfs.webhdfs.enabled</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>dfs.datanode.dns.interface</name>
+        <value>eth0</value>
+    </property>
+    <property>
+        <name>dfs.datanode.dns.nameserver</name>
+        <value>172.168.1.200</value>
+    </property>
+</configuration>
+
+```
+
+> maprd-site.xml
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+   <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+</configuration>
+
+```
+
+> yarn-site.xml
+
+```xml
+<?xml version="1.0"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<configuration>
+
+<!-- Site specific YARN configuration properties -->
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.auxservices.mapreduce.shuffle.class</name>
+        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>master.hadark.clt</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.address</name>
+        <value>master.hadark.clt:8032</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.scheduler.address</name>
+        <value>master.hadark.clt:8030</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.resource-tracker.address</name>
+        <value>master.hadark.clt:8031</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.admin.address</name>
+        <value>master.hadark.clt:8033</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.webapp.address</name>
+        <value>master.hadark.clt:8088</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.resource.memory-mb</name>
+        <value>512</value>
+    </property>
+    <property>
+        <name>yarn.scheduler.minimum-allocation-mb</name>
+        <value>512</value>
+    </property>
+</configuration>
+
+```
+
+> slaves
+
+```
+slave1.hadark.clt
+slave2.hadark.clt
+
+```
 
 ## Hbase Cluster
 
