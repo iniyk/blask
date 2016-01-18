@@ -146,7 +146,7 @@ Address:	172.168.1.201
 
 ## Hadoop Cluster
 
-![Hadoop Logo] (./hadoop-logo.jpg)
+![Hadoop Logo] (./images/hadoop-logo.jpg)
 
 ### ssh免密钥登录
 
@@ -168,7 +168,7 @@ ssh-keygen
 
 ### Java安装
 
-![Java Logo] (./java-logo.jpg)
+![Java Logo] (./images/java-logo.jpg)
 
 在[这个页面] (http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)下载jdk-8u65-linux-x64.tar.gz（或其它对应的版本），不建议下载rpm版本，很多系统上这个版本并不完善。
 
@@ -213,7 +213,7 @@ cd /usr/java/jdk1.8.0_65/jre/lib
 
 ### Scala安装
 
-![Scala Logo] (./scala-logo.gif)
+![Scala Logo] (./images/scala-logo.gif)
 
 在Spark 1.6.0的官方文档中声明需要Scala的2.10.X版本，建议下载[Scala 2.10.6] (http://www.scala-lang.org/download/2.10.6.html)，或者根据官方文档的建议，在Scala的最新版本中重新编译Spark。
 
@@ -436,6 +436,33 @@ slave1.hadark.clt
 slave2.hadark.clt
 
 ```
+
+配置完成后保持hadoop根目录为当前目录，通过命令`bin/hadoop namenode -format`格式化HDFS，然后即可通过`sbin/start-dfs.sh`及`sbin/start-yarn.sh`分别启动HDFS及Yarn。启动成功后通过`jps`命令可以查看jvm上运行的进程，其中在master及slave上应该有如下进程：
+
+> master
+
+```sh
+> jps
+3407 SecondaryNameNode
+3218 NameNode
+3552 ResourceManager
+3910 Jps
+```
+
+> slave
+
+```sh
+> jps
+2072 NodeManager
+2213 Jps
+1962 DataNode
+```
+
+默认配置下在浏览器中访问master的8088及50070端口即可查看Hadoop与HDFS的状态。
+
+![Hadoop Status] (./images/hadoop-status.png)
+
+![HDFS Status] (./images/hdfs-status.png)
 
 ## Hbase Cluster
 
