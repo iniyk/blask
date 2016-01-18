@@ -211,17 +211,9 @@ cd /usr/java/jdk1.8.0_65/jre/lib
 ../bin/unpack200 plugin.pack plugin.jar
 ```
 
-### Scala安装
-
-![Scala Logo] (./images/scala-logo.gif)
-
-在Spark 1.6.0的官方文档中声明需要Scala的2.10.X版本，建议下载[Scala 2.10.6] (http://www.scala-lang.org/download/2.10.6.html)，或者根据官方文档的建议，在Scala的最新版本中重新编译Spark。
-
-解压下载的Scala安装包，设置`SCALA_HOME`，并加入`PATH`，在终端运行`scala`以测试安装是否正确。
-
 ### 安装配置Hadoop
 
-[下载] (https://hadoop.apache.org/releases.html)最新Release版的Hadoop并解压。其中一共有7个文件（均在`$HADOOP_HOME/etc/hadoop`下）需要配置：
+[下载] (https://hadoop.apache.org/releases.html)2.6.X Release版的Hadoop，解压并设置其根目录为`$HADOOP_HOME`。其中一共有7个文件（均在`$HADOOP_HOME/etc/hadoop`下）需要配置：
 
 配置文件 | 描述 |
 --------|------|
@@ -470,7 +462,7 @@ slave2.hadark.clt
 
 ![Hbase logo] (./images/hbase-logo.png)
 
-[这里] (http://mirror.bit.edu.cn/apache/hbase/stable/)可以下载最新稳定版的Hbase，下载后解压，配置文件在`$HBASE_HOME/conf`下。依此配置`hbase-env.sh` `hbase-site.xml` `regionservers`三个文件。
+[这里] (http://mirror.bit.edu.cn/apache/hbase/stable/)可以下载最新稳定版的Hbase，下载后解压，并设置其为`$HBASE_HOME`。配置文件在`$HBASE_HOME/conf`下。依此配置`hbase-env.sh` `hbase-site.xml` `regionservers`三个文件。
 
 首先将JAVA_HOME配置到`hbase-env.sh`中。
 
@@ -552,11 +544,64 @@ slave2.hadark.clt
 2966 HQuorumPeer
 ```
 
+通过浏览器访问master的16010端口查看Hbase集群状态：
+
 ![HBase Status] (./images/hbase-status.png)
 
 可以为Hbase集群启动多个Master，ZooKeeper会自动保持每个时刻仅有一台Master在工作状态。
 
 ## Spark Cluster
+
+![Spark Logo] (./images/spark-logo.png)
+
+### Scala安装
+
+![Scala Logo] (./images/scala-logo.gif)
+
+在Spark 1.6.0的官方文档中声明需要Scala的2.10.X版本，建议下载[Scala 2.10.6] (http://www.scala-lang.org/download/2.10.6.html)，或者根据官方文档的建议，在Scala的最新版本中重新编译Spark。
+
+解压下载的Scala安装包，设置`SCALA_HOME`，并加入`PATH`，在终端运行`scala`以测试安装是否正确。
+
+### 安装配置Spark
+
+在Spark[下载页面] (http://spark.apache.org/downloads.html)下载最新的pre-build for hadoop 2.6版本（也可以下载源码自行编译）。解压并设置其为`$SPARK_HOME`。
+
+将如下配置添加到`conf/spark-env.sh`文件末尾：
+
+```sh
+export SCALA_HOME=/home/jury/scala
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+export HADOOP_HOME=/home/jury/hadoop
+export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+SPARK_MASTER_IP=master.hadark.clt
+SPARK_LOCAL_DIRS=/home/jury/spark
+SPARK_DRIVER_MEMORY=512M
+SPARK_WORKER_MEMORY=512M
+```
+
+并配置`conf/slaves`文件如下：
+
+```
+# A Spark Worker will be started on each of the machines listed below.
+slave1.hadark.clt
+slave2.hadark.clt
+```
+
+配置完成后保持当前目录在`$SPARK_HOME`下，通过`sbin/start-all.sh`启动spark。此时master及slave上的jvm进程如下：
+
+```sh
+> jps
+5326 Master
+```
+
+```sh
+> jps
+3692 Worker
+```
+
+通过浏览器访问master的8080端口查看Spark集群状态：
+
+![Spark Status] (./images/spark-status.png)
 
 ## Compile and install Thrift
 
