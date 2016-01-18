@@ -221,7 +221,7 @@ cd /usr/java/jdk1.8.0_65/jre/lib
 
 ### 安装配置Hadoop
 
-[下载] (https://hadoop.apache.org/releases.html)最新Release版的Hadoop并解压。其中一共有7个文件需要配置：
+[下载] (https://hadoop.apache.org/releases.html)最新Release版的Hadoop并解压。其中一共有7个文件（均在`$HADOOP_HOME/etc/hadoop`下）需要配置：
 
 配置文件 | 描述 |
 --------|------|
@@ -464,7 +464,97 @@ slave2.hadark.clt
 
 ![HDFS Status] (./images/hdfs-status.png)
 
+最后为了方便还可以添加`$HADOOP_HOME`到`$PATH`中。但是大部分管理脚本仍然需要保持当前目录为`$HADOOP_HOME`才可以正常执行。
+
 ## Hbase Cluster
+
+![Hbase logo] (./images/hbase-logo.png)
+
+[这里] (http://mirror.bit.edu.cn/apache/hbase/stable/)可以下载最新稳定版的Hbase，下载后解压，配置文件在`$HBASE_HOME/conf`下。依此配置`hbase-env.sh` `hbase-site.xml` `regionservers`三个文件。
+
+首先将JAVA_HOME配置到`hbase-env.sh`中。
+
+配置`hbase-site.xml`如下所示（这里将Hbase的Master及RegionServers都做为ZooKeeper的节点，实际环境中尤其是生产环境中不要这样配置，ZooKeeper节点最后为奇数个便于投票选举Master）：
+
+> hbase-site.xml
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+/**
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<configuration>
+  <property>
+    <name>hbase.rootdir</name>
+    <value>hdfs://master.hadark.clt:9000/hbase</value>
+  </property>
+  <property>
+    <name>hbase.cluster.distributed</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hbase.master</name>
+    <value>master.hadark.clt:60000</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.property.dataDir</name>
+    <value>/home/jury/zookeeper</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.quorum</name>
+    <value>master.hadark.clt,slave1.hadark.clt,slave2.hadark.clt</value>
+  </property>
+</configuration>
+
+```
+
+> regionservers
+
+```
+slave1.hadark.clt
+slave2.hadark.clt
+
+```
+
+配置完成后保持当前目录在`$HBASE_HOME`下执行`bin/start-hbase.sh`启动Hbase、ZooKeeper及Hbase RegionServers，启动成功后执行jps应该有如下进程：
+
+> master
+
+```sh
+> jps
+4598 HMaster
+4512 HQuorumPeer
+```
+
+> slave
+
+```sh
+> jps
+3076 HRegionServer
+2966 HQuorumPeer
+```
+
+![HBase Status] (./images/hbase-status.png)
+
+可以为Hbase集群启动多个Master，ZooKeeper会自动保持每个时刻仅有一台Master在工作状态。
 
 ## Spark Cluster
 
