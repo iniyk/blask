@@ -550,6 +550,8 @@ slave2.hadark.clt
 
 可以为Hbase集群启动多个Master，ZooKeeper会自动保持每个时刻仅有一台Master在工作状态。
 
+最后通过执行`bin/hbase thrift start`启动Hbase的thrift服务（信息会输出到当前屏幕并阻塞当前控制台）
+
 ## Spark Cluster
 
 ![Spark Logo] (./images/spark-logo.png)
@@ -603,8 +605,19 @@ slave2.hadark.clt
 
 ![Spark Status] (./images/spark-status.png)
 
-## Compile and install Thrift
-
 ## Install Node.js
+
+![Node.js Logo] (./images/nodejs-logo.png)
+
+Node.js可以通过包管理安装，命令如下：
+
+```sh
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+或者在[这里] (https://nodejs.org/en/download/)下载对应的tar.xz包，解压后设置`$PATH`（或者在根目录下解压）完成安装。tar.xz对应的解压命令为`tar -xJvf xxx.tar.xz`
+
+解压完毕后通过`node`及`npm`命令分别测试Node.js及npm包管理器的安装情况。
 
 ## Blask install and setup
