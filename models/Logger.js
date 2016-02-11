@@ -9,14 +9,7 @@ var _Logger = (function () {
 
         log4js.configure({
             appenders: [
-                {type: 'console'}, //console output
-                {
-                    type: 'file', //file output
-                    filename: '../logs/access.log',
-                    maxLogSize: 1024,
-                    backups: 3,
-                    category: 'normal'
-                }
+                {type: 'console'}
             ]
         });
 
@@ -25,7 +18,7 @@ var _Logger = (function () {
                 var logger = log4js.getLogger(name);
                 logger.setLevel(level);
 
-                logger.info("New logger handler started.")
+                logger.info("New logger handler started.");
 
                 return logger;
             }
