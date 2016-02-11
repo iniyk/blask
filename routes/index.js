@@ -2,6 +2,12 @@ var express = require('express');
 var router = express.Router();
 var Panel = require("../models/Panel");
 
+var users = require('./users');
+var mongo_controller = require('../models/MongoController');
+
+router.use('/users', users);
+router.use('/mongodb', mongo_controller.router);
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', { project_name: 'Blask', current_page: 'index'});
@@ -15,10 +21,6 @@ router.get('/data', function(req, res, next) {
     datas.push(Panel.Panel(1, "A Data Folder", "Dataset Folder", "fa fa-folder-open fa-5x", "panel panel-primary"));
 
     res.render('data', { project_name: 'Blask', title: 'Data Management', current_page: 'data', models: datas});
-});
-
-router.get('/data/u/:uid(\\d+)', function(req, res, next) {
-    res.render('data/data', { project_name: 'Blask', title: 'Data Management', current_page: 'data', uid: req.params.uid});
 });
 
 /* GET data mining modules page. */
