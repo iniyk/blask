@@ -27,7 +27,7 @@ app.use('/', routes);
 app.use('/data/(.*)', routes);
 app.use('/mining/(.*)', routes);
 app.use('/users', users);
-app.use('/mongodb', mongo_controller);
+app.use('/mongodb', mongo_controller.router);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
