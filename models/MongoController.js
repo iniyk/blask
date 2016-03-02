@@ -7,6 +7,7 @@ var router = express.Router();
 
 var common = require('./Common');
 var _ = require('underscore');
+var async = require('async');
 
 var Logger = require('./Logger')();
 var logger = Logger.handle("MongoController");
@@ -14,14 +15,63 @@ var mongoose = require("mongoose");
 var db = mongoose.connection;
 var config = require("./Common").readJsonConfig('./conf.json')['database']['mongodb'];
 
-//var schemas = {};
+var schemas = {};
+
+function insert(schema_name, data) {
+    schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
+    var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
+    var schemaMongoose = schemas[schema_name];
+
+    var Model = mongoose.model(model_name, schemaMongoose);
+
+    db.on('error', function (err) {
+        logger.error(err);
+    });
+    db.once('open',function(){
+        if (_.indexOf(data, 'id') < 0) {
+            var max_query = Model.find({},{"id":1}).sort({"id":-1}).limit(1);
+            max_query.exec(function(err, max_id_result) {
+                if (err) {
+                    logger.error('On find max id step.');
+                    logger.error(err);
+                } else {
+                    var max_id = parseInt(max_id_result[0].id);
+                    data.id = max_id + 1;
+
+                    var model = new Model(data);
+                    model.save(function (err) {
+                        if (err) {
+                            logger.error('On save function.');
+                            logger.error(err);
+                        } else {
+                            logger.info('Model info has been saved.');
+                        }
+                        db.close();
+                    });
+                }
+            });
+        } else {
+            var model = new Model(data);
+            model.save(function (err) {
+                if (err) {
+                    logger.error('On save function.');
+                    logger.error(err);
+                } else {
+                    logger.info('Model info has been saved.');
+                }
+                db.close();
+            });
+        }
+    });
+    mongoose.connect(config.host);
+}
 
 function registerSchema(schema_name, schema) {
     schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
     var request_name = schema_name.toLowerCase();
     var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
     var schemaMongoose = new mongoose.Schema(schema);
-    //schemas[schema_name] = schemaMongoose;
+    schemas[schema_name] = schemaMongoose;
 
     var Model = mongoose.model(model_name, schemaMongoose);
 
@@ -171,3 +221,7 @@ registerSchema('retail', {
 });
 
 module.exports.router = router;
+
+module.exports.registerSchema = registerSchema;
+
+module.exports.insert = insert;
