@@ -28,9 +28,8 @@ var Common = {
         });
     },
     gType: function(obj) {
-        var _ = require('underscore');
-        if (_.isBoolean())
-
+        //var _ = require('underscore');
+        //TODO this function isn't finished.
         return String;
     }
 };

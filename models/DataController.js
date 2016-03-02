@@ -48,7 +48,7 @@ router.get('/data/upload', function (req, res, next) {
                 var schema = {};
                 var has_id = true;
 
-                _each(keys, function (key) {
+                _.each(keys, function (key) {
                     schema[key] = String;
                 });
 
