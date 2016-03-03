@@ -7,6 +7,8 @@ var router = express.Router();
 
 var common = require('./Common');
 var _ = require('underscore');
+var multer  = require('multer');
+var upload = multer({ dest: 'uploads/' });
 
 var Logger = require('./Logger')();
 var logger = Logger.handle("DataController");
@@ -34,22 +36,32 @@ router.get('/', function(req, res, next) {
 });
 
 //POST /data/upload
-router.get('/upload', function (req, res, next) {
-    var name = req.files.datafile.name;
-    var tmp_path = req.files.datafile.path;
-    var type = req.files.datafile.type;
+router.post('/upload', upload.single('datafile'), function (req, res, next) {
+    logger.info('Start upload.');
+    logger.info(req.file);
+
+    var name = req.file.originalname.split('.')[0];
+    var tmp_path = req.file.path;
+    var type = req.file.originalname.split('.')[1];
+
+    logger.info('Receive file : ' + name);
+    logger.info('File type : ' + type);
 
     if (type == 'json') {
+        logger.info('Set read json callback.');
         common.readJson(tmp_path, function (err, json_arr) {
             if (err) {
-                logger.error('On reading json file : ' + err);
+                logger.error('On reading json file.');
+                logger.error(err);
             } else {
-                var keys = _.allKeys(_.first(_.values(json_arr)));
+                var keys = _.allKeys(_.first(json_arr));
+                var pairs = _.pairs(_.first(json_arr));
                 var schema = {};
                 var has_id = true;
 
-                _.each(keys, function (key) {
-                    schema[key] = String;
+                _.each(pairs, function (pair) {
+                    var key = pair[0], value = pair[1];
+                    schema[key] = value.constructor;
                 });
 
                 if (_.indexOf(keys, 'id') < 0) {
@@ -64,7 +76,13 @@ router.get('/upload', function (req, res, next) {
                 });
             }
         });
+        res.status(201).send({info: 'Upload successed.'});
+    } else {
+        var err = type + ' is not a support data set file type.';
+        logger.warn(err);
+        res.status(500).send({ error: err });
     }
+
 });
 
 module.exports.router = router;

@@ -17,6 +17,54 @@ var config = require("./Common").readJsonConfig('./conf.json')['database']['mong
 
 var schemas = {};
 
+function model_save(db, Model, data, callbacks) {
+    var model = new Model(data);
+    model.save(function (err) {
+        if (err) {
+            logger.error('On save function.');
+            logger.error(err);
+        } else {
+            logger.info('Data has been saved.');
+            logger.info(data);
+        }
+
+        var next = callbacks.pop();
+        if (next != undefined) {
+            next(db, Model, data, callbacks);
+        } else {
+            db.close();
+        }
+    });
+    logger.info('Setup model save callback.');
+}
+
+function find_max_id(db, Model, data, callbacks) {
+    var max_query = Model.find({},{"id":1}).sort({"id":-1}).limit(1);
+    max_query.exec(function(err, max_id_result) {
+        if (err) {
+            logger.error('On find max id step.');
+            logger.error(err);
+            db.close();
+        } else {
+            logger.info("Max id result : ");
+            logger.info(max_id_result);
+            var max_id = 0;
+            if (_.size(max_id_result) > 0) {
+                max_id = parseInt(max_id_result[0].id);
+            }
+            data.id = max_id + 1;
+
+            var next = callbacks.pop();
+            if (next != undefined) {
+                next(db, Model, data, callbacks);
+            } else {
+                db.close();
+            }
+        }
+    });
+    logger.info('Setup find max id callback.');
+}
+
 function insert(schema_name, data) {
     schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
     var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
@@ -25,42 +73,16 @@ function insert(schema_name, data) {
     var Model = mongoose.model(model_name, schemaMongoose);
 
     db.on('error', function (err) {
+        logger.error('In function insert');
         logger.error(err);
+        logger.error('error data : ');
+        logger.error(data);
     });
-    db.once('open',function(){
+    db.once('open',function() {
         if (_.indexOf(data, 'id') < 0) {
-            var max_query = Model.find({},{"id":1}).sort({"id":-1}).limit(1);
-            max_query.exec(function(err, max_id_result) {
-                if (err) {
-                    logger.error('On find max id step.');
-                    logger.error(err);
-                } else {
-                    var max_id = parseInt(max_id_result[0].id);
-                    data.id = max_id + 1;
-
-                    var model = new Model(data);
-                    model.save(function (err) {
-                        if (err) {
-                            logger.error('On save function.');
-                            logger.error(err);
-                        } else {
-                            logger.info('Model info has been saved.');
-                        }
-                        db.close();
-                    });
-                }
-            });
+            find_max_id(db, Model, data, [model_save]);
         } else {
-            var model = new Model(data);
-            model.save(function (err) {
-                if (err) {
-                    logger.error('On save function.');
-                    logger.error(err);
-                } else {
-                    logger.info('Model info has been saved.');
-                }
-                db.close();
-            });
+            model_save(db, Model, data, []);
         }
     });
     mongoose.connect(config.host);
@@ -74,6 +96,10 @@ function registerSchema(schema_name, schema) {
     schemas[schema_name] = schemaMongoose;
 
     var Model = mongoose.model(model_name, schemaMongoose);
+
+    logger.info('Schema Name : ' + schema_name);
+    logger.info('Request Name : ' + request_name);
+    logger.info('Model Name : ' + model_name);
 
     //GET /schema/:id/retrieve
     router.get(common.format('/{0}/:id(\\d+)/retrieve', request_name), function(req, res, next) {
@@ -135,6 +161,7 @@ function registerSchema(schema_name, schema) {
                     logger.error('On find max id step.');
                     logger.error(err);
                     res.status(500).send({ error: err });
+                    db.close();
                 } else {
                     var max_id = parseInt(max_id_result[0].id);
                     req.body.id = max_id + 1;
@@ -214,11 +241,11 @@ registerSchema('dataSet', {
     panel_type: String
 });
 
-registerSchema('retail', {
-    id: Number,
-    customer: Number,
-    good: Number
-});
+//registerSchema('retail', {
+//    id: Number,
+//    customer: Number,
+//    good: Number
+//});
 
 module.exports.router = router;
 

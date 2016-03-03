@@ -26,11 +26,6 @@ var Common = {
         return src.replace(/\{(\d+)\}/g, function(m, i){
             return args[i];
         });
-    },
-    gType: function(obj) {
-        //var _ = require('underscore');
-        //TODO this function isn't finished.
-        return String;
     }
 };
 
