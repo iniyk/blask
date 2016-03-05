@@ -26,6 +26,20 @@ var Common = {
         return src.replace(/\{(\d+)\}/g, function(m, i){
             return args[i];
         });
+    },
+    gSample: function(type) {
+        var _ = require('underscore');
+        var types = {};
+        types[String] = 'string';
+        types[Number] = 'string';
+        types[Array] = [];
+        types[Boolean] = false;
+        types[Date] = Date.now();
+        if (_.has(types, type)) {
+            return types[type];
+        } else {
+            return null;
+        }
     }
 };
 

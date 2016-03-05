@@ -57,19 +57,14 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                 var keys = _.allKeys(_.first(json_arr));
                 var pairs = _.pairs(_.first(json_arr));
                 var schema = {};
-                var has_id = true;
 
                 _.each(pairs, function (pair) {
                     var key = pair[0], value = pair[1];
                     schema[key] = value.constructor;
                 });
 
-                if (_.indexOf(keys, 'id') < 0) {
-                    schema['id'] = Number;
-                    has_id = false;
-                }
-
-                MongoController.registerSchema(name, schema);
+                logger.info(schema);
+                MongoController.registerSchema(name, schema, 'datasets');
 
                 _.each(_.values(json_arr), function (json) {
                     MongoController.insert(name, json);
