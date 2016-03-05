@@ -37,18 +37,18 @@ router.get('/', function(req, res, next) {
 
 //POST /data/upload
 router.post('/upload', upload.single('datafile'), function (req, res, next) {
-    logger.info('Start upload.');
-    logger.info(req.file);
+    logger.debug('Start upload.');
+    logger.debug(req.file);
 
     var name = req.file.originalname.split('.')[0];
     var tmp_path = req.file.path;
     var type = req.file.originalname.split('.')[1];
 
-    logger.info('Receive file : ' + name);
-    logger.info('File type : ' + type);
+    logger.debug('Receive file : ' + name);
+    logger.debug('File type : ' + type);
 
     if (type == 'json') {
-        logger.info('Set read json callback.');
+        logger.debug('Set read json callback.');
         common.readJson(tmp_path, function (err, json_arr) {
             if (err) {
                 logger.error('On reading json file.');
@@ -63,7 +63,7 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                     schema[key] = value.constructor;
                 });
 
-                logger.info(schema);
+                logger.debug(schema);
                 MongoController.registerSchema(name, schema, 'datasets');
 
                 _.each(_.values(json_arr), function (json) {

@@ -27,8 +27,8 @@ function model_save(Model, data, res, callbacks) {
                 res.status(500).send({ error: err });
             }
         } else {
-            logger.info('Record has been inserted.');
-            logger.info(data);
+            logger.debug('Record has been inserted.');
+            logger.debug(data);
             if (res != null) {
                 res.status(201).send({ success: 'Record has been inserted.'});
             }
@@ -50,8 +50,8 @@ function model_update(Model, data, res, callbacks) {
                 res.status(500).send({error: err});
             }
         } else {
-            logger.info('Record has been updated.');
-            logger.info(data);
+            logger.debug('Record has been updated.');
+            logger.debug(data);
             if (res !=null) {
 
                 res.status(201).send({ success: 'Record has been updated.'});
@@ -74,7 +74,7 @@ function model_remove(Model, data, res, callbacks) {
                 res.status(500).send({ error: err });
             }
         } else {
-            logger.info('Record has been removed.');
+            logger.debug('Record has been removed.');
             if (res != null) {
                 res.status(201).send({ success: 'Record has been deleted.'});
             }
@@ -101,7 +101,7 @@ function model_list(Model, data, res, callbacks) {
                 //model._id = undefined;  //If it should be shown.
                 //model.__v = undefined;
             //});
-            logger.info('Records listing.');
+            logger.debug('Records listing.');
             if (res != null) {
                 res.json(models);
             }
@@ -125,7 +125,7 @@ function model_find_one(Model, data, res, callbacks) {
             model = null;
         } else {
             if (model == null) {
-                logger.info('Request record not find by : ' + data);
+                logger.debug('Request record not find by : ' + data);
                 if (res != null) {
                     res.status(500).send({ error: 'No such data.' });
                 }
@@ -160,23 +160,41 @@ function registerSchema(schema_name, schema, db_name) {
     var Model = db.model(model_name, schemaMongoose);
     Models[db_name][schema_name] = Model;
 
-    logger.info('Schema Name : ' + schema_name);
-    logger.info('Request Name : ' + request_name);
-    logger.info('Model Name : ' + model_name);
+    logger.debug('Schema Name : ' + schema_name);
+    logger.debug('Request Name : ' + request_name);
+    logger.debug('Model Name : ' + model_name);
 
-    logger.info('Register router for ' + schema_name);
+    logger.debug('Register router for ' + schema_name);
 
-    //GET ./${schema}/
-    router.get(common.format('/{0}/{1}', db_name, request_name), function(req, res, next) {
+    //GET ./${database}/${schema}/
+    router.get(common.format('/{0}/{1}/', db_name, request_name), function(req, res, next) {
         var data = {};
         model_list(Model, data, res, []);
     });
 
-    //GET ./${schema}/${id}/
-    router.get(common.format('/{0}/:id(\\d+)/', db_name, request_name), function(req, res, next) {
+    //GET ./${database}/${schema}/${id}/
+    router.get(common.format('/{0}/{1}/:id([a-z0-9]+)/', db_name, request_name), function(req, res, next) {
         var data = {};
-        data._id = parseInt(req.params.id);
+        data._id = req.params.id;
         model_find_one(Model, data, res, []);
+    });
+
+    //POST ./${database}/${schema}/create/
+    router.post(common.format('/{0}/{1}/create/', db_name, request_name), function(req, res, next) {
+        var data = req.body;
+        model_save(Model, data, res, []);
+    });
+
+    //POST ./${database}/${schema}/${id}/update/
+    router.post(common.format('/{0}/{1}/:id/update/', db_name, request_name), function(req, res, next) {
+        var data = {update: req.body, index: {_id: req.params.id}};
+        model_update(Model, data, res, []);
+    });
+
+    //GET ./${database}/${schema}/${id}/delete/
+    router.post(common.format('/{0}/{1}/:id/update/', db_name, request_name), function(req, res, next) {
+        var data = {_id: req.params.id};
+        model_remove(Model, data, res, []);
     });
 
     if (db_name == 'datasets') {
@@ -204,7 +222,7 @@ function init() {
         logger.error(err);
     });
     dbs['auto'].once('open',function(){
-        logger.info('MongoDB for Blask connected.');
+        logger.debug('MongoDB for Blask connected.');
     });
 
     dbs['datasets'] = mongoose.createConnection(config_datasets.host);
@@ -212,7 +230,7 @@ function init() {
         logger.error(err);
     });
     dbs['datasets'].once('open',function(){
-        logger.info('MongoDB for Datasets connected.');
+        logger.debug('MongoDB for Datasets connected.');
     });
 
     registerSchema('dataSet', {
@@ -228,7 +246,7 @@ function registerAllDataSets() {
     //var db = dbs['auto'];
     var Model = Models['auto']['dataSet'];
 
-    //logger.info(Model);
+    //logger.debug(Model);
 
     model_list(Model, {}, null, [registerOneDataSet,
         function (Model, data, res, callbacks) {
@@ -243,8 +261,8 @@ function registerAllDataSets() {
 }
 
 function registerOneDataSet(Model, data, res, callbacks) {
-    logger.info('Data :');
-    logger.info(data);
+    logger.debug('Data :');
+    logger.debug(data);
     var pairs = _.pairs(data.schema_sample);
     var schema = {};
 
@@ -266,9 +284,9 @@ function registerOneDataSet(Model, data, res, callbacks) {
 }
 
 function dataset_insert(schema_name, data) {
-    logger.info('Insert into ' + schema_name);
-    logger.info('Data : ');
-    logger.info(data);
+    logger.debug('Insert into ' + schema_name);
+    logger.debug('Data : ');
+    logger.debug(data);
     schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
     var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
 
