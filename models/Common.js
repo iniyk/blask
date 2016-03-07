@@ -8,7 +8,7 @@ var Common = {
             if (err) {
                 callback(err, null);
             } else {
-                var json_obj = eval('(' + data + ')'); 
+                var json_obj = eval('(' + data + ')');
                 callback(null, json_obj);
             }
         });
@@ -21,10 +21,13 @@ var Common = {
                 callback(err, []);
             } else {
                 var result_by_line = data.split('\n');
-                _.map(result_by_line, function (line, index) {
-                    result_by_line[index] = line.replace(/\r|\n/ig, "");
+                var result_by_line_no_empty = [];
+                _.each(result_by_line, function (line) {
+                    if (line.replace(/\r|\n/ig, "") != "") {
+                        result_by_line_no_empty.push(line.replace(/\r|\n/ig, ""));
+                    }
                 });
-                callback(null, result_by_line);
+                callback(null, result_by_line_no_empty);
             }
         });
     },
