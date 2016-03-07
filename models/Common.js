@@ -8,18 +8,22 @@ var Common = {
             if (err) {
                 callback(err, null);
             } else {
-                var json_obj = eval('(' + data + ')');
+                var json_obj = eval('(' + data + ')'); 
                 callback(null, json_obj);
             }
         });
     },
     readPlainTextByLine: function (file_path, callback) {
         var fs = require('fs');
+        var _ = require('underscore');
         fs.readFile(file_path, 'utf-8', function(err, data) {
             if (err) {
                 callback(err, []);
             } else {
                 var result_by_line = data.split('\n');
+                _.map(result_by_line, function (line, index) {
+                    result_by_line[index] = line.replace(/\r|\n/ig, "");
+                });
                 callback(null, result_by_line);
             }
         });
@@ -67,6 +71,7 @@ var Common = {
         return false;
     },
     gStringType: function(str) {
+        if (str == '') return String;
         if (Common.isParse(str, Number)) {
             return Number;
         }
@@ -76,6 +81,7 @@ var Common = {
         return String;
     },
     realType: function(str) {
+        if (str == '') return '';
         if (Common.gStringType(str) == Number) {
             return parseInt(str);
         }
