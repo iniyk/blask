@@ -13,12 +13,23 @@
                     <h3 class="box-title">File Upload</h3>
                 </div><!-- /.box-header -->
                 <!-- form start -->
-                <form role="form" action="/data/upload" method="post" enctype='multipart/form-data'>
+                <form role="form" action="/data/upload" method="post" enctype='multipart/form-data' id="upload-form">
                     <div class="box-body">
-                        <div class="form-group">
-                            <label for="datafile">File input</label>
+                        <div class="form-group" id="datafile-group">
+                            <label for="datafile" id="datafile-label">File input</label>
                             <input type="file" id="datafile" name="datafile">
                             <p class="help-block">Upload data set from file.</p>
+                        </div>
+                        <div class="form-group" id="separator-group">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>Separator:</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" placeholder="Enter Separator of the datafile."
+                                           name="separator" id="separator">
+                                </div>
+                            </div>
                         </div>
                     </div><!-- /.box-body -->
 
@@ -30,4 +41,29 @@
         </div>
     </div>
     <% include ../js.ejs %>
+    <script type="text/javascript">
+        var datafile = null;
+
+        $(document).ready(function() {
+            datafile = $('#datafile');
+            datafile.detach();
+            datafile.insertAfter($('#datafile-label'));
+            toggleSeparatorGroup();
+            $('#separator-group').hide();
+            $('#datafile').change(toggleSeparatorGroup);
+        });
+
+        function toggleSeparatorGroup() {
+            var file = $('#datafile').val();
+            var strFileName=file.replace(/^.+?\\([^\\]+?)(\.[^\.\\]*?)?$/gi,"$1");      //file name without ext.
+            var fileExt=file.replace(/.+\./,"");                                        //file ext name.
+            if (fileExt == 'txt' || fileExt == 'csv') {
+                $('#separator-group').show();
+            } else {
+                $('#separator-group').hide();
+            }
+            datafile.detach();
+            datafile.insertAfter($('#datafile-label'));
+        }
+    </script>
 </body>
