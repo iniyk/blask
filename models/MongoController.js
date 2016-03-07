@@ -186,13 +186,13 @@ function registerSchema(schema_name, schema, db_name) {
     });
 
     //POST ./${database}/${schema}/${id}/update/
-    router.post(common.format('/{0}/{1}/:id/update/', db_name, request_name), function(req, res, next) {
+    router.post(common.format('/{0}/{1}/:id([a-z0-9]+)/update/', db_name, request_name), function(req, res, next) {
         var data = {update: req.body, index: {_id: req.params.id}};
         model_update(Model, data, res, []);
     });
 
     //GET ./${database}/${schema}/${id}/delete/
-    router.post(common.format('/{0}/{1}/:id/update/', db_name, request_name), function(req, res, next) {
+    router.post(common.format('/{0}/{1}/:id([a-z0-9]+)/update/', db_name, request_name), function(req, res, next) {
         var data = {_id: req.params.id};
         model_remove(Model, data, res, []);
     });

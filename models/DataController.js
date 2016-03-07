@@ -37,15 +37,15 @@ router.get('/', function(req, res, next) {
 
 //POST /data/upload
 router.post('/upload', upload.single('datafile'), function (req, res, next) {
-    logger.debug('Start upload.');
+    logger.debug('Upload file : ');
     logger.debug(req.file);
 
     var name = req.file.originalname.split('.')[0];
     var tmp_path = req.file.path;
     var type = req.file.originalname.split('.')[1];
 
-    logger.debug('Receive file : ' + name);
-    logger.debug('File type : ' + type);
+    logger.info('Receive file : ' + name);
+    logger.info('File type : ' + type);
 
     if (type == 'json') {
         logger.debug('Set read json callback.');
@@ -72,6 +72,34 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
             }
         });
         res.status(201).send({info: 'Upload successed.'});
+    } else if (type == 'txt' || type == 'csv') {
+        var separator = req.body.separator;
+        logger.debug('Set read txt / csv callback.');
+        common.readPlainTextByLine(tmp_path, function(err, lines) {
+            if (err) {
+                logger.error('On reading txt / csv file.');
+                logger.error(err);
+            } else {
+                var keys = lines[0].split(separator);
+                var schema = {};
+
+                _.map(lines[1].split(separator), function(cell, index) {
+                    schema[keys[index]] = common.gStringType(cell);
+                });
+
+                logger.debug(schema);
+                MongoController.registerSchema(name, schema, 'datasets');
+
+                _.each(lines.slice(1), function (line) {
+                    var record = {};
+                    _.map(line.split(separator), function (cell, index) {
+                        record[keys[index]] = common.realType(cell);
+                    });
+                    MongoController.insert(name, record);
+                });
+            }
+            res.status(201).send({info: 'Upload successed.'});
+        });
     } else {
         var err = type + ' is not a support data set file type.';
         logger.warn(err);
