@@ -1,0 +1,19 @@
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <%
+                for (var key in page.pages) {
+                    var value = page.pages[key].title;
+                    var href = page.pages[key].router;
+                    var attr_class = "";
+                    if (key == page.name) {
+                        attr_class = "active";
+                    }
+            %>
+                    <li class="<%= attr_class %>"><a href="<%= href %>"><%= value %></a></li></li>
+            <%
+                }
+            %>
+        </ul>
+    </div>
+</nav>
