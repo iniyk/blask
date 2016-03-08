@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
 <%- include('modules/head.ejs', {page: page}); %>
-<body>
-    <div class="container">
+<body class="skin-blue sidebar-mini">
+    <header class="main-header">
         <%- include('modules/navbar.ejs', {page: page}); %>
-    </div>
+    </header>
+    <aside class="main-sidebar">
+        <%- include('modules/sidebar.ejs', {page: page}); %>
+    </aside>
 </body>
 <%- include modules/js.ejs %>
 </html>

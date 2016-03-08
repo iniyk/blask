@@ -1,0 +1,72 @@
+<%
+function is_empty(obj) {
+    if (obj == null) return true;
+    for (var prop in obj) {
+        return false;
+    }
+    return true;
+}
+
+function item_tree(item) {
+%>
+    <li>
+        <a href="<%= item.href %>">
+            <i class="<%= item.icon %>"></i>
+            <%= item.title %>
+            <%
+                if (!is_empty(item.items)) {
+            %>
+                    <ul class="treeview-menu">
+                        <%
+                            for (var item_key_next in item.items) {
+                                var item_next =item.items[item_key_next];
+                                item_tree(item_next);
+                            }
+                        %>
+                    </ul>
+            <%
+                }
+            %>
+        </a>
+    </li>
+<%
+}
+%>
+<section class="sidebar">
+    <ul class="sidebar-menu">
+        <%
+            for (var li_key in page.sidebar) {
+                var li = page.sidebar[li_key];
+        %>
+                <li class="treeview">
+                    <a href="<%= li.href %>">
+                        <i class="<%= li.icon %>"></i>
+                        <span><%= li.title %></span>
+                        <%
+                            if (!is_empty(li.items)) {
+                        %>
+                                <i class="fa fa-angle-left pull-right"></i>
+                        <%
+                            }
+                        %>
+                    </a>
+                    <%
+                        if (!is_empty(li.items)) {
+                    %>
+                            <ul class="treeview-menu">
+                    <%
+                            for (var item_key in li.items) {
+                                var item = li.items[item_key];
+                                item_tree(item);
+                            }
+                    %>
+                            </ul>
+                    <%
+                        }
+                    %>
+                </li>
+        <%
+            }
+        %>
+    </ul>
+</section>

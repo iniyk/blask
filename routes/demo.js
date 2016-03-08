@@ -6,58 +6,74 @@ var router = express.Router();
 
 var _ = require("underscore");
 
-var router_now = 'demo/';
+var router_now = '/demo/';
 
 var pages = {
     index: {
         name: 'index',
         title: '首页',
-        router: router_now + 'index'
+        icon: "glyphicon glyphicon-home"
     },
     source: {
         name: 'source',
         title: '数据源管理',
-        router: router_now + 'source'
+        icon: "fa fa-database"
     },
     exchange: {
         name: 'exchange',
         title: '数据转换',
-        router: router_now + 'exchange'
+        icon: "fa fa-random"
     },
     model: {
         name: 'model',
         title: '数据挖掘',
-        router: router_now + 'model'
+        icon: "fa fa-dollar"
     },
     schema: {
         name: 'schema',
         title: '元数据管理',
-        router: router_now + 'schema'
+        icon: "fa fa-table"
     },
     display: {
         name: 'display',
         title: '数据展示',
-        router: router_now + 'display'
+        icon: "fa fa-bar-chart"
     }
 };
 
+_.map(pages, function(page, name) {
+    page.router = router_now + name;
+});
+
+pages.index['sidebar'] = {};
+
+_.map(pages, function(page, name) {
+    pages.index.sidebar[name] = {
+        name: page.name,
+        title: page.title,
+        href: page.router,
+        icon: page.icon,
+        items: {}
+    };
+});
+
 //GET demo index
 router.get('/', function(req, res, next) {
-    var page = {
-        name: pages.index.name,
-        title: pages.index.title,
-        pages: pages
-    };
+    var page = {};
+    _.map(pages.index, function(value, attr) {
+        page[attr] = value;
+    });
+    page.pages = pages;
     res.render('demo/index', {page: page});
 });
 
-//GET other page include index
-_.map(pages, function (page, index) {
-    var page_to_pass = {
-        name: page.name,
-        title: page.title,
-        pages: pages
-    }
+//GET all page include index
+_.map(pages, function (one_in_pages, index) {
+    var page = {};
+    _.map(one_in_pages, function(value, attr) {
+        page[attr] = value;
+    });
+    page.pages = pages;
     router.get('/' + page.name, function(req, res, next) {
         res.render('demo/' + page.name, {page: page});
     });
