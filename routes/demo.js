@@ -57,6 +57,35 @@ _.map(pages, function(page, name) {
     };
 });
 
+pages.source['sidebar'] = {
+    add: {
+        name: 'add',
+        title: '添加数据源',
+        href: '#',
+        icon: "fa fa-plus",
+        items: {
+            oracle: {
+                name: 'add-oracle',
+                title: "Oracle数据源",
+                href: '#',
+                icon: "fa fa-circle-o"
+            },
+            mysql: {
+                name: 'add-mysql',
+                title: "MySQL数据源",
+                href: '#',
+                icon: "fa fa-circle-o"
+            },
+            mongodb: {
+                name: 'add-mongodb',
+                title: "MongoDB数据源",
+                href: '#',
+                icon: "fa fa-circle-o"
+            }
+        }
+    }
+};
+
 //GET demo index
 router.get('/', function(req, res, next) {
     var page = {};
@@ -75,7 +104,7 @@ _.map(pages, function (one_in_pages, index) {
     });
     page.pages = pages;
     router.get('/' + page.name, function(req, res, next) {
-        res.render('demo/' + page.name, {page: page});
+        res.render('demo/index', {page: page});
     });
 });
 
