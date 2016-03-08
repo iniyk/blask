@@ -27,6 +27,7 @@
     "dist/js/sb-admin-2.js"
   ],
   "dependencies": {
+    "jquery": "<3.0.0",
     "bootstrap": "~3.3.6",
     "datatables": "~1.10.4",
     "datatables-plugins": "~1.0.1",
@@ -38,7 +39,8 @@
     "datatables-responsive": "~1.0.3",
     "bootstrap-social": "~4.8.0",
     "flot.tooltip": "~0.8.4",
-    "react": "~0.14.7"
+    "react": "~0.14.7",
+    "AdminLTE": "admin-lte#^2.3.2"
   },
   "moduleType": [
     "node"

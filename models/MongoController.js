@@ -1,173 +1,309 @@
 /**
- * Created by iniyk on 16/2/9.
+ * Created by iniyk on 16/3/3.
  */
-
 var express = require('express');
 var router = express.Router();
 
-var common = require('./Common');
 var _ = require('underscore');
+var async = require('async');
+var mongoose = require("mongoose");
+var dbs = {};
 
+var common = require('./Common');
 var Logger = require('./Logger')();
 var logger = Logger.handle("MongoController");
-var mongoose = require("mongoose");
-var db = mongoose.connection;
-var config = require("./Common").readJsonConfig('./conf.json')['database']['mongodb'];
+var config = require("./Common").readJsonConfig('./conf.json')['database']['mongodb_app'];
+var config_datasets = require("./Common").readJsonConfig('./conf.json')['database']['mongodb_datasets'];
 
-//var schemas = {};
+var Models = {};
 
-function registerSchema(schema_name, schema) {
+function model_save(Model, data, res, callbacks) {
+    var model = new Model(data);
+    model.save(function (err) {
+        if (err) {
+            logger.error('On save step.');
+            logger.error(err);
+            if (res != null) {
+                res.status(500).send({ error: err });
+            }
+        } else {
+            logger.debug('Record has been inserted.');
+            logger.debug(data);
+            if (res != null) {
+                res.status(201).send({ success: 'Record has been inserted.'});
+            }
+        }
+
+        var next = callbacks.pop();
+        if (next != undefined) {
+            next(Model, data, res, callbacks);
+        }
+    });
+}
+
+function model_update(Model, data, res, callbacks) {
+    Model.findOneAndUpdate(data.index, data.update, function (err) {
+        if (err) {
+            logger.error('On find and update step.');
+            logger.error(err);
+            if (res != null) {
+                res.status(500).send({error: err});
+            }
+        } else {
+            logger.debug('Record has been updated.');
+            logger.debug(data);
+            if (res !=null) {
+
+                res.status(201).send({ success: 'Record has been updated.'});
+            }
+        }
+
+        var next = callbacks.pop();
+        if (next != undefined) {
+            next(Model, data.update, res, callbacks);
+        }
+    });
+}
+
+function model_remove(Model, data, res, callbacks) {
+    Model.findOneAndRemove({_id: data._id}, function (err) {
+        if (err) {
+            logger.error('On remove step.');
+            logger.error(err);
+            if (res != null) {
+                res.status(500).send({ error: err });
+            }
+        } else {
+            logger.debug('Record has been removed.');
+            if (res != null) {
+                res.status(201).send({ success: 'Record has been deleted.'});
+            }
+        }
+
+        var next = callbacks.pop();
+        if (next != undefined) {
+            next(Model, data, res, callbacks);
+        }
+    });
+}
+
+function model_list(Model, data, res, callbacks) {
+    Model.find({}, function (err, models) {
+        if(err) {
+            logger.error('On list step.');
+            logger.error(err);
+            if (res != null) {
+                res.status(500).send({ error: err });
+            }
+            models = null;
+        } else {
+            //_.map(models, function(model) {
+                //model._id = undefined;  //If it should be shown.
+                //model.__v = undefined;
+            //});
+            logger.debug('Records listing.');
+            if (res != null) {
+                res.json(models);
+            }
+        }
+
+        var next = callbacks.pop();
+        if (next != undefined) {
+            next(Model, models, res, callbacks);
+        }
+    });
+}
+
+function model_find_one(Model, data, res, callbacks) {
+    Model.findOne(data, function (err, model) {
+        if(err) {
+            logger.error('On find one step.');
+            logger.error(err);
+            if (res != null) {
+                res.status(500).send({error: err});
+            }
+            model = null;
+        } else {
+            if (model == null) {
+                logger.debug('Request record not find by : ' + data);
+                if (res != null) {
+                    res.status(500).send({ error: 'No such data.' });
+                }
+                model = null;
+            } else {
+                //model._id = undefined;    //If it should be shown.
+                //model.__v = undefined;
+                if (res != null) {
+                    res.json(model);
+                }
+            }
+        }
+
+        var next = callbacks.pop();
+        if (next != undefined) {
+            next(Model, model, res, callbacks);
+        }
+    });
+}
+
+function registerSchema(schema_name, schema, db_name) {
+    var db = dbs[db_name];
     schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
     var request_name = schema_name.toLowerCase();
     var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
+
+    if (_.has(Models[db_name], schema_name)) {
+        return 0;
+    }
+
     var schemaMongoose = new mongoose.Schema(schema);
-    //schemas[schema_name] = schemaMongoose;
+    var Model = db.model(model_name, schemaMongoose);
+    Models[db_name][schema_name] = Model;
 
-    var Model = mongoose.model(model_name, schemaMongoose);
+    logger.debug('Schema Name : ' + schema_name);
+    logger.debug('Request Name : ' + request_name);
+    logger.debug('Model Name : ' + model_name);
 
-    //GET /schema/:id/retrieve
-    router.get(common.format('/{0}/:id(\\d+)/retrieve', request_name), function(req, res, next) {
-        db.on('error', function (err) {
-            logger.error(err);
-        });
-        db.once('open',function(){
-            Model.findOne({id: parseInt(req.params.id)}, function (err, model) {
-                if(err) {
-                    logger.error(err);
-                    res.status(500).send({ error: err });
-                } else {
-                    if (model == null) {
-                        res.status(500).send({ error: 'No such data.' });
-                    } else {
-                        model._id = undefined;
-                        model.__v = undefined;
-                        res.json(model);
-                    }
-                }
-                db.close();
-            });
-        });
-        mongoose.connect(config.host);
+    logger.debug('Register router for ' + schema_name);
+
+    //GET ./${database}/${schema}/
+    router.get(common.format('/{0}/{1}/', db_name, request_name), function(req, res, next) {
+        var data = {};
+        model_list(Model, data, res, []);
     });
 
-    //GET /schema
-    router.get(common.format('/{0}', request_name), function(req, res, next) {
-        db.on('error', function (err) {
-            logger.error(err);
-        });
-        db.once('open',function(){
-            Model.find({}, function (err, models) {
-                if(err) {
-                    logger.error(err);
-                    res.status(500).send({ error: err });
-                } else {
-                    _.map(models, function(model) {
-                        model._id = undefined;
-                        model.__v = undefined;
-                    });
-                    res.json(models);
-                }
-                db.close();
-            });
-        });
-        mongoose.connect(config.host);
+    //GET ./${database}/${schema}/${id}/
+    router.get(common.format('/{0}/{1}/:id([a-z0-9]+)/', db_name, request_name), function(req, res, next) {
+        var data = {};
+        data._id = req.params.id;
+        model_find_one(Model, data, res, []);
     });
 
-    //POST /schema/create
-    router.post(common.format('/{0}/create', request_name), function(req, res, next) {
-        db.on('error', function (err) {
-            logger.error(err);
-        });
-        db.once('open',function(){
-            var max_query = Model.find({},{"id":1}).sort({"id":-1}).limit(1);
-            max_query.exec(function(err, max_id_result){
-                if (err) {
-                    logger.error('On find max id step.');
-                    logger.error(err);
-                    res.status(500).send({ error: err });
-                } else {
-                    var max_id = parseInt(max_id_result[0].id);
-                    req.body.id = max_id + 1;
-
-                    var model = new Model(req.body);
-                    model.save(function (err) {
-                        if (err) {
-                            logger.error('On save function.');
-                            logger.error(err);
-                            res.status(500).send({ error: err });
-                        } else {
-                            logger.info('Model info has been saved.');
-                            res.status(201).send({ success: 'dataset has been created.'});
-                        }
-                        db.close();
-                    })
-                }
-            });
-        });
-        mongoose.connect(config.host);
+    //POST ./${database}/${schema}/create/
+    router.post(common.format('/{0}/{1}/create/', db_name, request_name), function(req, res, next) {
+        var data = req.body;
+        model_save(Model, data, res, []);
     });
 
-    //POST /schema/:id/update
-    router.post(common.format('/{0}/:id(\\d+)/update', request_name), function(req, res, next) {
-        db.on('error', function (err) {
-            logger.error(err);
-        });
-        var id = req.params.id;
-        req.body.id = id;
-        db.once('open',function(){
-            Model.findOneAndUpdate({id: id}, req.body, function (err) {
-                if (err) {
-                    logger.error('On find and update step.');
-                    logger.error(err);
-                    res.status(500).send({ error: err });
-                } else {
-                    logger.info('Model info has been saved.');
-                    res.status(201).send({ success: 'model has been updated.'});
-                }
-                db.close();
-            });
-        });
-        mongoose.connect(config.host);
+    //POST ./${database}/${schema}/${id}/update/
+    router.post(common.format('/{0}/{1}/:id([a-z0-9]+)/update/', db_name, request_name), function(req, res, next) {
+        var data = {update: req.body, index: {_id: req.params.id}};
+        model_update(Model, data, res, []);
     });
 
-    //GET /schema/:id/delete
-    router.get(common.format('/{0}/:id(\\d+)/delete', request_name), function(req, res, next) {
-        db.on('error', function (err) {
-            logger.error(err);
-        });
-        var id = req.params.id;
-        db.once('open',function(){
-            Model.findOneAndRemove({id: id}, function (err) {
-                if (err) {
-                    logger.error('On find and remove step.');
-                    logger.error(err);
-                    res.status(500).send({ error: err });
-                } else {
-                    logger.info('Model info has been saved.');
-                    res.status(201).send({ success: 'model has been deleted.'});
-                }
-                db.close();
-            });
-        });
-        mongoose.connect(config.host);
+    //GET ./${database}/${schema}/${id}/delete/
+    router.post(common.format('/{0}/{1}/:id([a-z0-9]+)/update/', db_name, request_name), function(req, res, next) {
+        var data = {_id: req.params.id};
+        model_remove(Model, data, res, []);
     });
 
-    return Model;
+    if (db_name == 'datasets') {
+        var data = {name: model_name};
+        model_find_one(Models['auto']['dataSet'], data, null, [function(Model, data, res, callbacks) {
+            if (data == null) {
+                var schema_sample = {};
+                _.each(_.pairs(schema), function(pair) {
+                    var key = pair[0], value = pair[1];
+                    schema_sample[key] = common.gSample(value);
+                });
+                var dataset = {name: model_name, comment: '', schema_sample: schema_sample};
+                model_save(Model, dataset, res, []);
+            }
+        }]);
+    }
 }
 
-registerSchema('dataSet', {
-    id: Number,
-    name: String,
-    title: String,
-    comment: String,
-    icon: String,
-    panel_type: String
-});
+function init() {
+    Models['auto'] = {};
+    Models['datasets'] = {};
 
-registerSchema('retail', {
-    id: Number,
-    customer: Number,
-    good: Number
-});
+    dbs['auto'] = mongoose.createConnection(config.host);
+    dbs['auto'].on('error', function (err) {
+        logger.error(err);
+    });
+    dbs['auto'].once('open',function(){
+        logger.debug('MongoDB for Blask connected.');
+    });
+
+    dbs['datasets'] = mongoose.createConnection(config_datasets.host);
+    dbs['datasets'].on('error', function (err) {
+        logger.error(err);
+    });
+    dbs['datasets'].once('open',function(){
+        logger.debug('MongoDB for Datasets connected.');
+    });
+
+    registerSchema('dataSet', {
+        name: String,
+        comment: String,
+        schema_sample: {}
+    }, 'auto');
+
+    registerAllDataSets();
+}
+
+function registerAllDataSets() {
+    //var db = dbs['auto'];
+    var Model = Models['auto']['dataSet'];
+
+    //logger.debug(Model);
+
+    model_list(Model, {}, null, [registerOneDataSet,
+        function (Model, data, res, callbacks) {
+            var next = callbacks.pop();
+            _.each(data, function (model) {
+                if (next != undefined) {
+                    next(Model, model, res, callbacks);
+                }
+            });
+        }
+    ]);
+}
+
+function registerOneDataSet(Model, data, res, callbacks) {
+    logger.debug('Data :');
+    logger.debug(data);
+    var pairs = _.pairs(data.schema_sample);
+    var schema = {};
+
+    _.each(pairs, function (pair) {
+        var key = pair[0], value = pair[1];
+        if (value != null) {
+            schema[key] = value.constructor;
+        } else {
+            schema[key] = {};
+        }
+    });
+
+    registerSchema(data.name, schema, 'datasets');
+
+    var next = callbacks.pop();
+    if (next != undefined) {
+        next(Model, data, res, callbacks);
+    }
+}
+
+function dataset_insert(schema_name, data) {
+    logger.debug('Insert into ' + schema_name);
+    logger.debug('Data : ');
+    logger.debug(data);
+    schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
+    var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
+
+    if (_.has(Models['datasets'], schema_name)) {
+        var Model = Models['datasets'][schema_name];
+    } else {
+        logger.error('Trying to insert into a unregistered schema.');
+        return 2;
+    }
+
+    model_save(Model, data, null, []);
+
+    return 0;
+}
 
 module.exports.router = router;
+module.exports.init = init;
+module.exports.registerSchema = registerSchema;
+//module.exports.registerDatasetSchema = registerDatasetSchema;
+module.exports.insert = dataset_insert;
