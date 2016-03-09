@@ -1,0 +1,281 @@
+<section class="content-header">
+    <h1>
+        数据源
+        <a class="btn btn-primary btn-flat btn-xs">全部显示</a>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database"></i> 数据源管理</a></li>
+        <li><a href="#">总览</a></li>
+    </ol>
+</section>
+<section class="content">
+    <!-- Modal -->
+    <div class="modal fade" id="modelAddMysql" tabindex="-1" role="dialog" aria-labelledby="labelAddMysql">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form class="form-horizontal">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="labelAddMysql">
+                            添加Oracle数据库
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="oracleURL" class="col-sm-offset-1 col-sm-3 control-label">数据库地址</label>
+                            <div class="col-sm-7">
+                                <input type="url" class="form-control" id="oracleURL" placeholder="数据库地址">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="oraclePort" class="col-sm-offset-1 col-sm-3 control-label">数据库端口号</label>
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control" id="oracleURL" placeholder="数据库端口号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="oracleDatabase" class="col-sm-offset-1 col-sm-3 control-label">数据库名称</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" id="oracleDatabase" placeholder="数据库名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="oracleUser" class="col-sm-offset-1 col-sm-3 control-label">数据库用户名</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" id="oracleUser" placeholder="数据库用户名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="oraclePassword" class="col-sm-offset-1 col-sm-3 control-label">数据库密码</label>
+                            <div class="col-sm-7">
+                                <input type="password" class="form-control" id="oraclePassword" placeholder="数据库密码">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">连接</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">当前数据仓库</h3>
+
+                    <div class="box-tools">
+                        <div class="input-group input-group-sm" style="width: 250px;">
+                            <input type="text" name="table_search" class="form-control pull-right" placeholder="搜索">
+                            <div class="input-group-btn">
+                                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>ID</th>
+                            <th>数据集名称</th>
+                            <th>规模</th>
+                            <th>更新日期</th>
+                            <th class="col-md-4">导入进度</th>
+                            <th>备注</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>183</td>
+                            <td>Retail</td>
+                            <td>12Mb</td>
+                            <td>11-7-2014</td>
+                            <td>
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar progress-bar-primary" style="width: 55%"></div>
+                                </div>
+                            </td>
+                            <td>零售数据</td>
+                        </tr>
+                        <tr>
+                            <td>219</td>
+                            <td>House-price</td>
+                            <td>201.3Mb</td>
+                            <td>11-7-2014</td>
+                            <td>
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar progress-bar-primary" style="width: 90%"></div>
+                                </div>
+                            </td>
+                            <td>北京市近三年商品房交易数据.</td>
+                        </tr>
+                        <tr>
+                            <td>657</td>
+                            <td>Irises</td>
+                            <td>203.1Kb</td>
+                            <td>11-7-2014</td>
+                            <td><span class="label label-success">已完成</span></td>
+                            <td>鸢尾花数据.</td>
+                        </tr>
+                        <tr>
+                            <td>175</td>
+                            <td>Traffic</td>
+                            <td>3.01Gb</td>
+                            <td>11-7-2014</td>
+                            <td><span class="label label-danger">失败</span></td>
+                            <td>贵州市一周交通统计数据.</td>
+                        </tr>
+                        </tbody></table>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="btn-group pull-right">
+                        <button type="button" class="btn btn-default"><i class="fa fa-refresh"></i></button>
+                        <button type="button" class="btn btn-default"><i class="fa fa-ellipsis-h"></i></button>
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">教务管理系统 <small><span class="label label-success">连接正常</span></small></h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>表名</th>
+                            <th>字段数</th>
+                            <th>记录数</th>
+                            <th>备注</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>student</td>
+                            <td>12</td>
+                            <td>6313</td>
+                            <td>学生基本信息</td>
+                        </tr>
+                        <tr>
+                            <td>teacher</td>
+                            <td>14</td>
+                            <td>216</td>
+                            <td>教师基本信息</td>
+                        </tr>
+                        <tr>
+                            <td>class</td>
+                            <td>8</td>
+                            <td>173</td>
+                            <td>课程信息</td>
+                        </tr>
+                        </tbody></table>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="btn-group pull-right">
+                        <button type="button" class="btn btn-default"><i class="fa fa-refresh"></i></button>
+                        <button type="button" class="btn btn-default"><i class="fa fa-ellipsis-h"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">北医三院档案库 <small><span class="label label-danger">连接失败</span></small></h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <thead>
+                            <th>表名</th>
+                            <th>字段数</th>
+                            <th>记录数</th>
+                            <th>备注</th>
+                        </thead>
+                        <tbody>
+                        <tr class="danger">
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        </tbody></table>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="btn-group pull-right">
+                        <button type="button" class="btn btn-default"><i class="fa fa-refresh"></i></button>
+                        <button type="button" class="btn btn-default"><i class="fa fa-ellipsis-h"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">西安市房地产交易系统 <small><span class="label label-success">连接正常</span></small></h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <thead>
+                        <th>表名</th>
+                        <th>字段数</th>
+                        <th>记录数</th>
+                        <th>备注</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>house</td>
+                            <td>23</td>
+                            <td>738034</td>
+                            <td>房产信息</td>
+                        </tr>
+                        <tr>
+                            <td>owner</td>
+                            <td>10</td>
+                            <td>123824</td>
+                            <td>业主信息</td>
+                        </tr>
+                        <tr>
+                            <td>trade</td>
+                            <td>13</td>
+                            <td>134213</td>
+                            <td>房产交易情况</td>
+                        </tr>
+                        <tr>
+                            <td>rent</td>
+                            <td>10</td>
+                            <td>433112</td>
+                            <td>房屋出租情况</td>
+                        </tr>
+                        <tr>
+                            <td>other</td>
+                            <td>13</td>
+                            <td>0</td>
+                            <td>其它</td>
+                        </tr>
+                        </tbody></table>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="btn-group pull-right">
+                        <button type="button" class="btn btn-default"><i class="fa fa-refresh"></i></button>
+                        <button type="button" class="btn btn-default"><i class="fa fa-ellipsis-h"></i></button>
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>

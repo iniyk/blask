@@ -1,5 +1,6 @@
 <%
 function is_empty(obj) {
+    if (obj == undefined) return true;
     if (obj == null) return true;
     for (var prop in obj) {
         return false;
@@ -8,9 +9,10 @@ function is_empty(obj) {
 }
 
 function item_tree(item) {
+    var attr_str = gAttrs(item.attrs);
 %>
     <li>
-        <a href="<%= item.href %>">
+        <a href="<%= item.href %>" <%= attr_str %> >
             <i class="<%= item.icon %>"></i>
             <%= item.title %>
             <%
@@ -31,15 +33,28 @@ function item_tree(item) {
     </li>
 <%
 }
+
+function gAttrs(attrs) {
+    if (is_empty(attrs)) {
+        return '';
+    }
+    var ret_class_str = '';
+    for (var attr_name in attrs) {
+        ret_class_str += ` ${attr_name} = `;
+        ret_class_str += `${attrs[attr_name]}`;
+    }
+    return ret_class_str;
+}
 %>
 <section class="sidebar">
     <ul class="sidebar-menu">
         <%
             for (var li_key in page.sidebar) {
                 var li = page.sidebar[li_key];
+                var attr_str = gAttrs(li.attrs);
         %>
                 <li class="treeview">
-                    <a href="<%= li.href %>">
+                    <a href="<%= li.href %>" <%= attr_str %> >
                         <i class="<%= li.icon %>"></i>
                         <span><%= li.title %></span>
                         <%
