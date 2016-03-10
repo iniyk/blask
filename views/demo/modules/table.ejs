@@ -1,0 +1,74 @@
+<%
+    /*
+    var table_example = {
+        name: 'table-warehouse',
+        title: '当前数据仓库',
+        width: 'col-xs-12',
+        color: 'primary',
+        data: {
+            'ID': ['183', '219', '312', '314'],
+            '数据集名称': ['Retail', 'House-price', 'Irises', 'Traffic'],
+            '规模': ['12Mb', '12Gb', '12Kb', '12byte'],
+            '更新日期': ['11-7-2014', '11-7-2014', '11-7-2014', '11-7-2014'],
+            '备注': ['零售数据.', '北京市近三年商品房交易数据.', '鸢尾花数据.', '贵州市一周交通统计数据.']
+        },
+        buttons: {
+            refresh: {
+                title: "<i class=\"fa fa-refresh\"></i>",
+                type: 'btn btn-default',
+                href: '#'
+            },
+            more: {
+                title: "<i class=\"fa fa-ellipsis-h\"></i>",
+                type: 'btn btn-default',
+                href: '#'
+            }
+        }
+    };
+    */
+    function max(x, y) {
+        if (x > y) return x;
+        return y;
+    }
+%>
+
+<div class="<%= table.width %>">
+    <div class="box box-<%= table.color %>">
+        <div class="box-header">
+            <h3 class="box-title"><%- table.title %></h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+                <thead>
+                <%  var record_len = 0; %>
+                <%  for (var data_head in table.data) { %>
+                        <% record_len = max(record_len, table.data[data_head].length) %>
+                        <th><%- data_head %></th>
+                <%  } %>
+                </thead>
+                <tbody>
+                <% for (var i = 0; i < record_len; ++i) { %>
+                        <tr>
+                            <%  for (var data_head in table.data) { %>
+                                    <td><%- table.data[data_head][i] %></td>
+                            <%  } %>
+                        </tr>
+                <%  } %>
+                </tbody></table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <div class="btn-group pull-right">
+                <%  for (var btn_name in table.buttons) { %>
+                    <a type="button" class="<%= table.buttons[btn_name].type%>"
+                       id="<%= `${table.name}-${btn_name}` %>"
+                       href="<%= table.buttons[btn_name].href%>">
+                        <%- table.buttons[btn_name].title %>
+                    </a>
+                <%  } %>
+            </div>
+        </div>
+    </div>
+    <!-- /.box -->
+</div>
