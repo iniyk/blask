@@ -1,0 +1,28 @@
+<a href="<%= page.pages.index.router %>" class="logo color-palette bg-light-blue disabled">
+    <!-- mini logo for sidebar mini 50x50 pixels -->
+    <span class="logo-mini"></span>
+    <!-- logo for regular state and mobile devices -->
+    <span class="logo-lg">数据挖掘系统</span>
+</a>
+<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+    <div class="collapse navbar-collapse">
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        <ul class="nav navbar-nav">
+            <%
+                for (var key in page.pages) {
+                    var value = page.pages[key].title;
+                    var href = page.pages[key].router;
+                    var attr_class = "";
+                    if (key == page.name) {
+                        attr_class = "active";
+                    }
+            %>
+                    <li class="<%= attr_class %>"><a href="<%= href %>"><%= value %></a></li></li>
+            <%
+                }
+            %>
+        </ul>
+    </div>
+</nav>

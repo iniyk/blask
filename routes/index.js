@@ -3,6 +3,7 @@ var router = express.Router();
 var Panel = require("../models/Panel");
 
 var users = require('./users');
+var demo = require('./demo');
 var mongo_controller = require('../models/MongoController');
 var data_controller = require('../models/DataController');
 var test_controller = require('../models/TestController');
@@ -13,6 +14,7 @@ router.use('/users', users);
 router.use('/mongodb', mongo_controller.router);
 router.use('/data', data_controller.router);
 router.use('/test', test_controller.router);
+router.use('/demo', demo);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<%- include('modules/head.ejs', {page: page}); %>
+<body class="skin-blue sidebar-collapse sidebar-mini">
+<div class="wrapper">
+    <header class="main-header">
+        <%- include('modules/navbar.ejs', {page: page}); %>
+    </header>
+    <aside class="main-sidebar">
+        <%- include('modules/sidebar.ejs', {page: page}); %>
+    </aside>
+    <div class="content-wrapper">
+        <% var path = page.name + '.ejs'; %>
+        <%- include(path, {page:page}); %>
+    </div>
+</div>
+</body>
+<%- include modules/js.ejs %>
+</html>
