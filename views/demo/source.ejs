@@ -12,7 +12,6 @@
 var table_warehouse = {
     name: 'table-warehouse',
     title: '当前数据仓库',
-    width: 'col-xs-12',
     color: 'primary',
     data: {
         'ID': ['183', '219', '312', '314'],
@@ -37,7 +36,6 @@ var table_warehouse = {
 var table_tmp = {
     name: 'table-tmp',
     title: '暂存库',
-    width: 'col-xs-12',
     color: 'primary',
     data: {
         'ID': ['183', '219', '312', '314'],
@@ -64,6 +62,79 @@ var table_tmp = {
         }
     }
 };
+
+var table_education = {
+    name: 'table-education',
+    title: "教务管理系统 <small><span class=\"label label-success\">连接正常</span></small>",
+    color: 'default',
+    data: {
+        '表名': ['student', 'teacher', 'class'],
+        '字段数': [12, 14, 8],
+        '记录数': [6313, 216, 173],
+        '备注': ['学生基本信息', '教师基本信息', '课程信息']
+    },
+    buttons: {
+        refresh: {
+            title: "<i class=\"fa fa-refresh\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        },
+        more: {
+            title: "<i class=\"fa fa-ellipsis-h\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        }
+    }
+}
+
+var table_failed = {
+    name: 'table-failed',
+    title: "北医三院档案库 <small><span class=\"label label-danger\">连接正常</span></small>",
+    color: 'default',
+    data: {
+        '表名': ['&nbsp;'],
+        '字段数': ['&nbsp;'],
+        '记录数': ['&nbsp;'],
+        '备注': ['&nbsp;']
+    },
+    'tr-style': ['danger'],
+    buttons: {
+        refresh: {
+            title: "<i class=\"fa fa-refresh\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        },
+        more: {
+            title: "<i class=\"fa fa-ellipsis-h\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        }
+    }
+}
+
+var table_trade = {
+    name: 'table-trade',
+    title: "西安市房地产交易系统 <small><span class=\"label label-success\">连接正常</span></small>",
+    color: 'default',
+    data: {
+        '表名': ['house', 'owner', 'trade', 'rent', 'other'],
+        '字段数': [15, 14, 8, 10, 13],
+        '记录数': [738034, 123824, 6313, 216, 173],
+        '备注': ['房产信息', '业主信息', '房产交易情况', '房屋出租情况', '其它']
+    },
+    buttons: {
+        refresh: {
+            title: "<i class=\"fa fa-refresh\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        },
+        more: {
+            title: "<i class=\"fa fa-ellipsis-h\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        }
+    }
+}
 %>
 
 <section class="content-header">
@@ -131,147 +202,20 @@ var table_tmp = {
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-4">
+        <div class="col-md-4">
             <%- include('modules/table.ejs', {table: table_warehouse}); %>
         </div>
-        <div class="col-xs-8">
+        <div class="col-md-8">
             <%- include('modules/table.ejs', {table: table_tmp}); %>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">教务管理系统 <small><span class="label label-success">连接正常</span></small></h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body table-responsive no-padding">
-                    <table class="table table-hover">
-                        <thead>
-                            <th>表名</th>
-                            <th>字段数</th>
-                            <th>记录数</th>
-                            <th>备注</th>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>student</td>
-                            <td>12</td>
-                            <td>6313</td>
-                            <td>学生基本信息</td>
-                        </tr>
-                        <tr>
-                            <td>teacher</td>
-                            <td>14</td>
-                            <td>216</td>
-                            <td>教师基本信息</td>
-                        </tr>
-                        <tr>
-                            <td>class</td>
-                            <td>8</td>
-                            <td>173</td>
-                            <td>课程信息</td>
-                        </tr>
-                        </tbody></table>
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer">
-                    <div class="btn-group pull-right">
-                        <button type="button" class="btn btn-default"><i class="fa fa-refresh"></i></button>
-                        <button type="button" class="btn btn-default"><i class="fa fa-ellipsis-h"></i></button>
-                    </div>
-                </div>
-            </div>
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">北医三院档案库 <small><span class="label label-danger">连接失败</span></small></h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body table-responsive no-padding">
-                    <table class="table table-hover">
-                        <thead>
-                            <th>表名</th>
-                            <th>字段数</th>
-                            <th>记录数</th>
-                            <th>备注</th>
-                        </thead>
-                        <tbody>
-                        <tr class="danger">
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                        </tr>
-                        </tbody></table>
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer">
-                    <div class="btn-group pull-right">
-                        <button type="button" class="btn btn-default"><i class="fa fa-refresh"></i></button>
-                        <button type="button" class="btn btn-default"><i class="fa fa-ellipsis-h"></i></button>
-                    </div>
-                </div>
-            </div>
+            <%- include('modules/table.ejs', {table: table_education}); %>
+            <%- include('modules/table.ejs', {table: table_failed}); %>
         </div>
-        <!-- /.col -->
         <div class="col-md-6">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">西安市房地产交易系统 <small><span class="label label-success">连接正常</span></small></h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body table-responsive no-padding">
-                    <table class="table table-hover">
-                        <thead>
-                        <th>表名</th>
-                        <th>字段数</th>
-                        <th>记录数</th>
-                        <th>备注</th>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>house</td>
-                            <td>23</td>
-                            <td>738034</td>
-                            <td>房产信息</td>
-                        </tr>
-                        <tr>
-                            <td>owner</td>
-                            <td>10</td>
-                            <td>123824</td>
-                            <td>业主信息</td>
-                        </tr>
-                        <tr>
-                            <td>trade</td>
-                            <td>13</td>
-                            <td>134213</td>
-                            <td>房产交易情况</td>
-                        </tr>
-                        <tr>
-                            <td>rent</td>
-                            <td>10</td>
-                            <td>433112</td>
-                            <td>房屋出租情况</td>
-                        </tr>
-                        <tr>
-                            <td>other</td>
-                            <td>13</td>
-                            <td>0</td>
-                            <td>其它</td>
-                        </tr>
-                        </tbody></table>
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer">
-                    <div class="btn-group pull-right">
-                        <button type="button" class="btn btn-default"><i class="fa fa-refresh"></i></button>
-                        <button type="button" class="btn btn-default"><i class="fa fa-ellipsis-h"></i></button>
-                    </div>
-                </div>
-            </div>
-            <!-- /.box -->
+            <%- include('modules/table.ejs', {table: table_trade}); %>
         </div>
-        <!-- /.col -->
     </div>
-    <!-- /.row -->
 </section>

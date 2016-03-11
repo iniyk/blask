@@ -108,6 +108,50 @@ pages.source['sidebar'] = {
     }
 };
 
+pages.exchange['sidebar'] = {    add: {
+    name: 'add',
+    title: '添加数据源',
+    href: '#',
+    icon: 'fa fa-plus',
+    items: {
+        oracle: {
+            name: 'add-oracle',
+            title: 'Oracle数据源',
+            href: '#',
+            icon: 'fa fa-circle-o',
+            attrs: {
+                'data-toggle': 'modal',
+                'data-target': '#modelAddMysql'
+            }
+        },
+        mysql: {
+            name: 'add-mysql',
+            title: 'MySQL数据源',
+            href: '#',
+            icon: 'fa fa-circle-o'
+        },
+        mongodb: {
+            name: 'add-mongodb',
+            title: 'MongoDB数据源',
+            href: '#',
+            icon: 'fa fa-circle-o'
+        }
+    }
+},
+    showall: {
+        name: 'showall',
+        title: '显示全部数据源',
+        href: '#',
+        icon: 'fa fa-folder-open'
+    },
+    upload: {
+        name: 'upload',
+        title: '由文件上传',
+        href: '#',
+        icon: 'fa fa-upload'
+    }
+};
+
 //GET demo index
 router.get('/', function(req, res, next) {
     var page = {};

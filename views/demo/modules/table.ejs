@@ -3,7 +3,6 @@
     var table_example = {
         name: 'table-warehouse',
         title: '当前数据仓库',
-        width: 'col-xs-12',
         color: 'primary',
         data: {
             'ID': ['183', '219', '312', '314'],
@@ -32,43 +31,42 @@
     }
 %>
 
-<div class="<%= table.width %>">
-    <div class="box box-<%= table.color %>">
-        <div class="box-header">
-            <h3 class="box-title"><%- table.title %></h3>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body table-responsive no-padding">
-            <table class="table table-hover">
-                <thead>
-                <%  var record_len = 0; %>
-                <%  for (var data_head in table.data) { %>
-                        <% record_len = max(record_len, table.data[data_head].length) %>
-                        <th><%- data_head %></th>
-                <%  } %>
-                </thead>
-                <tbody>
-                <% for (var i = 0; i < record_len; ++i) { %>
-                        <tr>
-                            <%  for (var data_head in table.data) { %>
-                                    <td><%- table.data[data_head][i] %></td>
-                            <%  } %>
-                        </tr>
-                <%  } %>
-                </tbody></table>
-        </div>
-        <!-- /.box-body -->
-        <div class="box-footer">
-            <div class="btn-group pull-right">
-                <%  for (var btn_name in table.buttons) { %>
-                    <a type="button" class="<%= table.buttons[btn_name].type%>"
-                       id="<%= `${table.name}-${btn_name}` %>"
-                       href="<%= table.buttons[btn_name].href%>">
-                        <%- table.buttons[btn_name].title %>
-                    </a>
-                <%  } %>
-            </div>
+
+<div class="box box-<%= table.color %>">
+    <div class="box-header">
+        <h3 class="box-title"><%- table.title %></h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+            <thead>
+            <%  var record_len = 0; %>
+            <%  for (var data_head in table.data) { %>
+                    <% record_len = max(record_len, table.data[data_head].length) %>
+                    <th><%- data_head %></th>
+            <%  } %>
+            </thead>
+            <tbody>
+            <% for (var i = 0; i < record_len; ++i) { %>
+                    <tr class="<%= table['tr-style'] == undefined ? '' : (table['tr-style'][i] == undefined ? '' : table['tr-style'][i]) %>">
+                        <%  for (var data_head in table.data) { %>
+                                <td><%- table.data[data_head][i] %></td>
+                        <%  } %>
+                    </tr>
+            <%  } %>
+            </tbody></table>
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer">
+        <div class="btn-group pull-right">
+            <%  for (var btn_name in table.buttons) { %>
+                <a type="button" class="<%= table.buttons[btn_name].type%>"
+                   id="<%= `${table.name}-${btn_name}` %>"
+                   href="<%= table.buttons[btn_name].href%>">
+                    <%- table.buttons[btn_name].title %>
+                </a>
+            <%  } %>
         </div>
     </div>
-    <!-- /.box -->
 </div>
+<!-- /.box -->
