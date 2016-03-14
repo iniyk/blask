@@ -13,7 +13,8 @@
             <%- include('modules/tree_selector', {tree: page.content['exchange-selector']}); %>
         </div>
         <div class="col-md-8">
-
+            <%- include('modules/table.ejs', {table:  page.content['exchanging-table']}); %>
+            <%- include('modules/table.ejs', {table:  page.content['tmp-table']}); %>
         </div>
     </div>
 </section>
