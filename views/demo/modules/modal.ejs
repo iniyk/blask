@@ -1,0 +1,98 @@
+<%
+/*    var form_example = {
+        name: 'addOracle',
+        attrs: {
+            action: '#',
+            method: 'post',
+            style: 'form-horizontal'
+        },
+        container: 'modal',
+        buttons: {
+            cancel: {
+                'title': '取消',
+                'type': 'button',
+                'class': 'btn-default',
+                'data-dismiss': 'modal'
+            },
+            submit: {
+                'title': '连接',
+                'type': 'submit',
+                'class': 'btn-primary'
+            }
+        },
+        fields: {
+            'oracleURL': {
+                type: 'url',
+                title: '数据库地址',
+                auto: '数据库地址'
+            },
+            'oraclePort': {
+                type: 'number',
+                title: '数据库端口',
+                auto: '数据库端口'
+            },
+            'oracleDatabase': {
+                type: 'text',
+                title: '数据库名称',
+                auto: '数据库名称'
+            },
+            'oracleUser': {
+                type: 'text',
+                title: '用户名',
+                auto: '用户名'
+            },
+            'oraclePassword': {
+                type: 'password',
+                title: '密码',
+                auto: '密码'
+            }
+        }
+    };
+
+    var modal_example = {
+        name: 'modelAddMysql',
+        title: '添加Oracle数据库',
+        role: {
+            tab: 'form',
+            data: form_example
+        },
+        attrs: {
+            tabindex: '-1',
+            class: 'modal fade'
+        }
+    };
+
+    var modal = modal_example;*/
+
+    function is_empty(obj) {
+        if (obj == undefined) return true;
+        if (obj == null) return true;
+        if (obj == '') return true;
+        for (var prop in obj) {
+            return false;
+        }
+        return true;
+    }
+
+    function gAttrs(attrs) {
+        if (is_empty(attrs)) {
+            return '';
+        }
+        var ret_class_str = '';
+        for (var attr_name in attrs) {
+            ret_class_str += ` ${attr_name} = `;
+            ret_class_str += `${attrs[attr_name]}`;
+        }
+        return ret_class_str;
+    }
+%>
+
+<div <%= gAttrs(modal.attrs) %> id="<%= modal.name %>" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <% if (modal.role.tab == 'form') { %>
+                <%- include('./form.ejs', {form: modal.role.data})%>
+            <% } %>
+        </div>
+    </div>
+</div>

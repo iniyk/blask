@@ -1,0 +1,64 @@
+<%
+    /*
+    var item_example = {
+        name: '',
+        attrs: {
+            'class': 'col-sm-7',
+        },
+        tab: 'div',
+        title: '',
+        content: '',
+        items: {
+            'oracleURL': {
+                name: 'oracleURL',
+                attrs: {
+                    type: 'number',
+                    'class': 'form-control',
+                    placeholder: '数据库端口号'
+                },
+                tab: 'input',
+                'no-close': true
+            }
+        }
+    }
+    */
+function is_empty(obj) {
+    if (obj == undefined) return true;
+    if (obj == null) return true;
+    if (obj == '') return true;
+    for (var prop in obj) {
+        return false;
+    }
+    return true;
+}
+
+function item_tree(item) {
+    var attr_str = gAttrs(item.attrs);
+%>
+    < <%= item.tab %> <%= attr_str %> >
+        <%- is_empty(item.title) ? '' : item.title %>
+            <% if (!is_empty(item.items))
+                for (var item_next of item.items) {
+                    item_tree(item_next);
+                }
+            %>
+        <%- is_empty(item.content) ? '' : item.content %>
+    <%= is_empty(item['no-close']) ? '' : (item['no-close'] ? `</${item.tab}>` : '') %>
+<%
+}
+
+function gAttrs(attrs) {
+    if (is_empty(attrs)) {
+        return '';
+    }
+    var ret_class_str = '';
+    for (var attr_name in attrs) {
+        ret_class_str += ` ${attr_name} = `;
+        ret_class_str += `${attrs[attr_name]}`;
+    }
+    return ret_class_str;
+}
+
+item_tree(item);
+%>
+
