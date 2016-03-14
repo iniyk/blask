@@ -8,6 +8,19 @@
 <script src="/bower_components/AdminLTE/dist/js/app.min.js"></script>
 <!--<script src="/bower_components/AdminLTE/dist/js/demo.js"></script>-->
 
-<% for (var script of page.script) { %>
-    <script src="<%= '/js/' + script %>" type="text/javascript"></script>
+<%
+function is_empty(obj) {
+    if (obj == undefined) return true;
+    if (obj == null) return true;
+    if (obj == '') return true;
+    for (var prop in obj) {
+        return false;
+    }
+    return true;
+}
+%>
+<% if (!is_empty(page.script)) { %>
+    <% for (var script of page.script) { %>
+        <script src="<%= '/js/' + script %>" type="text/javascript"></script>
+    <% } %>
 <% } %>
