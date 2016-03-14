@@ -1,44 +1,41 @@
 [
-    {"text": "直接转换"},
     {
-        "text": "类型转换",
-        "nodes": [
-            {"text": "Integer => String"},
-            {"text": "String => Integer"}
-        ]
-    },
-    {
-        "text": "分割与聚合",
+        "text": "关联关系挖掘",
         "nodes": [
             {
-                "text": "分割",
-                "nodes": [
-                    {"text": "水平分割"},
-                    {"text": "垂直分割"}
-                ]
+                "text": "Apriori算法",
+                "name": "apriori"
             },
             {
-                "text": "合并",
-                "nodes": [
-                    {"text": "水平合并"},
-                    {"text": "垂直合并"}
-                ]
-            },
-            {
-                "text": "连接",
-                "nodes": [
-                    {"text": "全连接"},
-                    {"text": "半连接"}
-                ]
+                "text": "FP-Growth",
+                "name": "fp-growth"
             }
-
         ]
     },
     {
-        "text": "Map转换",
+        "text": "分类算法",
         "nodes": [
-            {"text": "字段字符串连接"},
-            {"text": "字段子序列提取"},
+            {
+                "text": "朴素贝叶斯",
+                "name": "native-bayes"
+            },
+            {
+                "text": "支持向量机",
+                "name": "svm"
+            }
+        ]
+    },
+    {
+        "text": "聚类算法",
+        "nodes": [
+            {
+                "text": "K-均值法",
+                "name": "k-means"
+            },
+            {
+                "text": "Gaussian Mixture Model",
+                "name": "gmm"
+            }
         ]
     }
 ]

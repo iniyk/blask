@@ -16,11 +16,6 @@ function Pages(router_now) {
             title: '数据源管理',
             icon: 'fa fa-database'
         },
-        model: {
-            name: 'model',
-            title: '数据挖掘',
-            icon: 'fa fa-dollar'
-        },
         schema: {
             name: 'schema',
             title: '元数据管理',
@@ -35,6 +30,9 @@ function Pages(router_now) {
 
     var exchange = Common.readJsonSync('./views/json/exchange.json');
     pages.exchange = exchange;
+
+    var model = Common.readJsonSync('./views/json/model.json');
+    pages.model = model;
 
     _.map(pages, function(page, name) {
         page.router = router_now + name;

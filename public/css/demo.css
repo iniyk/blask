@@ -62,11 +62,17 @@ h1, h2, h3, h4 {
     margin-right: auto;
 }
 
-.node-exchange-selector .span {
-    color: #428bca;
+.breadcrumb{
+    font-family: "Lato", Helvetica, Tahoma, STXihei, "华文细黑", Heiti, "黑体", "Microsoft YaHei", "微软雅黑", arial, sans-serif;
+    font-weight: bold;
 }
 
 .node-exchange-selector {
+    font-family: "Lato", Helvetica, Tahoma, STXihei, "华文细黑", Heiti, "黑体", "Microsoft YaHei", "微软雅黑", arial, sans-serif;
+    font-weight: bold;
+}
+
+.node-model-selector {
     font-family: "Lato", Helvetica, Tahoma, STXihei, "华文细黑", Heiti, "黑体", "Microsoft YaHei", "微软雅黑", arial, sans-serif;
     font-weight: bold;
 }
