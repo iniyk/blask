@@ -1,0 +1,54 @@
+{
+    "name": "exchange",
+    "title": "数据转换",
+    "icon": "fa fa-random",
+    "sidebar": {
+        "manage": {
+            "name": "manage",
+            "title": "转换模型管理",
+            "href": "#",
+            "icon": "fa fa-plug",
+            "items": {
+                "add": {
+                    "name": "add-exchange",
+                    "title": "增加模型",
+                    "href": "#",
+                    "icon": "fa fa-plus",
+                    "attrs": {
+                        "data-toggle": "modal",
+                        "data-target": "#modalAddExchange"
+                    }
+                },
+                "list": {
+                    "name": "list-exchange",
+                    "title": "列出所有模型",
+                    "href": "#",
+                    "icon": "fa fa-list"
+                }
+            }
+        },
+        "start": {
+            "name": "start",
+            "title": "开始新转换",
+            "href": "#",
+            "icon": "fa fa-cubes"
+        },
+        "status": {
+            "name": "status",
+            "title": "查看转换进度",
+            "href": "#",
+            "icon": "fa fa-tachometer"
+        }
+    },
+    "content": {
+        "exchange-selector" : {
+            "name": "exchange-selector",
+            "title": "数据转换模型",
+            "type": "tree_selector",
+            "color": "primary"
+        }
+    },
+    "script": [
+        "exchange.js"
+    ]
+}

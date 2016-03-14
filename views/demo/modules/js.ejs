@@ -3,6 +3,11 @@
 <script src="/bower_components/metisMenu/dist/metisMenu.min.js"></script>
 <script src="/bower_components/raphael/raphael-min.js"></script>
 <script src="/bower_components/morrisjs/morris.min.js"></script>
+<script src="/bower_components/bootstrap-treeview/dist/bootstrap-treeview.min.js"></script>
 <!--<script src="/bower_components/flat-ui/dist/js/flat-ui.min.js"></script>-->
 <script src="/bower_components/AdminLTE/dist/js/app.min.js"></script>
 <!--<script src="/bower_components/AdminLTE/dist/js/demo.js"></script>-->
+
+<% for (var script of page.script) { %>
+    <script src="<%= '/js/' + script %>" type="text/javascript"></script>
+<% } %>

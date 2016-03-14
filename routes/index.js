@@ -4,6 +4,7 @@ var Panel = require("../models/Panel");
 
 var users = require('./users');
 var demo = require('./demo');
+var json_router = require('./json');
 var mongo_controller = require('../models/MongoController');
 var data_controller = require('../models/DataController');
 var test_controller = require('../models/TestController');
@@ -15,6 +16,7 @@ router.use('/mongodb', mongo_controller.router);
 router.use('/data', data_controller.router);
 router.use('/test', test_controller.router);
 router.use('/demo', demo);
+router.use('/json', json_router);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
