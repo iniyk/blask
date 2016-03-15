@@ -43,7 +43,7 @@
             <thead>
             <%  var record_len = 0; %>
             <%  for (var data_head in table.data) { %>
-                    <% record_len = max(record_len, table.data[data_head].length) %>
+                    <% record_len = max(record_len, table.data[data_head].length); %>
                     <th><%- data_head %></th>
             <%  } %>
             </thead>
