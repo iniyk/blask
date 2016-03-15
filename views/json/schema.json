@@ -41,5 +41,25 @@
             "href": "#",
             "icon": "fa fa-gear"
         }
-    }
+    },
+    "content": {
+        "datasets-table": {
+            "name": "table-warehouse",
+            "title": "当前数据仓库",
+            "color": "primary",
+            "source": "/json/datasets.json",
+            "type": "json_table",
+            "buttons": {
+                "refresh": {
+                    "title": "<i class=\"fa fa-refresh\"></i>",
+                    "type": "btn btn-default btn-refresh",
+                    "for": "table-warehouse",
+                    "href": "#"
+                }
+            }
+        }
+    },
+    "script": [
+        "json_table.js"
+    ]
 }

@@ -43,7 +43,9 @@
     "AdminLTE": "admin-lte#^2.3.2",
     "flat-ui": "^2.2.2",
     "underscore": "^1.8.3",
-    "bootstrap-treeview": "^1.2.0"
+    "bootstrap-treeview": "^1.2.0",
+    "datatables.net": "^1.10.11",
+    "datatables.net-bs": "^1.10.11"
   },
   "moduleType": [
     "node"
