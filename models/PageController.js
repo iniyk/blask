@@ -5,23 +5,10 @@ function Pages(router_now) {
     var _ = require('underscore');
     var Common = require('./Common');
 
-    var pages = {
-        index: {
-            name: 'index',
-            title: '首页',
-            icon: 'glyphicon glyphicon-home'
-        },
-        schema: {
-            name: 'schema',
-            title: '元数据管理',
-            icon: 'fa fa-table'
-        },
-        display: {
-            name: 'display',
-            title: '数据展示',
-            icon: 'fa fa-bar-chart'
-        }
-    };
+    var pages = {};
+
+    var index = Common.readJsonSync('./views/json/index.json');
+    pages.index = index;
 
     var source = Common.readJsonSync('./views/json/source.json');
     pages.source = source;
@@ -31,6 +18,12 @@ function Pages(router_now) {
 
     var model = Common.readJsonSync('./views/json/model.json');
     pages.model = model;
+
+    var schema = Common.readJsonSync('./views/json/schema.json');
+    pages.schema = schema;
+
+    var display = Common.readJsonSync('./views/json/display.json');
+    pages.display = display;
 
     _.map(pages, function(page, name) {
         page.router = router_now + name;
