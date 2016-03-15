@@ -11,11 +11,6 @@ function Pages(router_now) {
             title: '首页',
             icon: 'glyphicon glyphicon-home'
         },
-        source: {
-            name: 'source',
-            title: '数据源管理',
-            icon: 'fa fa-database'
-        },
         schema: {
             name: 'schema',
             title: '元数据管理',
@@ -27,6 +22,9 @@ function Pages(router_now) {
             icon: 'fa fa-bar-chart'
         }
     };
+
+    var source = Common.readJsonSync('./views/json/source.json');
+    pages.source = source;
 
     var exchange = Common.readJsonSync('./views/json/exchange.json');
     pages.exchange = exchange;
@@ -49,57 +47,6 @@ function Pages(router_now) {
             items: {}
         };
     });
-
-    pages.source['sidebar'] = {
-        add: {
-            name: 'add',
-            title: '添加数据源',
-            href: '#',
-            icon: 'fa fa-plus',
-            items: {
-                oracle: {
-                    name: 'add-oracle',
-                    title: 'Oracle数据源',
-                    href: '#',
-                    icon: 'fa fa-circle-o',
-                    attrs: {
-                        'data-toggle': 'modal',
-                        'data-target': '#modalAddMysql'
-                    }
-                },
-                mysql: {
-                    name: 'add-mysql',
-                    title: 'MySQL数据源',
-                    href: '#',
-                    icon: 'fa fa-circle-o'
-                },
-                mongodb: {
-                    name: 'add-mongodb',
-                    title: 'MongoDB数据源',
-                    href: '#',
-                    icon: 'fa fa-circle-o'
-                }
-            }
-        },
-        showall: {
-            name: 'showall',
-            title: '显示全部数据源',
-            href: '#',
-            icon: 'fa fa-folder-open'
-        },
-        upload: {
-            name: 'upload',
-            title: '由文件上传',
-            href: '#',
-            icon: 'fa fa-upload'
-        },
-        settings: {
-            name: 'settings',
-            title: '设置',
-            href: '#',
-            icon: 'fa fa-gear'
-        }
-    };
 
     return pages;
 }
