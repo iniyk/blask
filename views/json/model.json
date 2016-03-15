@@ -3,6 +3,12 @@
     "title": "数据挖掘",
     "icon": "fa fa-dollar",
     "sidebar": {
+        "overview": {
+            "name": "overview",
+            "title": "总览",
+            "href": "./model",
+            "icon": "fa fa-dashboard"
+        },
         "manage": {
             "name": "manage",
             "title": "挖掘模型管理",
@@ -38,6 +44,12 @@
             "title": "查看挖掘进度",
             "href": "#",
             "icon": "fa fa-tachometer"
+        },
+        "settings": {
+            "name": "settings",
+            "title": "设置",
+            "href": "#",
+            "icon": "fa fa-gear"
         }
     },
     "content": {

@@ -1,5 +1,45 @@
 {
     "name": "schema",
     "title": "元数据管理",
-    "icon": "fa fa-table"
+    "icon": "fa fa-table",
+    "sidebar": {
+        "list": {
+            "name": "list",
+            "title": "显示全部元数据",
+            "href": "./schema",
+            "icon": "fa fa-list"
+        },
+        "add": {
+            "name": "add",
+            "title": "新建数据集",
+            "href": "#",
+            "icon": "fa fa-plus",
+            "items": {
+                "by-hands": {
+                    "name": "by-hands",
+                    "title": "自定义数据格式",
+                    "href": "#",
+                    "icon": "fa fa-pencil-square-o"
+                },
+                "by-file": {
+                    "name": "by-file",
+                    "title": "由json文件上传",
+                    "href": "#",
+                    "icon": "fa fa-upload"
+                },
+                "by-database": {
+                    "name": "by-database",
+                    "title": "由数据库导入",
+                    "href": "#",
+                    "icon": "fa fa-database"
+                }
+            }
+        },
+        "settings": {
+            "name": "settings",
+            "title": "设置",
+            "href": "#",
+            "icon": "fa fa-gear"
+        }
+    }
 }

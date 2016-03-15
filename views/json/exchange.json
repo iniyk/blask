@@ -3,6 +3,12 @@
     "title": "数据转换",
     "icon": "fa fa-random",
     "sidebar": {
+        "overview": {
+            "name": "overview",
+            "title": "总览",
+            "href": "./exchange",
+            "icon": "fa fa-dashboard"
+        },
         "manage": {
             "name": "manage",
             "title": "转换模型管理",
@@ -38,6 +44,12 @@
             "title": "查看转换进度",
             "href": "#",
             "icon": "fa fa-tachometer"
+        },
+        "settings": {
+            "name": "settings",
+            "title": "设置",
+            "href": "#",
+            "icon": "fa fa-gear"
         }
     },
     "content": {
