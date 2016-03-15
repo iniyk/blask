@@ -6,24 +6,11 @@ function Pages(router_now) {
     var Common = require('./Common');
 
     var pages = {};
+    pages.page_list = ['index', 'source', 'exchange', 'model', 'schema', 'display', 'dataset'];
 
-    var index = Common.readJsonSync('./views/json/index.json');
-    pages.index = index;
-
-    var source = Common.readJsonSync('./views/json/source.json');
-    pages.source = source;
-
-    var exchange = Common.readJsonSync('./views/json/exchange.json');
-    pages.exchange = exchange;
-
-    var model = Common.readJsonSync('./views/json/model.json');
-    pages.model = model;
-
-    var schema = Common.readJsonSync('./views/json/schema.json');
-    pages.schema = schema;
-
-    var display = Common.readJsonSync('./views/json/display.json');
-    pages.display = display;
+    _.map(pages.page_list, function(name, index) {
+        pages[name] =Common.readJsonSync(`./views/json/${name}.json`);
+    });
 
     _.map(pages, function(page, name) {
         page.router = router_now + name;
@@ -31,12 +18,14 @@ function Pages(router_now) {
 
     pages.index['sidebar'] = {};
 
-    _.map(pages, function(page, name) {
+    pages.on_navbar = ['index', 'source', 'exchange', 'model', 'schema', 'display'];
+
+    _.map(pages.on_navbar, function(name, index) {
         pages.index.sidebar[name] = {
-            name: page.name,
-            title: page.title,
-            href: page.router,
-            icon: page.icon,
+            name: pages[name].name,
+            title: pages[name].title,
+            href: pages[name].router,
+            icon: pages[name].icon,
             items: {}
         };
     });

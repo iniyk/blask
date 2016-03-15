@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var node_selected = new Set();
-    $.get("/json/model_tree.json", function (model_tree) {
+    $.get("/json/data/model_tree.json", function (model_tree) {
         $("#model-selector").treeview({
             data: model_tree,
             multiSelect: false,

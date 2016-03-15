@@ -11,7 +11,8 @@
         </a>
         <ul class="nav navbar-nav">
             <%
-                for (var key in page.pages) {
+                for (var index in page.pages.on_navbar) {
+                    var key = page.pages.on_navbar[index];
                     var value = page.pages[key].title;
                     var href = page.pages[key].router;
                     var attr_class = "";

@@ -1,0 +1,46 @@
+{
+    "schema": {
+        "id": {
+            "type": "Number",
+            "title": "ID"
+        },
+        "name": {
+            "type": "String",
+            "title": "数据集名称"
+        },
+        "field-number": {
+            "type": "Number",
+            "title": "字段数"
+        },
+        "record-number": {
+            "type": "Number",
+            "title": "记录数"
+        },
+        "source": {
+            "type": "String",
+            "title": "来源"
+        },
+        "storage": {
+            "type": "String",
+            "title": "存储位置"
+        },
+        "reference": {
+            "type": "String",
+            "title": "引用属性"
+        },
+        "update": {
+            "type": "Date",
+            "title": "更新日期"
+        },
+        "comment": {
+            "type": "String",
+            "title": "备注"
+        }
+    },
+    "data": [
+        ["183", "<a href=\"./dataset/183/\">Retail</a>", "15", "738034", "数据仓库", "UCI Machine Learning Center", "硬拷贝", "11-7-2014", "零售数据."],
+        ["312", "Irises", "8", "16313", "数据仓库", "UCI Machine Learning Center", "硬拷贝", "11-7-2015", "鸢尾花数据."],
+        ["314", "Traffic", "10", "32216", "数据仓库", "贵州市交通局", "硬拷贝", "11-7-2015", "贵州市一周交通统计数据."],
+    ],
+    "tr_style": []
+}
