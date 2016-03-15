@@ -1,0 +1,112 @@
+<%
+/*
+var form_example = {
+    name: 'addOracle',
+    title: '添加Oracle数据库',
+    attrs: {
+        action: '#',
+        method: 'post',
+        style: 'form-horizontal'
+    },
+    container: 'modal',
+    buttons: {
+        cancel: {
+            'title': '取消',
+            'type': 'button',
+            'class': 'btn-default',
+            'data-dismiss': 'modal'
+        },
+        submit: {
+            'title': '连接',
+            'type': 'submit',
+            'class': 'btn-primary'
+        }
+    },
+    fields: {
+        'oracleURL': {
+            type: 'url',
+            title: '数据库地址',
+            auto: '数据库地址'
+        },
+        'oraclePort': {
+            type: 'number',
+            title: '数据库端口',
+            auto: '数据库端口'
+        },
+        'oracleDatabase': {
+            type: 'text',
+            title: '数据库名称',
+            auto: '数据库名称'
+        },
+        'oracleUser': {
+            type: 'text',
+            title: '用户名',
+            auto: '用户名'
+        },
+        'oraclePassword': {
+            type: 'password',
+            title: '密码',
+            auto: '密码'
+        }
+    }
+};
+
+*/
+
+function is_empty(obj) {
+    if (obj == undefined) return true;
+    if (obj == null) return true;
+    if (obj == '') return true;
+    for (var prop in obj) {
+        return false;
+    }
+    return true;
+}
+
+function gAttrs(attrs) {
+    if (is_empty(attrs)) {
+        return '';
+    }
+    var ret_class_str = '';
+    for (var attr_name in attrs) {
+        ret_class_str += ` ${attr_name} = `;
+        ret_class_str += `${attrs[attr_name]}`;
+    }
+    return ret_class_str;
+}
+%>
+
+<form <%= gAttrs(form.attrs) %> >
+    <div class="<%= form.container+'-header' %>">
+        <% if (form.container == 'modal') { %>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        <% } %>
+        <h4 class="<%= form.container+'-title' %>">
+            <%= form.title %>
+        </h4>
+    </div>
+    <div class="<%= form.container+'-body' %>">
+        <!-- TODO: Other type without label or input field don't in input tag, like checkout box or file upload.
+        -->
+        <% for (var field in form.fields) { %>
+            <div class="form-group">
+                <label for="<%= field %>" class="col-sm-offset-1 col-sm-3 control-label"><%= form.fields[field].title %></label>
+                <div class="col-sm-7">
+                    <input type="<%= form.fields[field].type %>" class="form-control" id="<%= field %>" placeholder="<%= form.fields[field].auto %>">
+                </div>
+            </div>
+        <% } %>
+    </div>
+    <div class="<%= form.container+'-footer' %>">
+        <% for (var button_name in form.buttons) { %>
+            <% var button = form.buttons[button_name]; %>
+            <button type="<%= button.type %>" class="<%= 'btn '+button['class'] %>"
+                    data-dismiss="<%= is_empty(button['data-dismiss']) ? '' : button['data-dismiss']%>"
+                    href="<%= is_empty(button.href) ? '' : button.href %>">
+                <%= button.title %>
+            </button>
+        <% } %>
+    </div>
+</form>

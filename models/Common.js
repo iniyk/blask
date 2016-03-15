@@ -2,6 +2,15 @@
  * Created by iniyk on 16/2/4.
  */
 var Common = {
+    isEmpty: function(obj) {
+        if (obj == undefined) return true;
+        if (obj == null) return true;
+        if (obj == '') return true;
+        for (var prop in obj) {
+            return false;
+        }
+        return true;
+    },
     readJson: function (file_path, callback) {
         var fs = require('fs');
         fs.readFile(file_path, 'utf-8', function(err, data) {
@@ -12,6 +21,12 @@ var Common = {
                 callback(null, json_obj);
             }
         });
+    },
+    readJsonSync: function (file_path) {
+        var fs = require('fs');
+        var raw_data = fs.readFileSync(file_path, 'utf-8');
+        var json = eval('(' + raw_data + ')');
+        return json;
     },
     readPlainTextByLine: function (file_path, callback) {
         var fs = require('fs');

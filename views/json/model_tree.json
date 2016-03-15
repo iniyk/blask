@@ -1,0 +1,41 @@
+[
+    {
+        "text": "关联关系挖掘",
+        "nodes": [
+            {
+                "text": "Apriori算法",
+                "name": "apriori"
+            },
+            {
+                "text": "FP-Growth",
+                "name": "fp-growth"
+            }
+        ]
+    },
+    {
+        "text": "分类算法",
+        "nodes": [
+            {
+                "text": "朴素贝叶斯",
+                "name": "native-bayes"
+            },
+            {
+                "text": "支持向量机",
+                "name": "svm"
+            }
+        ]
+    },
+    {
+        "text": "聚类算法",
+        "nodes": [
+            {
+                "text": "K-均值法",
+                "name": "k-means"
+            },
+            {
+                "text": "Gaussian Mixture Model",
+                "name": "gmm"
+            }
+        ]
+    }
+]
