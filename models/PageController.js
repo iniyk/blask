@@ -12,13 +12,13 @@ function Pages(router_now) {
         pages[name] =Common.readJsonSync(`./views/json/${name}.json`);
     });
 
-    _.map(pages, function(page, name) {
-        page.router = router_now + name;
+    pages.on_navbar = ['index', 'source', 'exchange', 'model', 'schema', 'display'];
+
+    _.map(pages.on_navbar, function(name, index) {
+        pages[name].router = router_now + name;
     });
 
     pages.index['sidebar'] = {};
-
-    pages.on_navbar = ['index', 'source', 'exchange', 'model', 'schema', 'display'];
 
     _.map(pages.on_navbar, function(name, index) {
         pages.index.sidebar[name] = {
