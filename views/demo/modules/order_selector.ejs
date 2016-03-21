@@ -1,0 +1,32 @@
+<div class="box box-<%= selector.color %>">
+    <div class="box-header">
+        <h3 class="box-title"><%- selector.title %></h3>
+    </div>
+    <div class="box-body">
+        <div class="row order-selector" id="<%= selector.name %>" source="<%= selector.source %>">
+            <div class="col-md-4">
+                <div id="<%= `${selector.name}-tree-selector` %>">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul id="<%= `${selector.name}-fields-selector` %>" class="list-group in-selector">
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <ul id="<%= `${selector.name}-fields-result` %>" class="list-group" style="list-style-type: none">
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="box-footer">
+        <div class="btn-group pull-right">
+            <%  for (var btn_name in selector.buttons) { %>
+            <a type="button" class="<%= selector.buttons[btn_name].type%>"
+               id="<%= `${selector.name}-${btn_name}` %>"
+               href="<%= selector.buttons[btn_name].href%>">
+                <%- selector.buttons[btn_name].title %>
+            </a>
+            <%  } %>
+        </div>
+    </div>
+</div>

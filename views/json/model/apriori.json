@@ -1,0 +1,16 @@
+{
+    "name": "apriori",
+    "text": "Apriori算法",
+    "fields": [
+        {
+            "name": "list",
+            "type": "String",
+            "text": "列表名"
+        },
+        {
+            "name": "item",
+            "type": "String",
+            "text": "列表项"
+        }
+    ]
+}

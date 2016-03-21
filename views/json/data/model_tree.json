@@ -1,40 +1,52 @@
 [
     {
         "text": "关联关系挖掘",
+        "name": "association",
+        "catalog": "catalog",
         "nodes": [
             {
                 "text": "Apriori算法",
-                "name": "apriori"
+                "name": "apriori",
+                "catalog": "association"
             },
             {
                 "text": "FP-Growth",
-                "name": "fp-growth"
+                "name": "fp-growth",
+                "catalog": "association"
             }
         ]
     },
     {
         "text": "分类算法",
+        "name": "classification",
+        "catalog": "catalog",
         "nodes": [
             {
                 "text": "朴素贝叶斯",
-                "name": "native-bayes"
+                "name": "native-bayes",
+                "catalog": "classification"
             },
             {
                 "text": "支持向量机",
-                "name": "svm"
+                "name": "svm",
+                "catalog": "classification"
             }
         ]
     },
     {
         "text": "聚类算法",
+        "name": "clustering",
+        "catalog": "catalog",
         "nodes": [
             {
                 "text": "K-均值法",
-                "name": "k-means"
+                "name": "k-means",
+                "catalog": "clustering"
             },
             {
                 "text": "Gaussian Mixture Model",
-                "name": "gmm"
+                "name": "gmm",
+                "catalog": "clustering"
             }
         ]
     }

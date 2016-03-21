@@ -45,7 +45,8 @@
     "underscore": "^1.8.3",
     "bootstrap-treeview": "^1.2.0",
     "datatables.net": "^1.10.11",
-    "datatables.net-bs": "^1.10.11"
+    "datatables.net-bs": "^1.10.11",
+    "jquery-ui": "^1.11.4"
   },
   "moduleType": [
     "node"

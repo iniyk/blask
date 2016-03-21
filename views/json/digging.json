@@ -1,0 +1,67 @@
+{
+    "name": "digging",
+    "title": "数据转换",
+    "icon": "fa fa-random",
+    "sidebar": {
+        "overview": {
+            "name": "overview",
+            "title": "总览",
+            "href": "./exchange",
+            "icon": "fa fa-dashboard"
+        },
+        "manage": {
+            "name": "manage",
+            "title": "转换模型管理",
+            "href": "#",
+            "icon": "fa fa-plug",
+            "items": {
+                "add": {
+                    "name": "add-exchange",
+                    "title": "增加模型",
+                    "href": "#",
+                    "icon": "fa fa-plus",
+                    "attrs": {
+                        "data-toggle": "modal",
+                        "data-target": "#modalAddExchange"
+                    }
+                },
+                "list": {
+                    "name": "list-exchange",
+                    "title": "列出所有模型",
+                    "href": "#",
+                    "icon": "fa fa-list"
+                }
+            }
+        },
+        "start": {
+            "name": "start",
+            "title": "开始新转换",
+            "href": "./digging",
+            "icon": "fa fa-cubes"
+        },
+        "status": {
+            "name": "status",
+            "title": "查看转换进度",
+            "href": "#",
+            "icon": "fa fa-tachometer"
+        },
+        "settings": {
+            "name": "settings",
+            "title": "设置",
+            "href": "#",
+            "icon": "fa fa-gear"
+        }
+    },
+    "content": {
+        "selector": {
+            "name": "digging-selector",
+            "title": "转换字段选择",
+            "type": "order_selector",
+            "color": "primary",
+            "source": "/json/data/dataset_digging.json"
+        }
+    },
+    "script": [
+        "order_selector.js"
+    ]
+}
