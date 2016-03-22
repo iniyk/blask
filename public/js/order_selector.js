@@ -9,7 +9,7 @@ function onDrop(event, ui) {
         if (dragged_field_type != target_field_type) {
             alert('类型不符合！');
             //ui.draggable.remove();
-        } else {
+        } else {Delivered</span>
             var text = $(this).attr('target-field-text') + " : "
                 + ui.draggable.text() + " - "
                 + ui.draggable.attr('from-table-text') + " - "
@@ -84,7 +84,7 @@ function onDataLoadReady(model, datasets) {
 
         for (var item of model.fields) {
             $(`#${this_id}-fields-result`).append(
-                `<li class="list-group-item placeholder"
+                `<li class="list-group-item list-group-item-warning placeholder"
                 target-field-name="${item.name}" target-field-type="${item.type}" target-field-text="${item.text}">
                 字段名: ${item.text} 字段类型: ${item.type}</li>`
             );
@@ -99,7 +99,7 @@ function onDataLoadReady(model, datasets) {
             drop: onDrop
         });
 
-        $(`#${this_id}-btn-submit`).click(function() {
+        $(`#${this_id}-submit`).click(function() {
             if (data_post = null || data_post == undefined) {
                 data_post = {};
             }

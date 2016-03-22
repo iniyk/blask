@@ -36,7 +36,7 @@
         "start": {
             "name": "start",
             "title": "开始新挖掘",
-            "href": "#",
+            "href": "./digging",
             "icon": "fa fa-cubes"
         },
         "status": {

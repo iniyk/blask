@@ -6,7 +6,7 @@
         "overview": {
             "name": "overview",
             "title": "总览",
-            "href": "./exchange",
+            "href": "./model",
             "icon": "fa fa-dashboard"
         },
         "manage": {
@@ -58,7 +58,19 @@
             "title": "转换字段选择",
             "type": "order_selector",
             "color": "primary",
-            "source": "/json/data/dataset_digging.json"
+            "source": "/json/data/dataset_digging.json",
+            "buttons": {
+                "cancel": {
+                    "title": "上一步",
+                    "type": "btn btn-default",
+                    "href": "#"
+                },
+                "submit": {
+                    "title": "下一步",
+                    "type": "btn btn-primary",
+                    "href": "#"
+                }
+            }
         }
     },
     "script": [
