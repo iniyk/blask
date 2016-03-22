@@ -7,11 +7,13 @@
             {
                 "text": "Apriori算法",
                 "name": "apriori",
+                "description": "Apriori算法（英语：Apriori algorithm）是关联式规则中的经典算法之一。在关联式规则中，一般对于给定的项目集合（例如，零售交易集合，每个集合都列出的单个商品的购买信息），算法通常尝试在项目集合中找出至少有C个相同的子集。先验算法采用自底向上的处理方法，即频繁子集每次只扩展一个对象（该步骤被称为候选集产生），并且候选集由数据进行检验。当不再产生符合条件的扩展对象时，算法终止。",
                 "catalog": "association"
             },
             {
                 "text": "FP-Growth",
                 "name": "fp-growth",
+                "description": "FP-Growth算法是韩家炜等人在2000年提出的关联分析算法，它采取如下分治策略：将提供频繁项集的数据库压缩到一棵频繁模式树（FP-tree），但仍保留项集关联信息。在算法中使用了一种称为频繁模式树（Frequent Pattern Tree）的数据结构。FP-tree是一种特殊的前缀树，由频繁项头表和项前缀树构成。FP-Growth算法基于以上的结构加快整个挖掘过程。",
                 "catalog": "association"
             }
         ]
@@ -24,11 +26,13 @@
             {
                 "text": "朴素贝叶斯",
                 "name": "native-bayes",
+                "description": "",
                 "catalog": "classification"
             },
             {
                 "text": "支持向量机",
                 "name": "svm",
+                "description": "",
                 "catalog": "classification"
             }
         ]
@@ -41,11 +45,13 @@
             {
                 "text": "K-均值法",
                 "name": "k-means",
+                "description": "",
                 "catalog": "clustering"
             },
             {
                 "text": "Gaussian Mixture Model",
                 "name": "gmm",
+                "description": "",
                 "catalog": "clustering"
             }
         ]

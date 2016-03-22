@@ -8,14 +8,8 @@
     </ol>
 </section>
 <section class="content" id="digging-content">
+    <%- include('modules/digging_group.ejs', {selector: page.content['digging-group']}); %>
     <div class="row">
-        <div class="col-lg-8">
-            <%- include('modules/model_selector.ejs', {selector: page.content['model-selector']}); %>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-8">
-            <%- include('modules/order_selector.ejs', {selector: page.content['fields-selector']}); %>
-        </div>
+        &nbsp;
     </div>
 </section>

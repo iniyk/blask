@@ -1,9 +1,12 @@
-<div class="box box-<%= selector.color %> box-solid" id="<%= selector.name + "-box" %>" >
+<div class="box box-solid box-<%= selector.color %>"
+     id="<%= selector.name %>"
+     source="<%= selector.source %>"
+>
     <div class="box-header with-border">
         <h3 class="box-title"><%- selector.title %></h3>
     </div>
     <div class="box-body collapse">
-        <div class="row order-selector" id="<%= selector.name %>" source="<%= selector.source %>">
+        <div class="row order-selector" >
             <div class="col-md-4">
                 <h4><i class="fa fa-database"></i>&nbsp;&nbsp;数据集</h4>
                 <div id="<%= `${selector.name}-tree-selector` %>">

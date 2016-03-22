@@ -53,45 +53,20 @@
         }
     },
     "content": {
-        "model-selector": {
-            "name": "model-selector",
-            "title": "Step 1 - 挖掘模型选择",
-            "type": "model_selector",
-            "color": "primary",
-            "source": "/json/data/model_tree.json",
-            "order": 1,
-            "buttons": {
-                "submit": {
-                    "title": "下一步",
-                    "type": "btn btn-primary",
-                    "href": "#"
-                }
-            }
-        },
-        "fields-selector": {
-            "name": "fields-selector",
-            "title": "Step 2 - 挖掘字段选择",
-            "type": "order_selector",
-            "color": "primary",
-            "source": "/json/data/dataset_digging.json",
-            "order": 2,
-            "buttons": {
-                "cancel": {
-                    "title": "上一步",
-                    "type": "btn btn-default",
-                    "href": "#"
-                },
-                "submit": {
-                    "title": "下一步",
-                    "type": "btn btn-primary",
-                    "href": "#"
-                }
-            }
+        "digging-group": {
+            "name": "digging-group",
+            "type": "digging_group",
+            "model_list": "/json/data/model_tree.json",
+            "dataset_list": "/json/data/dataset_digging.json",
+            "titles":
+            [
+                "Step 1 - 挖掘模型选择",
+                "Step 2 - 挖掘字段选择",
+                "Step 3 - 挖掘参数配置"
+            ]
         }
     },
     "script": [
-        "model_selector.js",
-        "order_selector.js",
         "digging.js"
     ]
 }
