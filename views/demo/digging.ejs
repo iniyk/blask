@@ -7,13 +7,15 @@
         <li><a href="#">挖掘配置</a></li>
     </ol>
 </section>
-<section class="content">
+<section class="content" id="digging-content">
     <div class="row">
         <div class="col-lg-8">
-            <%- include('modules/order_selector.ejs', {selector: page.content['selector']}); %>
+            <%- include('modules/model_selector.ejs', {selector: page.content['model-selector']}); %>
         </div>
     </div>
-    <script type="text/javascript">
-        var model_selected = "apriori";
-    </script>
+    <div class="row">
+        <div class="col-lg-8">
+            <%- include('modules/order_selector.ejs', {selector: page.content['fields-selector']}); %>
+        </div>
+    </div>
 </section>

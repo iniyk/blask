@@ -1,5 +1,4 @@
 var data_post;
-var model_selected;
 
 function onDrop(event, ui) {
     if (ui.draggable.hasClass('in-selector')) {
@@ -8,12 +7,16 @@ function onDrop(event, ui) {
 
         if (dragged_field_type != target_field_type) {
             alert('类型不符合！');
-            //ui.draggable.remove();
-        } else {Delivered</span>
-            var text = $(this).attr('target-field-text') + " : "
-                + ui.draggable.text() + " - "
-                + ui.draggable.attr('from-table-text') + " - "
-                + ui.draggable.attr('from-database-text');
+            //TODO show some type error in info box.
+        } else {
+            var text = $(this).attr('target-field-text') + " : " +
+                "<span class=\"label label-primary\">" +
+                ui.draggable.text() +
+                "</span><span class=\"pull-right\">来源: " +
+                "<span class=\"label label-info\">" +
+                ui.draggable.attr('from-database-text') + " - " +
+                ui.draggable.attr('from-table-text') +
+                "</span></span>";
             $(`<li class="list-group-item"
                             from-database="${ui.draggable.attr('from-database')}"
                             from-table="${ui.draggable.attr('from-table')}"
@@ -23,7 +26,7 @@ function onDrop(event, ui) {
                             target-field-name="${$(this).attr('target-field-name')}"
                             target-field-text="${$(this).attr('target-field-text')}"
                         ></li>`)
-                .text(text)
+                .html(text)
                 .insertBefore($(this));
             $(this).prev().droppable({
                 drop: onDrop
@@ -33,15 +36,15 @@ function onDrop(event, ui) {
     }
 }
 
-$(document).ready(function() {
+function renderOrderSelectorBox(prev_box, next_box) {
     $('.order-selector').each(function() {
-        var get_model = `/json/model/${model_selected}.json`;
+        var get_model = `/json/model/${data_post.model_selected}.json`;
         var get_datasets = $(this).attr('source');
         $.get(get_model, function(model, status) {
             if (status == 'success') {
                 $.get(get_datasets, function(datasets, status) {
                     if (status == 'success') {
-                        onDataLoadReady(model, datasets);
+                        onDataLoadReady(model, datasets, prev_box, next_box);
                     } else {
                         //TODO Show error in info box.
                     }
@@ -51,9 +54,9 @@ $(document).ready(function() {
             }
         });
     });
-});
+}
 
-function onDataLoadReady(model, datasets) {
+function onDataLoadReady(model, datasets, prev_box, next_box) {
     $('.order-selector').each(function() {
         var this_id = $(this).attr('id');
 
@@ -75,6 +78,8 @@ function onDataLoadReady(model, datasets) {
                 $(`#${this_id}-fields-selector li`).css('z-index', '100');
 
                 $(`#${this_id}-fields-selector li`).draggable({
+                    cursor: "crosshair",
+                    cursorAt: { left: 5 },
                     revert: true,
                     helper: "clone",
                     connectWith: `#${this_id}-fields-result`
@@ -86,21 +91,24 @@ function onDataLoadReady(model, datasets) {
             $(`#${this_id}-fields-result`).append(
                 `<li class="list-group-item list-group-item-warning placeholder"
                 target-field-name="${item.name}" target-field-type="${item.type}" target-field-text="${item.text}">
-                字段名: ${item.text} 字段类型: ${item.type}</li>`
+                字段名: <span class="label label-danger">${item.text}</span>
+                <span class="pull-right">
+                字段类型: <span class="label label-warning">${item.type}</span>
+                </span></li>`
             );
         }
 
-        //$(`#${this_id}-fields-result`).sortable({
-        //    placeholder: "list-group-item-info"
-        //}).disableSelection();
         $(`#${this_id}-fields-result`).disableSelection();
 
         $(`#${this_id}-fields-result li`).droppable({
             drop: onDrop
         });
 
+        //$(`#${this_id}-box .box-footer`).collapse();
+        //$(`#${this_id}-box .box-body`).collapse();
+
         $(`#${this_id}-submit`).click(function() {
-            if (data_post = null || data_post == undefined) {
+            if (data_post == null || data_post == undefined) {
                 data_post = {};
             }
             data_post.selected = {};
@@ -114,6 +122,39 @@ function onDataLoadReady(model, datasets) {
                 };
                 data_post.selected[selection['target-field-name']] = selection;
             });
+
+            $(`#${this_id}-box .box-footer`).collapse('hide');
+            $(`#${this_id}-box .box-body`).collapse('hide');
+
+            if (next_box == null || next_box == undefined) {
+                var post_url = $('#digging-content').attr('post');
+                $.post(post_url, data_post, function(data, status) {
+                    $('#digging-content').html(data);
+                });
+            } else {
+                next_box.find(".box-footer").each(function () {
+                    $(this).collapse('show');
+                });
+                next_box.find(".box-body").each(function () {
+                    $(this).collapse('show');
+                });
+            }
         });
+
+        if (prev_box == null || prev_box == undefined) {
+            $(`#${this_id}-cancel`).remove();
+        } else {
+            $(`#${this_id}-cancel`).click(function () {
+                $(`#${this_id}-box .box-footer`).collapse('hide');
+                $(`#${this_id}-box .box-body`).collapse('hide');
+
+                prev_box.find(".box-footer").each(function () {
+                    $(this).collapse('show');
+                });
+                prev_box.find(".box-body").each(function () {
+                    $(this).collapse('show');
+                });
+            });
+        }
     });
 }

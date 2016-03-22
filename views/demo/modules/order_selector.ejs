@@ -1,27 +1,27 @@
-<div class="box box-<%= selector.color %>">
-    <div class="box-header">
+<div class="box box-<%= selector.color %> box-solid" id="<%= selector.name + "-box" %>" >
+    <div class="box-header with-border">
         <h3 class="box-title"><%- selector.title %></h3>
     </div>
-    <div class="box-body">
+    <div class="box-body collapse">
         <div class="row order-selector" id="<%= selector.name %>" source="<%= selector.source %>">
             <div class="col-md-4">
-                <h4><i class="fa fa-database"></i>数据集</h4>
+                <h4><i class="fa fa-database"></i>&nbsp;&nbsp;数据集</h4>
                 <div id="<%= `${selector.name}-tree-selector` %>">
                 </div>
             </div>
             <div class="col-md-4">
-                <h4><i class="fa fa-columns"></i>字段</h4>
+                <h4><i class="fa fa-columns"></i>&nbsp;&nbsp;字段</h4>
                 <ul id="<%= `${selector.name}-fields-selector` %>" class="list-group in-selector">
                 </ul>
             </div>
             <div class="col-md-4">
-                <h4>模型参数字段</h4>
+                <h4><i class="fa fa-align-justify"></i>&nbsp;&nbsp;模型参数字段</h4>
                 <ul id="<%= `${selector.name}-fields-result` %>" class="list-group" style="list-style-type: none">
                 </ul>
             </div>
         </div>
     </div>
-    <div class="box-footer">
+    <div class="box-footer collapse">
         <div class="btn-group pull-right">
             <%  for (var btn_name in selector.buttons) { %>
             <a type="button" class="<%= selector.buttons[btn_name].type%>"
