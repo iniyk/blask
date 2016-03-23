@@ -46,7 +46,8 @@
     "bootstrap-treeview": "^1.2.0",
     "datatables.net": "^1.10.11",
     "datatables.net-bs": "^1.10.11",
-    "jquery-ui": "^1.11.4"
+    "jquery-ui": "^1.11.4",
+    "ion.rangeslider": "ionrangeslider#^2.1.2"
   },
   "moduleType": [
     "node"
