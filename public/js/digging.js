@@ -191,7 +191,7 @@ function onFieldsLoadReady(model, datasets) {
 
     $("#btn-fields-next").click(function() {
         var checked = true;
-        data_post.selected = {};
+        data_post.fields_selected = {};
         $("#fields-result li").each(function () {
             var selection = {
                 "target-field-name": $(this).attr('target-field-name'),
@@ -205,7 +205,7 @@ function onFieldsLoadReady(model, datasets) {
                 selection["field-name"] == "") {
                 checked = false;
             } else {
-                data_post.selected[selection['target-field-name']] = selection;
+                data_post.fields_selected[selection['target-field-name']] = selection;
             }
         });
         if (checked) {
@@ -217,12 +217,73 @@ function onFieldsLoadReady(model, datasets) {
             $("#digging-arguments-box .box-body").collapse('show');
             $("#digging-arguments-box .box-footer").collapse('show');
         } else {
-            data_post.selected = undefined;
+            data_post.fields_selected = undefined;
             box_alert("fields", "danger", "错误", "必填字段不得留空");
         }
     });
 }
 
 function renderArgumentsBox(model) {
+    $("#model-result").html('');
+    $(".arguments-form").html('');
 
+    for (var item_name in model.outputs) {
+        var item = model.outputs[item_name];
+        $("#model-result").append(
+            `<li class="list-group-item list-group-item-info placeholder">
+            输出字段: <span class="label label-success">${item.text}</span>
+            <span class="pull-right">
+            字段类型: <span class="label label-info">${item.type}</span>
+            </span></li>`
+        );
+    }
+
+    var which_col = 0;
+
+    for (var arg_name in model.arguments) {
+        var arg = model.arguments[arg_name];
+        var form_group = `
+        <div class="form-group" id="${arg.name}-group">
+            <label for="${arg.name}">${arg.text}</label>
+        </div>
+        `;
+        $("#arguments-form").children('div').slice(which_col, which_col+1).append(form_group);
+
+        if (arg["input-type"] == "slider") {
+            var content = `<input type="text" id="${arg["input-type"]}-${arg.name}" name="${arg.name}" value="" />`;
+            $(`#${arg.name}-group`).append(content);
+
+            $(`#${arg["input-type"]}-${arg.name}`).ionRangeSlider({
+                min: arg.range.min,
+                max: arg.range.max,
+                step: arg.range.step
+            });
+        }
+
+        which_col = which_col ^ 1;
+    }
+
+    $("#btn-arguments-prev").click(function() {
+        $("#digging-arguments-box .box-body").collapse('hide');
+        $("#digging-arguments-box .box-footer").collapse('hide');
+
+        data_post.arguments = undefined;
+
+        $("#digging-fields-box .box-body").collapse('show');
+        $("#digging-fields-box .box-footer").collapse('show');
+    });
+
+    $("#btn-arguments-submit").click(function() {
+        data_post.arguments = {};
+        for (var arg_name in model.arguments) {
+            var arg = model.arguments[arg_name];
+            var value = $(`#${arg["input-type"]}-${arg.name}`).val();
+
+            data_post.arguments[arg_name] = value;
+        }
+
+        $.post($("#digging-content").attr('post'), data_post, function(data, status) {
+            window.location.href = $("#digging-content").attr('after-post') + data["run-id"] + '/';
+        });
+    });
 }
