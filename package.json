@@ -16,6 +16,7 @@
     "morgan": "~1.6.1",
     "multer": "^1.1.0",
     "node-int64": "~0.4.0",
+    "react": "^0.14.7",
     "request": "~2.69.0",
     "serve-favicon": "~2.3.0",
     "thrift": "~0.9.3",

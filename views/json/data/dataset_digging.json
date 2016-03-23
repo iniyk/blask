@@ -1,0 +1,130 @@
+[
+    {
+        "text": "数据仓库",
+        "name": "warehouse",
+        "catalog": "catalog",
+        "nodes": [
+            {
+                "text": "表1",
+                "name": "table1",
+                "catalog": "warehouse",
+                "data": {
+                    "ID": "Number",
+                    "filed1": "String",
+                    "filed2": "String",
+                    "filed3": "String",
+                    "filed4": "String"
+                }
+            },
+            {
+                "text": "表2",
+                "name": "table2",
+                "catalog": "warehouse",
+                "data": {
+                    "ID": "Number",
+                    "a": "String",
+                    "b": "String",
+                    "filed3": "String",
+                    "filed4": "String"
+                }
+            },
+            {
+                "text": "表3",
+                "name": "table3",
+                "catalog": "warehouse",
+                "data": {
+                    "ID": "Number",
+                    "filed1": "String",
+                    "filed2": "String",
+                    "filed3": "String"
+                }
+            }
+        ]
+    },
+    {
+        "text": "数据库1",
+        "name": "database1",
+        "catalog": "catalog",
+        "nodes": [
+            {
+                "text": "表1",
+                "name": "table1",
+                "catalog": "database1",
+                "data": {
+                    "ID": "Number",
+                    "filed1": "String",
+                    "filed2": "String",
+                    "filed3": "String",
+                    "filed4": "String"
+                }
+            },
+            {
+                "text": "表2",
+                "name": "table2",
+                "catalog": "database1",
+                "data": {
+                    "ID": "Number",
+                    "filed1": "String",
+                    "filed2": "String",
+                    "filed3": "String",
+                    "filed4": "String"
+                }
+            },
+            {
+                "text": "表3",
+                "name": "table3",
+                "catalog": "database1",
+                "data": {
+                    "ID": "Number",
+                    "filed1": "String",
+                    "filed2": "String",
+                    "filed3": "String",
+                    "filed4": "String"
+                }
+            }
+        ]
+    },
+    {
+        "text": "数据库1",
+        "name": "database2",
+        "catalog": "catalog",
+        "nodes": [
+            {
+                "text": "表1",
+                "name": "table1",
+                "catalog": "database2",
+                "data": {
+                    "ID": "Number",
+                    "filed1": "String",
+                    "filed2": "String",
+                    "filed3": "String",
+                    "filed4": "String"
+                }
+            },
+            {
+                "text": "表2",
+                "name": "table2",
+                "catalog": "database2",
+                "data": {
+                    "ID": "Number",
+                    "filed1": "String",
+                    "filed2": "String",
+                    "filed3": "String",
+                    "filed4": "String"
+                }
+            },
+            {
+                "text": "表3",
+                "name": "table3",
+                "catalog": "database2",
+                "data": {
+                    "ID": "Number",
+                    "filed1": "String",
+                    "filed2": "String",
+                    "filed3": "String",
+                    "filed4": "String"
+                }
+            }
+        ]
+    }
+]

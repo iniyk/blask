@@ -39,13 +39,15 @@
     "datatables-responsive": "~1.0.3",
     "bootstrap-social": "~4.8.0",
     "flot.tooltip": "~0.8.4",
-    "react": "~0.14.7",
+    "react": "^0.14.7",
     "AdminLTE": "admin-lte#^2.3.2",
     "flat-ui": "^2.2.2",
     "underscore": "^1.8.3",
     "bootstrap-treeview": "^1.2.0",
     "datatables.net": "^1.10.11",
-    "datatables.net-bs": "^1.10.11"
+    "datatables.net-bs": "^1.10.11",
+    "jquery-ui": "^1.11.4",
+    "ion.rangeslider": "ionrangeslider#^2.1.2"
   },
   "moduleType": [
     "node"

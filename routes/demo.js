@@ -21,7 +21,8 @@ router.get('/', function(req, res, next) {
 });
 
 //GET all page include index
-_.map(pages, function (one_in_pages, index) {
+_.map(pages.page_list, function (name, index) {
+    var one_in_pages = pages[name];
     var page = {};
     _.map(one_in_pages, function(value, attr) {
         page[attr] = value;
