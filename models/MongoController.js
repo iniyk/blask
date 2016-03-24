@@ -53,7 +53,6 @@ function model_update(Model, data, res, callbacks) {
             logger.debug('Record has been updated.');
             logger.debug(data);
             if (res !=null) {
-
                 res.status(201).send({ success: 'Record has been updated.'});
             }
         }
@@ -146,26 +145,7 @@ function model_find_one(Model, data, res, callbacks) {
     });
 }
 
-function registerSchema(schema_name, schema, db_name) {
-    var db = dbs[db_name];
-    schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
-    var request_name = schema_name.toLowerCase();
-    var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
-
-    if (_.has(Models[db_name], schema_name)) {
-        return 0;
-    }
-
-    var schemaMongoose = new mongoose.Schema(schema);
-    var Model = db.model(model_name, schemaMongoose);
-    Models[db_name][schema_name] = Model;
-
-    logger.debug('Schema Name : ' + schema_name);
-    logger.debug('Request Name : ' + request_name);
-    logger.debug('Model Name : ' + model_name);
-
-    logger.debug('Register router for ' + schema_name);
-
+function registerRouters(Model, db_name, request_name) {
     //GET ./${database}/${schema}/
     router.get(`/${db_name}/${request_name}/`, function(req, res, next) {
         var data = {};
@@ -196,17 +176,37 @@ function registerSchema(schema_name, schema, db_name) {
         var data = {_id: req.params.id};
         model_remove(Model, data, res, []);
     });
+}
+
+function registerSchema(schema_name, schema, db_name) {
+    var db = dbs[db_name];
+    schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
+    var request_name = schema_name.toLowerCase();
+    var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
+
+    if (_.has(Models[db_name], schema_name)) {
+        return 0;
+    }
+
+    logger.debug(`Schema : ${schema_name}`);
+    var schemaMongoose = new mongoose.Schema(schema);
+    var Model = db.model(model_name, schemaMongoose);
+    Models[db_name][schema_name] = Model;
+
+    logger.debug('Register router for ' + schema_name);
+
+    registerRouters(Model, db_name, request_name);
 
     if (db_name == 'datasets') {
         var data = {name: model_name};
-        model_find_one(Models['auto']['dataSet'], data, null, [function(Model, data, res, callbacks) {
+        model_find_one(Models['auto']['dataset'], data, null, [function(Model, data, res, callbacks) {
             if (data == null) {
-                var schema_sample = {};
+                var schema = {};
                 _.each(_.pairs(schema), function(pair) {
                     var key = pair[0], value = pair[1];
-                    schema_sample[key] = common.gSample(value);
+                    schema[key] = common.gType(value);
                 });
-                var dataset = {name: model_name, comment: '', schema_sample: schema_sample};
+                var dataset = {name: model_name, "dataset-schema": schema};
                 model_save(Model, dataset, res, []);
             }
         }]);
@@ -233,18 +233,24 @@ function init() {
         logger.debug('MongoDB for Datasets connected.');
     });
 
-    registerSchema('dataSet', {
-        name: String,
-        comment: String,
-        schema_sample: {}
-    }, 'auto');
+    var schemas = require('./model/schemas.js').schemas;
+
+    _.map(schemas, function(schema, name) {
+        registerSchema(name, schema, 'auto');
+    });
+
+    //registerSchema('dataSet', {
+    //    name: String,
+    //    comment: String,
+    //    schema_sample: {}
+    //}, 'auto');
 
     registerAllDataSets();
 }
 
 function registerAllDataSets() {
     //var db = dbs['auto'];
-    var Model = Models['auto']['dataSet'];
+    var Model = Models['auto']['dataset'];
 
     //logger.debug(Model);
 
@@ -261,21 +267,21 @@ function registerAllDataSets() {
 }
 
 function registerOneDataSet(Model, data, res, callbacks) {
+    var db = dbs['datasets'];
     logger.debug('Data :');
     logger.debug(data);
-    var pairs = _.pairs(data.schema_sample);
-    var schema = {};
+    var schema = data['dataset-schema'];
 
-    _.each(pairs, function (pair) {
-        var key = pair[0], value = pair[1];
-        if (value != null) {
-            schema[key] = value.constructor;
-        } else {
-            schema[key] = {};
-        }
-    });
+    var schema_name = data.name.charAt(0).toLowerCase() + data.name.slice(1);
+    var request_name = schema_name.toLowerCase();
+    var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
 
-    registerSchema(data.name, schema, 'datasets');
+    var schemaMongoose = new mongoose.Schema();
+    schemaMongoose.add(schema);
+    var DatasetModel = db.model(model_name, schemaMongoose);
+    Models['datasets'][schema_name] = Model;
+
+    registerRouters(DatasetModel, 'datasets', request_name);
 
     var next = callbacks.pop();
     if (next != undefined) {
@@ -288,7 +294,7 @@ function dataset_insert(schema_name, data) {
     logger.debug('Data : ');
     logger.debug(data);
     schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
-    var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
+    //var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
 
     if (_.has(Models['datasets'], schema_name)) {
         var Model = Models['datasets'][schema_name];
