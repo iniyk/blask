@@ -14,7 +14,7 @@ var schemas = {
         "reference": String,
         "update": String,
         "comment": String,
-        "dataset-schema": mongoose.Schema.Types.Mixed
+        "dataset-schema": {}
     },
     "model": {
         "name": String,
@@ -23,27 +23,27 @@ var schemas = {
         "exec": String,
         "fields": [
             {
-                "name": String,
-                "type": String,
-                "text": String,
-                "comment": String
+                //"name": String,
+                //"type": String,
+                //"text": String,
+                //"comment": String
             }
         ],
         "arguments": [
             {
-                "name": String,
-                "text": String,
-                "comment": String,
-                "type": String,
-                "input-type": String,
-                "range": mongoose.Schema.Types.Mixed
+            //    "name": String,
+            //    "text": String,
+            //    "comment": String,
+            //    "type": String,
+            //    "input-type": String,
+            //    "range": mongoose.Schema.Types.Mixed
             }
         ],
         "outputs": [
             {
-                "name": String,
-                "type": String,
-                "text": String
+                //"name": String,
+                //"type": String,
+                //"text": String
             }
         ]
     }
