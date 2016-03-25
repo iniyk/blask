@@ -59,14 +59,14 @@ var Common = {
             return args[i];
         });
     },
-    gSample: function(type) {
+    gType: function(type) {
         var _ = require('underscore');
         var types = {};
-        types[String] = 'string';
-        types[Number] = 'string';
-        types[Array] = [];
-        types[Boolean] = false;
-        types[Date] = Date.now();
+        types[String] = 'String';
+        types[Number] = 'Number';
+        types[Array] = 'Array';
+        types[Boolean] = 'Boolean';
+        types[Date] = 'Date';
         if (_.has(types, type)) {
             return types[type];
         } else {
