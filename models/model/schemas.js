@@ -46,6 +46,14 @@ var schemas = {
                 //"text": String
             }
         ]
+    },
+    "running": {
+        "model": String,
+        "type": String,
+        "exec": String,
+        "user": String,
+        "input": {},
+        "output": {}
     }
 };
 

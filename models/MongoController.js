@@ -308,8 +308,18 @@ function dataset_insert(schema_name, data) {
     return 0;
 }
 
+function gModel(model_name, database) {
+    if (_.has(Models[database], model_name)) {
+        return Models[database][model_name];
+    } else {
+        logger.error('Trying to gen a Model from unregistered schema name.');
+        return null;
+    }
+}
+
 module.exports.router = router;
 module.exports.init = init;
 module.exports.registerSchema = registerSchema;
 //module.exports.registerDatasetSchema = registerDatasetSchema;
 module.exports.insert = dataset_insert;
+module.exports.gModel = gModel;
