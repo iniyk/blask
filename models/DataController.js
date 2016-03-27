@@ -67,7 +67,7 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                 MongoController.registerSchema(name, schema, 'datasets');
 
                 _.each(_.values(json_arr), function (json) {
-                    MongoController.insert(name, json);
+                    MongoController.insert('datasets', name, json);
                 });
             }
         });
@@ -95,7 +95,7 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                     _.map(line.split(separator), function (cell, index) {
                         record[keys[index]] = common.realType(cell);
                     });
-                    MongoController.insert(name, record);
+                    MongoController.insert('datasets', name, record);
                 });
             }
             res.status(201).send({info: 'Upload successed.'});

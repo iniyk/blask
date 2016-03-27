@@ -31,7 +31,7 @@ function registerModel(model) {
     model_in_mongo.save();
 }
 
-function execModel(data_post, callback) {
+function execModel(data_post, callback) {  //callback is for return run_id
     init();
     var run_id = -1;
     var running = {
@@ -64,6 +64,7 @@ function execModel(data_post, callback) {
     });
 
     gRunning(running, function(run_id) {
+
         callback(run_id);
     });
 }

@@ -5,6 +5,7 @@ var express = require('express');
 var router = express.Router();
 
 var _ = require('underscore');
+var lodash = require('lodash');
 var async = require('async');
 var mongoose = require("mongoose");
 var dbs = {};
@@ -289,17 +290,21 @@ function registerOneDataSet(Model, data, res, callbacks) {
     }
 }
 
-function dataset_insert(schema_name, data) {
-    logger.debug('Insert into ' + schema_name);
-    logger.debug('Data : ');
-    logger.debug(data);
+function insert(database, schema, data) {
     schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
-    //var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
+    if (database == 'blask') {
+        database = 'auto';
+    }
 
-    if (_.has(Models['datasets'], schema_name)) {
-        var Model = Models['datasets'][schema_name];
+    if (_.has(databse, Models)) {
+        if (_.has(Models[database], schema)) {
+            var Model = Models[database][schema];
+        } else {
+            logger.error('Trying to insert into a unregistered schema.');
+            return 2;
+        }
     } else {
-        logger.error('Trying to insert into a unregistered schema.');
+        logger.error('Trying to insert into a inexistent database.');
         return 2;
     }
 
@@ -308,7 +313,7 @@ function dataset_insert(schema_name, data) {
     return 0;
 }
 
-function gModel(model_name, database) {
+function gModel(model_name, databwase) {
     if (_.has(Models[database], model_name)) {
         return Models[database][model_name];
     } else {
@@ -321,5 +326,5 @@ module.exports.router = router;
 module.exports.init = init;
 module.exports.registerSchema = registerSchema;
 //module.exports.registerDatasetSchema = registerDatasetSchema;
-module.exports.insert = dataset_insert;
+module.exports.insert = insert;
 module.exports.gModel = gModel;
