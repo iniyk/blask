@@ -316,7 +316,7 @@ function insert(database, schema, data) {
     return 0;
 }
 
-function gModel(model_name, databwase) {
+function gModel(model_name, database) {
     if (_.has(Models[database], model_name)) {
         return Models[database][model_name];
     } else {

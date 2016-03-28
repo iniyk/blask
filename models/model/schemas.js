@@ -7,9 +7,11 @@ var mongoose = require('mongoose');
 var schemas = {
     "dataset": {
         "name": String,
+        "text": String,
         "field-number": String,
         "record-number": String,
         "source": String,
+        "source-name": String,
         "storage": String,
         "reference": String,
         "update": String,

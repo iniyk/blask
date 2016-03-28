@@ -33,6 +33,16 @@ router.get('/:id(\\d+)/create', function(req, res, next) {
 //GET /data/
 router.get('/', function(req, res, next) {
     //TODO 列出所有数据集
+    var DatasetModel = MongoController.gModel('dataset', 'auto');
+    DatasetModel.find({}, function (err, datasets) {
+        if (! err) {
+            var datasets_tree_arr = transDatasetToTree(datasets);
+            res.json(datasets_tree_arr);
+        } else {
+            logger.error("List Datasets Error!");
+            logger.error(err);
+        }
+    });
 });
 
 //POST /data/upload
@@ -108,4 +118,31 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
 
 });
 
+function transDatasetToTree(datasets) {
+    var tree = {};
+    var tree_arr = [];
+    _.map(datasets, function(dataset, index) {
+        if (! _.has(tree, dataset.source)) {
+            tree[dataset.source] = {
+                "text": dataset["source-name"],
+                "name": dataset.source,
+                "catalog": "catalog",
+                "nodes": []
+            };
+        }
+        var node = {
+            "text": dataset.text,
+            "name": dataset.name,
+            "catalog": dataset.source,
+            "data": dataset["dataset-schema"]
+        };
+        tree[node.catalog]["nodes"].push(node);
+    });
+    _.map(tree, function(node, key) {
+        tree_arr.push(node);
+    });
+    return tree_arr;
+}
+
 module.exports.router = router;
+module.exports.transDatasetToTree = transDatasetToTree;
