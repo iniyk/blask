@@ -48,7 +48,7 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
     logger.info('File type : ' + type);
 
     if (type == 'json') {
-        logger.debug('Set read json callback.');
+        // logger.debug('Set read json callback.');
         common.readJson(tmp_path, function (err, json_arr) {
             if (err) {
                 logger.error('On reading json file.');
@@ -63,7 +63,7 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                     schema[key] = value.constructor;
                 });
 
-                logger.debug(schema);
+                // logger.debug(schema);
                 MongoController.registerSchema(name, schema, 'datasets');
 
                 _.each(_.values(json_arr), function (json) {
@@ -74,7 +74,7 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
         res.status(201).send({info: 'Upload successed.'});
     } else if (type == 'txt' || type == 'csv') {
         var separator = req.body.separator;
-        logger.debug('Set read txt / csv callback.');
+        // logger.debug('Set read txt / csv callback.');
         common.readPlainTextByLine(tmp_path, function(err, lines) {
             if (err) {
                 logger.error('On reading txt / csv file.');
@@ -87,7 +87,7 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                     schema[keys[index]] = common.gStringType(cell);
                 });
 
-                logger.debug(schema);
+                // logger.debug(schema);
                 MongoController.registerSchema(name, schema, 'datasets');
 
                 _.each(lines.slice(1), function (line) {
