@@ -58,7 +58,7 @@
             "type": "digging_group",
             "model_list": "/helper",
             "dataset_list": "/data",
-            "post": "/modeling",
+            "post": "/digging",
             "after-post": "/digging/status/",
             "titles":
             [

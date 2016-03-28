@@ -83,7 +83,7 @@ function onDrop(event, ui) {
         } else {
             var text = $(this).attr('target-field-text') + " : " +
                 "<span class=\"label label-primary\">" +
-                ui.draggable.text() +
+                ui.draggable.attr('field-name') +
                 "</span><span class=\"pull-right\">来源: " +
                 "<span class=\"label label-info\">" +
                 ui.draggable.attr('from-database-text') + " - " +

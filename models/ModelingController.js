@@ -14,29 +14,71 @@ var Logger = require('./Logger')();
 var MongoController = require('./MongoController');
 
 var logger;
-var models;
+//var models;
 var playground_path;
 var scripts;
 
+init();
+
+function show_running_list(res) {
+    var RunningModel = MongoController.gModel('running', 'auto');
+    RunningModel.find({}, function (err, running_list) {
+        if (! err) {
+            res.json(running_list);
+        } else {
+            logger.error("On find running list.");
+            logger.error(err);
+            res.status(500).send({error: err});
+        }
+    });
+}
+
 function init() {
-    if (!models) {
+    if (!logger) {
         logger = Logger.handle("ModelingController");
-        models = {};
+        //models = {};
         playground_path = require("./Common").readJsonConfig('./conf.json')['playground']['path'];
         scripts = require("./Common").readJsonConfig('./conf.json')['playground']['scripts'];
+
+        router.get('/', function(req, res, next) {
+            show_running_list(res);
+        });
+
+        router.get('/status', function(req, res, next) {
+            show_running_list(res);
+        });
+
+        router.get('/status/:id([a-z0-9]+)', function(req, res, next) {
+            var RunningModel = MongoController.gModel('running', 'auto');
+            RunningModel.findOne({_id: req.params.id}, function (err, running) {
+                if (! err) {
+                    res.json(running);
+                } else {
+                    logger.error(`On find running status ${req.params.id}.`);
+                    logger.error(err);
+                    res.status(500).send({error: err});
+                }
+            });
+        });
+
+        router.post('/', function(req, res, next) {
+            execModel(req.body, function(run_id) {
+                res.json({"run-id": run_id});
+            });
+        });
     }
 }
 
-function registerModel(model) {
-    init();
-    models[model.name] = model;
-    var ModelInMongo = MongoController.gModel('model', 'auto');
-    var model_in_mongo = new ModelInMongo(model);
-    model_in_mongo.markModified('fields');
-    model_in_mongo.markModified('arguments');
-    model_in_mongo.markModified('outputs');
-    model_in_mongo.save();
-}
+// function registerModel(model) {
+//     init();
+//     models[model.name] = model;
+//     var ModelInMongo = MongoController.gModel('model', 'auto');
+//     var model_in_mongo = new ModelInMongo(model);
+//     model_in_mongo.markModified('fields');
+//     model_in_mongo.markModified('arguments');
+//     model_in_mongo.markModified('outputs');
+//     model_in_mongo.save();
+// }
 
 function execModel(data_post, callback) {  //callback is for return run_id
     init();
@@ -72,12 +114,12 @@ function execModel(data_post, callback) {  //callback is for return run_id
 
     gRunning(running, function(model_running) {
         startExec(running, model_running);
-        callback(model_running._id, pid);
+        callback(model_running._id);
     });
 }
 
 function replaceArguments(exec_str, args_table) {
-    var ret = new string(exec_str);
+    var ret = new String(exec_str);
     _.map(args_table, function(value, key) {
         var re = new RegExp("${" + key + "}", 'gi');
         ret = ret.replace(re, value);
@@ -104,32 +146,64 @@ function startExec(running, model_running) {
     real_exec = `cd ${dir_path} & ${real_exec}`;
     child_process.exec(copy_files, function(err, stdout, stderr) {
         if (! err) {
+            logger.debug(stdout);
+            logger.debug(stderr);
             fs.writeFile(`${dir_path}/${run_id}.json`, JSON.stringify(running.input), 'utf-8', function(err) {
                 if (! err) {
+                    logger.debug(`Executing command : ${real_exec}`);
+
                     child_process.exec(real_exec, function(err, stdout, stderr) {
                         if (! err) {
+                            logger.debug(stdout);
+                            logger.debug(stderr);
                             common.readJson(`${dir_path}/${run_id}-result.json`, function(err, result) {
                                 if (! err) {
                                     child_process.exec(remove_files, function(err, stdout, stderr) {
                                         if (! err) {
+                                            logger.debug(stdout);
+                                            logger.debug(stderr);
                                             running.output = result;
                                             model_running.output = result;
                                             model_running.markModified('output');
                                             model_running.save(function(err) {
                                                 if (!err) {
                                                     //TODO I think it should do something, but I couldn't realize what should it do here.
+                                                } else {
+                                                    //Error on saving running result to database.
+                                                    logger.error("Error on writing result to database.");
                                                 }
                                             });
+                                        } else {
+                                            //Remove files error.
+                                            logger.error("Error on removing temp files.");
+                                            logger.debug(stdout);
+                                            logger.debug(stderr);
                                         }
-                                    })
+                                    });
+                                } else {
+                                    //Read back helper result error.
+                                    logger.error("Error on reading back the result file of json.");
                                 }
                             });
+                        } else {
+                            //Exec third helper error.
+                            logger.error("Error on executing helper.");
+                            logger.debug(stdout);
+                            logger.debug(stderr);
                         }
                     });
+                } else {
+                    //Write json input error.
+                    logger.error("Error on writing json file for helper's input.");
                 }
             });
+        } else {
+            //Copy files error.
+            logger.error("Error on copy files.");
+            logger.debug(stdout);
+            logger.debug(stderr);
         }
-    })
+    });
 }
 
 function gRunning(running, callback) {
@@ -145,5 +219,5 @@ function gRunning(running, callback) {
 }
 
 module.exports.router = router;
-module.exports.registerModel = registerModel;
+//module.exports.registerModel = registerModel;
 module.exports.execModel = execModel;

@@ -22,7 +22,7 @@ router.use('/digging', modeling_controller.router);
 router.use('/demo', demo);
 router.use('/json', json_router);
 
-/* GET home page. */
+/* GET home page. */    
 router.get('/', function(req, res, next) {
     res.render('index', { project_name: 'Blask', current_page: 'index'});
 });
