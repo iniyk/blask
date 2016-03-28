@@ -144,7 +144,7 @@ function onFieldsLoadReady(model, datasets) {
                      from-database-text="${parent.text}" from-table-text="${node.text}"
                      from-database="${parent.name}" from-table="${node.name}"
                      field-name="${item}" field-type="${node.data[item]}">
-                     ${item}</li>`
+                     ${item}<div class="label label-primary pull-right">${node.data[item]}</div></li>`
                 );
             }
 
