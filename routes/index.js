@@ -7,6 +7,7 @@ var demo = require('./demo');
 var json_router = require('./json');
 var mongo_controller = require('../models/MongoController');
 var data_controller = require('../models/DataController');
+var helper_controller = require('../models/HelperController');
 var test_controller = require('../models/TestController');
 var modeling_controller = require('../models/ModelingController');
 
@@ -15,8 +16,9 @@ mongo_controller.init();
 router.use('/users', users);
 router.use('/mongodb', mongo_controller.router);
 router.use('/data', data_controller.router);
+router.use('/helper', helper_controller.router);
 router.use('/test', test_controller.router);
-router.use('/test', modeling_controller.router);
+router.use('/digging', modeling_controller.router);
 router.use('/demo', demo);
 router.use('/json', json_router);
 

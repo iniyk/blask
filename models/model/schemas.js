@@ -20,9 +20,12 @@ var schemas = {
     },
     "model": {
         "name": String,
+        "text": String,
         "type": String,                                //Exchange or Dig
         "description": String,
         "exec": String,
+        "catalog": String,
+        "catalog-text": String,
         "fields": [
             {
                 //"name": String,
