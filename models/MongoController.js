@@ -5,7 +5,6 @@ var express = require('express');
 var router = express.Router();
 
 var _ = require('underscore');
-var lodash = require('lodash');
 var async = require('async');
 var mongoose = require("mongoose");
 var dbs = {};
@@ -202,12 +201,13 @@ function registerSchema(schema_name, schema, db_name) {
         var data = {name: model_name};
         model_find_one(Models['auto']['dataset'], data, null, [function(Model, data, res, callbacks) {
             if (data == null) {
-                var schema = {};
-                _.each(_.pairs(schema), function(pair) {
-                    var key = pair[0], value = pair[1];
-                    schema[key] = common.gType(value);
+                var dataset_schema = {};
+                _.map(schema, function(value, key) {
+                //_.each(_.pairs(schema), function(pair) {
+                //    var key = pair[0], value = pair[1];
+                    dataset_schema[key] = common.gType(value);
                 });
-                var dataset = {name: model_name, "dataset-schema": schema};
+                var dataset = {name: model_name, "dataset-schema": dataset_schema};
                 model_save(Model, dataset, res, []);
             }
         }]);
@@ -291,12 +291,12 @@ function registerOneDataSet(Model, data, res, callbacks) {
 }
 
 function insert(database, schema, data) {
-    schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
+    schema = schema.charAt(0).toLowerCase() + schema.slice(1);
     if (database == 'blask') {
         database = 'auto';
     }
 
-    if (_.has(databse, Models)) {
+    if (_.has(Models, database)) {
         if (_.has(Models[database], schema)) {
             var Model = Models[database][schema];
         } else {
@@ -308,7 +308,10 @@ function insert(database, schema, data) {
         return 2;
     }
 
-    model_save(Model, data, null, []);
+    model_save(Model, data, null, [function(err) {
+        logger.debug(`Inserted into collection [${schema}] in database [${database}].`);
+        logger.debug(`Data Head : ${data._id}`);
+    }]);
 
     return 0;
 }
