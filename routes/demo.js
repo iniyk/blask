@@ -5,6 +5,8 @@ var express = require('express');
 var router = express.Router();
 
 var _ = require('underscore');
+
+var Common = require('../models/Common');
 var PageController = require('../models/PageController');
 var router_now = '/demo/';
 
@@ -29,6 +31,10 @@ _.map(pages.page_list, function (name, index) {
     });
     page.pages = pages;
     router.get('/' + page.name, function(req, res, next) {
+        if (!Common.isEmpty(req.body.id)) {
+            page.request = {};
+            page.request.id = req.body.id;
+        }
         res.render('demo/main', {page: page});
     });
 });

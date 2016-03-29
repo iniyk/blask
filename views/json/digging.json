@@ -35,13 +35,13 @@
         },
         "start": {
             "name": "start",
-            "title": "开始新转换",
+            "title": "开始新挖掘",
             "href": "./digging",
             "icon": "fa fa-cubes"
         },
         "status": {
             "name": "status",
-            "title": "查看转换进度",
+            "title": "查看挖掘进度",
             "href": "#",
             "icon": "fa fa-tachometer"
         },
