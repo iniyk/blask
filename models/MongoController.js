@@ -235,16 +235,9 @@ function init() {
     });
 
     var schemas = require('./model/schemas.js').schemas;
-
     _.map(schemas, function(schema, name) {
         registerSchema(name, schema, 'auto');
     });
-
-    //registerSchema('dataSet', {
-    //    name: String,
-    //    comment: String,
-    //    schema_sample: {}
-    //}, 'auto');
 
     registerAllDataSets();
 }
@@ -269,8 +262,6 @@ function registerAllDataSets() {
 
 function registerOneDataSet(Model, data, res, callbacks) {
     var db = dbs['datasets'];
-    // logger.debug('Data :');
-    // logger.debug(data);
     var schema = data['dataset-schema'];
 
     var schema_name = data.name.charAt(0).toLowerCase() + data.name.slice(1);
@@ -280,7 +271,9 @@ function registerOneDataSet(Model, data, res, callbacks) {
     var schemaMongoose = new mongoose.Schema();
     schemaMongoose.add(schema);
     var DatasetModel = db.model(model_name, schemaMongoose);
-    Models['datasets'][schema_name] = Model;
+    Models['datasets'][schema_name] = DatasetModel;
+
+    logger.debug(`Register Model for '${schema_name}' in database 'datasets'`);
 
     registerRouters(DatasetModel, 'datasets', request_name);
 
@@ -300,11 +293,11 @@ function insert(database, schema, data) {
         if (_.has(Models[database], schema)) {
             var Model = Models[database][schema];
         } else {
-            logger.error('Trying to insert into a unregistered schema.');
+            logger.error(`Trying to insert into a unregistered schema of ${schema}.`);
             return 2;
         }
     } else {
-        logger.error('Trying to insert into a inexistent database.');
+        logger.error(`Trying to insert into a inexistent database of ${database}.`);
         return 2;
     }
 
@@ -317,10 +310,11 @@ function insert(database, schema, data) {
 }
 
 function gModel(model_name, database) {
+    logger.debug(`Gen Model for '${model_name}' in '${database}'`);
     if (_.has(Models[database], model_name)) {
         return Models[database][model_name];
     } else {
-        logger.error('Trying to gen a Model from unregistered schema name.');
+        logger.error(`Trying to gen a Model from unregistered schema name of ${model_name} in ${database}.`);
         return null;
     }
 }
