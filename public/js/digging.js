@@ -240,8 +240,9 @@ function renderArgumentsBox(model) {
 
     var which_col = 0;
 
-    for (var arg_name in model.arguments) {
-        var arg = model.arguments[arg_name];
+    for (var arg of model.arguments) {
+        //var arg_name = arg.name;
+        //var arg = model.arguments[arg_name];
         var form_group = `
         <div class="form-group" id="${arg.name}-group">
             <label for="${arg.name}">${arg.text}</label>
@@ -275,8 +276,9 @@ function renderArgumentsBox(model) {
 
     $("#btn-arguments-submit").click(function() {
         data_post.arguments = {};
-        for (var arg_name in model.arguments) {
-            var arg = model.arguments[arg_name];
+        for (var arg of model.arguments) {
+            var arg_name = arg.name;
+            //var arg = model.arguments[arg_name];
             var value = $(`#${arg["input-type"]}-${arg.name}`).val();
 
             data_post.arguments[arg_name] = value;
