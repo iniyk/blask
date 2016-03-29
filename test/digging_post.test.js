@@ -25,9 +25,12 @@ describe('digging_post.test.js - HelperController Test', function() {
                         "field-type": "String",
                         "from-database": "datasets",
                         "from-table": "retail"
-                    },
+                    }
                 },
-                "arguments": ["0.1", "0.5"]
+                "arguments": {
+                    "min_support": "0.1",
+                    "min_confidence": "0.5"
+                }
             })
             //.expect(200)
             //.expect('Content-Type', '/json/')
