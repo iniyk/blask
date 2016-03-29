@@ -7,6 +7,7 @@ var express = require('express');
 var router = express.Router();
 
 var _ = require('underscore');
+var async = require('async');
 //var lodash = require('lodash');
 
 var common = require('./Common');
@@ -62,6 +63,8 @@ function init() {
         });
 
         router.post('/', function(req, res, next) {
+            logger.debug("Post Request:");
+            logger.debug(req.body);
             execModel(req.body, function(run_id) {
                 res.json({"run-id": run_id});
             });
@@ -93,28 +96,63 @@ function execModel(data_post, callback) {  //callback is for return run_id
         },
         "output": {}
     };
-
+/*
     _.map(data_post.fields_selected, function(field_info, field_name) {
-        var db_name = field_info.from_database,
-            collection = field_info.from_table,
-            col_name = field_info.field_name;
+        var db_name = field_info['from-database'],
+            collection = field_info['from-table'],
+            col_name = field_info['field-name'];
+        logger.debug(`Field info of ${field_name}`);
+        logger.debug(field_info);
+        logger.debug(`gModel of ${collection} in ${db_name}`);
+        logger.debug(`col name is ${col_name}`);
         var ModelTarget = MongoController.gModel(collection, db_name);
         var query = ModelTarget.find({}, `${col_name}`, function(err, records) {
-            var cols = _.reduce(records, function(memo, record) {
-                memo.append(record[`${col_name}`]);
-            }, []);
+            logger.debug('Records : ');
+            logger.debug(records);
+            var cols = [];
+            _.map(records, function(record, key) {
+                cols.push(record);
+            });
 
             running.input.fields[field_info.target_field_name] = cols;
         });
     });
+*/
+    async.eachSeries(_.pairs(data_post.fields_selected), function(field, callback) {
+        var field_name = field[0];
+        var field_info = field[1];
+        var db_name = field_info['from-database'],
+            collection = field_info['from-table'],
+            col_name = field_info['field-name'];
+        logger.debug(`Field info of ${field_name}`);
+        logger.debug(field_info);
+        logger.debug(`gModel of ${collection} in ${db_name}`);
+        logger.debug(`col name is ${col_name}`);
+        var ModelTarget = MongoController.gModel(collection, db_name);
+        var query = ModelTarget.find({}, `${col_name}`, function(err, records) {
+            var cols = [];
+            _.map(records, function(record, key) {
+                cols.push(record);
+            });
 
-    _.map(data_post.arguments, function(argument, name) {
-        running.input[`${name}`] = argument;
-    });
+            running.input.fields[field_info['target-field-name']] = cols;
 
-    gRunning(running, function(model_running) {
-        startExec(running, model_running);
-        callback(model_running._id);
+            callback(err, cols);
+        });
+    }, function(err) {
+        if (err) {
+            logger.error("Error in async func.");
+            logger.error(err);
+        } else {
+            _.map(data_post.arguments, function (argument, name) {
+                running.input[`${name}`] = argument;
+            });
+
+            gRunning(running, function (model_running) {
+                startExec(running, model_running);
+                callback(model_running._id);
+            });
+        }
     });
 }
 
@@ -135,6 +173,8 @@ function startExec(running, model_running) {
     if (_.indexOf(scripts, arg0) == -1) {
         arg0 = running.exec.split(' ')[1];
     }
+    logger.debug(`Exec : ${running.exec}`);
+    logger.debug(`Arg0 : ${arg0}`);
     var dir_path = `./playground/${run_id}`;
     var mkdir = `mkdir ${dir_path}`;
     var copy_files = `cp ./runnable/${arg0} ${dir_path}`;
@@ -167,7 +207,7 @@ function startExec(running, model_running) {
                                             model_running.markModified('output');
                                             model_running.save(function(err) {
                                                 if (!err) {
-                                                    //TODO I think it should do something, but I couldn't realize what should it do here.
+                                                    //TODO: I think it should do something, but I couldn't realize what should it do here.
                                                 } else {
                                                     //Error on saving running result to database.
                                                     logger.error("Error on writing result to database.");
@@ -207,6 +247,8 @@ function startExec(running, model_running) {
 }
 
 function gRunning(running, callback) {
+    logger.debug("Running data for mongodb");
+    logger.debug(running);
     var RunningModel = MongoController.gModel('running', 'auto');
     var model_running = new RunningModel(running);
     model_running.markModified('input');
