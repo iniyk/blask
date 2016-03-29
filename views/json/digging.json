@@ -56,9 +56,9 @@
         "digging-group": {
             "name": "digging-group",
             "type": "digging_group",
-            "model_list": "/json/data/model_tree.json",
-            "dataset_list": "/json/data/dataset_digging.json",
-            "post": "/modeling",
+            "model_list": "/helper",
+            "dataset_list": "/data",
+            "post": "/digging",
             "after-post": "/digging/status/",
             "titles":
             [
