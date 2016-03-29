@@ -96,6 +96,8 @@ function execModel(data_post, callback) {  //callback is for return run_id
         },
         "output": {}
     };
+    logger.debug('Field Selected:');
+    logger.debug(data_post.fields_selected);
 /*
     _.map(data_post.fields_selected, function(field_info, field_name) {
         var db_name = field_info['from-database'],
@@ -124,15 +126,15 @@ function execModel(data_post, callback) {  //callback is for return run_id
         var db_name = field_info['from-database'],
             collection = field_info['from-table'],
             col_name = field_info['field-name'];
-        logger.debug(`Field info of ${field_name}`);
-        logger.debug(field_info);
-        logger.debug(`gModel of ${collection} in ${db_name}`);
-        logger.debug(`col name is ${col_name}`);
+        //logger.debug(`Field info of ${field_name}`);
+        //logger.debug(field_info);
+        //logger.debug(`gModel of ${collection} in ${db_name}`);
+        //logger.debug(`col name is ${col_name}`);
         var ModelTarget = MongoController.gModel(collection, db_name);
         var query = ModelTarget.find({}, `${col_name}`, function(err, records) {
             var cols = [];
             _.map(records, function(record, key) {
-                cols.push(record);
+                cols.push(record[col_name]);
             });
 
             running.input.fields[field_info['target-field-name']] = cols;
@@ -148,9 +150,14 @@ function execModel(data_post, callback) {  //callback is for return run_id
                 running.input[`${name}`] = argument;
             });
 
-            gRunning(running, function (model_running) {
-                startExec(running, model_running);
-                callback(model_running._id);
+            var HelperModel = MongoController.gModel('model', 'auto');
+            HelperModel.findOne({name: data_post.model_selected}, function(err, helper) {
+                running.exec = helper.exec;
+
+                gRunning(running, function (model_running) {
+                    startExec(running, model_running);
+                    callback(model_running._id);
+                });
             });
         }
     });
@@ -159,7 +166,8 @@ function execModel(data_post, callback) {  //callback is for return run_id
 function replaceArguments(exec_str, args_table) {
     var ret = new String(exec_str);
     _.map(args_table, function(value, key) {
-        var re = new RegExp("${" + key + "}", 'gi');
+        var re = new RegExp("\\$\\{" + key + "\\}", 'gi');
+        logger.debug(re);
         ret = ret.replace(re, value);
         //ret = lodash.replace(ret, "${" + key + "}", value);
     });
@@ -170,38 +178,36 @@ function startExec(running, model_running) {
     var run_id = model_running._id;
     var fs = require('fs');
     var arg0 =running.exec.split(' ')[0];
-    if (_.indexOf(scripts, arg0) == -1) {
+    //logger.debug(scripts);
+    //logger.debug(_.indexOf(scripts, arg0));
+    if (_.indexOf(scripts, arg0) != -1) {
         arg0 = running.exec.split(' ')[1];
     }
     logger.debug(`Exec : ${running.exec}`);
     logger.debug(`Arg0 : ${arg0}`);
     var dir_path = `./playground/${run_id}`;
     var mkdir = `mkdir ${dir_path}`;
-    var copy_files = `cp ./runnable/${arg0} ${dir_path}`;
+    var copy_files = `${mkdir} && cp ./runnable/${arg0} ${dir_path}/`;
     var remove_files = `rm -r ${dir_path}`;
     var args_table = {
         "run_id": run_id
     };
     var real_exec = replaceArguments(running.exec, args_table);
-    real_exec = `cd ${dir_path} & ${real_exec}`;
+    logger.debug(`Real Exec : ${real_exec}`);
+    logger.debug(`Copy Files : ${copy_files}`);
+    real_exec = `cd ${dir_path} && ${real_exec}`;
     child_process.exec(copy_files, function(err, stdout, stderr) {
         if (! err) {
-            logger.debug(stdout);
-            logger.debug(stderr);
             fs.writeFile(`${dir_path}/${run_id}.json`, JSON.stringify(running.input), 'utf-8', function(err) {
                 if (! err) {
                     logger.debug(`Executing command : ${real_exec}`);
 
                     child_process.exec(real_exec, function(err, stdout, stderr) {
                         if (! err) {
-                            logger.debug(stdout);
-                            logger.debug(stderr);
                             common.readJson(`${dir_path}/${run_id}-result.json`, function(err, result) {
                                 if (! err) {
                                     child_process.exec(remove_files, function(err, stdout, stderr) {
                                         if (! err) {
-                                            logger.debug(stdout);
-                                            logger.debug(stderr);
                                             running.output = result;
                                             model_running.output = result;
                                             model_running.markModified('output');

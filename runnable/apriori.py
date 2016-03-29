@@ -13,6 +13,7 @@ from itertools import chain, combinations
 from collections import defaultdict
 from optparse import OptionParser
 import json
+import string
 
 
 def subsets(arr):
@@ -121,7 +122,7 @@ def printResults(items, rules, outFile):
     result['pre'] = list()
     result['post'] = list()
     result['confidence'] = list()
-    for rule, confidence in sorted(rules, key=lambda rule, confidence: confidence ):
+    for rule, confidence in sorted(rules, key=lambda (rule, confidence): confidence ):
         pre, post = rule
         pre_list = list()
         post_list = list()
@@ -138,19 +139,23 @@ def printResults(items, rules, outFile):
 
 def gListByLine(data):
     records = dict()
-    for item_list, item in zip(data['fields']['list'], data['field']['item']):
-        if not item_list in records:
+    for item_list, item in zip(data['fields']['list'], data['fields']['item']):
+        #print(item_list, item)
+        if item_list not in records:
             records[item_list] = set()
-        records[item_list].insert(item)
+        records[item_list].add(item)
+    # for record_name, record in records.items():
+    #     print record_name, ' ', record
     for record_name, record in records.items():
-        yield record
+        yield frozenset(record)
 
 
 def dataFromFile(fname):
     if fname.endswith('json'):
         with open(fname, 'rU') as f:
             data = json.load(f)
-        return data['min_support'], data['min_confidence'], gListByLine(data)
+        # TODO: Trans them to float!!!!
+        return string.atof(data['min_support']), string.atof(data['min_confidence']), gListByLine(data)
 
 
 if __name__ == "__main__":

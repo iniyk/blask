@@ -11,6 +11,7 @@ describe('digging_post.test.js - HelperController Test', function() {
             .post('http://localhost:3000/digging')
             .send({
                 "model_selected": "apriori",
+                "model_type": "digging",
                 "fields_selected": {
                     "list": {
                         "target-field-name": "list",
@@ -28,12 +29,10 @@ describe('digging_post.test.js - HelperController Test', function() {
                     }
                 },
                 "arguments": {
-                    "min_support": "0.1",
-                    "min_confidence": "0.5"
+                    "min_support": "0.17",
+                    "min_confidence": "0.68"
                 }
             })
-            //.expect(200)
-            //.expect('Content-Type', '/json/')
             .end(function(err, res){
                 if (err) done(err);
                 res.body.should.have.property('run-id');
