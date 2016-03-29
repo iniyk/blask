@@ -283,9 +283,16 @@ function renderArgumentsBox(model) {
 
             data_post.arguments[arg_name] = value;
         }
+        data_post["model_type"] = "digging";
 
-        $.post($("#digging-content").attr('post'), data_post, function(data, status) {
-            window.location.href = $("#digging-content").attr('after-post') + data["run-id"] + '/';
+        $.ajax({
+            type: "POST",
+            url: $("#digging-content").attr('post'),
+            data: data_post,
+            dataType: "json",
+            success: function(data, status) {
+                window.location.href = $("#digging-content").attr('after-post') + data["run-id"] + '/';
+            }
         });
     });
 }
