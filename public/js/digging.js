@@ -83,7 +83,7 @@ function onDrop(event, ui) {
         } else {
             var text = $(this).attr('target-field-text') + " : " +
                 "<span class=\"label label-primary\">" +
-                ui.draggable.text() +
+                ui.draggable.attr('field-name') +
                 "</span><span class=\"pull-right\">来源: " +
                 "<span class=\"label label-info\">" +
                 ui.draggable.attr('from-database-text') + " - " +
@@ -110,7 +110,7 @@ function onDrop(event, ui) {
 
 function renderFieldsSelectorBox() {
     onLoadingBox('fields');
-    var get_model = `/json/model/${data_post.model_selected}.json`;
+    var get_model = `/helper/${data_post.model_selected}`;
     var get_datasets = $("#digging-fields-box").attr('source');
     $.get(get_model, function(model, status) {
         if (status == 'success') {
@@ -144,7 +144,7 @@ function onFieldsLoadReady(model, datasets) {
                      from-database-text="${parent.text}" from-table-text="${node.text}"
                      from-database="${parent.name}" from-table="${node.name}"
                      field-name="${item}" field-type="${node.data[item]}">
-                     ${item}</li>`
+                     ${item}<div class="label label-primary pull-right">${node.data[item]}</div></li>`
                 );
             }
 
@@ -240,8 +240,9 @@ function renderArgumentsBox(model) {
 
     var which_col = 0;
 
-    for (var arg_name in model.arguments) {
-        var arg = model.arguments[arg_name];
+    for (var arg of model.arguments) {
+        //var arg_name = arg.name;
+        //var arg = model.arguments[arg_name];
         var form_group = `
         <div class="form-group" id="${arg.name}-group">
             <label for="${arg.name}">${arg.text}</label>
@@ -275,15 +276,23 @@ function renderArgumentsBox(model) {
 
     $("#btn-arguments-submit").click(function() {
         data_post.arguments = {};
-        for (var arg_name in model.arguments) {
-            var arg = model.arguments[arg_name];
+        for (var arg of model.arguments) {
+            var arg_name = arg.name;
+            //var arg = model.arguments[arg_name];
             var value = $(`#${arg["input-type"]}-${arg.name}`).val();
 
             data_post.arguments[arg_name] = value;
         }
+        data_post["model_type"] = "digging";
 
-        $.post($("#digging-content").attr('post'), data_post, function(data, status) {
-            window.location.href = $("#digging-content").attr('after-post') + data["run-id"] + '/';
+        $.ajax({
+            type: "POST",
+            url: $("#digging-content").attr('post'),
+            data: data_post,
+            dataType: "json",
+            success: function(data, status) {
+                window.location.href = $("#digging-content").attr('after-post') + data["run-id"] + '/';
+            }
         });
     });
 }

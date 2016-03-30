@@ -33,6 +33,16 @@ router.get('/:id(\\d+)/create', function(req, res, next) {
 //GET /data/
 router.get('/', function(req, res, next) {
     //TODO 列出所有数据集
+    var DatasetModel = MongoController.gModel('dataset', 'auto');
+    DatasetModel.find({}, function (err, datasets) {
+        if (! err) {
+            var datasets_tree_arr = transDatasetToTree(datasets);
+            res.json(datasets_tree_arr);
+        } else {
+            logger.error("List Datasets Error!");
+            logger.error(err);
+        }
+    });
 });
 
 //POST /data/upload
@@ -48,7 +58,7 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
     logger.info('File type : ' + type);
 
     if (type == 'json') {
-        logger.debug('Set read json callback.');
+        // logger.debug('Set read json callback.');
         common.readJson(tmp_path, function (err, json_arr) {
             if (err) {
                 logger.error('On reading json file.');
@@ -63,18 +73,18 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                     schema[key] = value.constructor;
                 });
 
-                logger.debug(schema);
+                // logger.debug(schema);
                 MongoController.registerSchema(name, schema, 'datasets');
 
                 _.each(_.values(json_arr), function (json) {
-                    MongoController.insert(name, json);
+                    MongoController.insert('datasets', name, json);
                 });
             }
         });
         res.status(201).send({info: 'Upload successed.'});
     } else if (type == 'txt' || type == 'csv') {
         var separator = req.body.separator;
-        logger.debug('Set read txt / csv callback.');
+        // logger.debug('Set read txt / csv callback.');
         common.readPlainTextByLine(tmp_path, function(err, lines) {
             if (err) {
                 logger.error('On reading txt / csv file.');
@@ -87,7 +97,7 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                     schema[keys[index]] = common.gStringType(cell);
                 });
 
-                logger.debug(schema);
+                // logger.debug(schema);
                 MongoController.registerSchema(name, schema, 'datasets');
 
                 _.each(lines.slice(1), function (line) {
@@ -95,7 +105,7 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                     _.map(line.split(separator), function (cell, index) {
                         record[keys[index]] = common.realType(cell);
                     });
-                    MongoController.insert(name, record);
+                    MongoController.insert('datasets', name, record);
                 });
             }
             res.status(201).send({info: 'Upload successed.'});
@@ -108,4 +118,31 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
 
 });
 
+function transDatasetToTree(datasets) {
+    var tree = {};
+    var tree_arr = [];
+    _.map(datasets, function(dataset, index) {
+        if (! _.has(tree, dataset.source)) {
+            tree[dataset.source] = {
+                "text": dataset["source-name"],
+                "name": dataset.source,
+                "catalog": "catalog",
+                "nodes": []
+            };
+        }
+        var node = {
+            "text": dataset.text,
+            "name": dataset.name,
+            "catalog": dataset.source,
+            "data": dataset["dataset-schema"]
+        };
+        tree[node.catalog]["nodes"].push(node);
+    });
+    _.map(tree, function(node, key) {
+        tree_arr.push(node);
+    });
+    return tree_arr;
+}
+
 module.exports.router = router;
+//module.exports.transDatasetToTree = transDatasetToTree;
