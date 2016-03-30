@@ -51,7 +51,7 @@ function showList(runnings) {
         }
         record += status;
         record += `<td>${running['start']==undefined?new Date().toLocaleString():new Date(running['start']).toLocaleString()}</td>`;
-        record += `<td>${running['finish']==undefined?new Date().toLocaleString():new Date(running['finish']).toLocaleString()}</td>`;
+        record += `<td>${running['finish']==undefined?"-":new Date(running['finish']).toLocaleString()}</td>`;
         record = `<tr>${record}</tr>`;
         $('#list-records-content').append(record);
     }
@@ -70,9 +70,21 @@ function showInWebSite(running, helper) {
     $('#helper-text').text(helper['text']);
     $('#type').text(running['type']);
     //$('#exec').text(running['exec']);
-    $('#user').text(running['user']);
+    //$('#user').text(running['user']);
     $('#type').text(running['type']);
     $('#id').text(running['_id']);
+    $('#start').text(running['start']==undefined?new Date().toLocaleString():new Date(running['start']).toLocaleString());
+    $('#finish').text(running['finish']==undefined?"-":new Date(running['finish']).toLocaleString());
+    var status = `<td><span class="label label-success">已完成</span></td>`;
+    if (isEmpty(running['finish'])) {
+        status = `<td>
+                    <div class="progress progress-xs">
+                        <div class="progress-bar progress-bar-primary" style="width: ${Math.random()*100}%">
+                        </div>
+                    </div>
+                  </td>`;
+    }
+    $('#status').html(status);
 
     for (var argument of helper['arguments']) {
         var content = `
