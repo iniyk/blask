@@ -6,27 +6,27 @@
     "overview": {
       "name": "overview",
       "title": "总览",
-      "href": "./model",
+      "href": "/demo/model",
       "icon": "fa fa-dashboard"
     },
     "manage": {
       "name": "manage",
-      "title": "转换模型管理",
+      "title": "挖掘模型管理",
       "href": "#",
       "icon": "fa fa-plug",
       "items": {
         "add": {
-          "name": "add-exchange",
+          "name": "add-model",
           "title": "增加模型",
           "href": "#",
           "icon": "fa fa-plus",
           "attrs": {
             "data-toggle": "modal",
-            "data-target": "#modalAddExchange"
+            "data-target": "#modalAddModel"
           }
         },
         "list": {
-          "name": "list-exchange",
+          "name": "list-model",
           "title": "列出所有模型",
           "href": "#",
           "icon": "fa fa-list"
@@ -36,13 +36,13 @@
     "start": {
       "name": "start",
       "title": "开始新挖掘",
-      "href": "./digging",
+      "href": "/demo/digging",
       "icon": "fa fa-cubes"
     },
     "status": {
       "name": "status",
       "title": "查看挖掘进度",
-      "href": "./digging/status",
+      "href": "/demo/digging/status",
       "icon": "fa fa-tachometer"
     },
     "settings": {
