@@ -6,7 +6,7 @@
         "overview": {
             "name": "overview",
             "title": "总览",
-            "href": "./model",
+            "href": "/demo/model",
             "icon": "fa fa-dashboard"
         },
         "manage": {
@@ -36,13 +36,13 @@
         "start": {
             "name": "start",
             "title": "开始新挖掘",
-            "href": "./digging",
+            "href": "/demo/digging",
             "icon": "fa fa-cubes"
         },
         "status": {
             "name": "status",
             "title": "查看挖掘进度",
-            "href": "#",
+            "href": "/demo/digging/status",
             "icon": "fa fa-tachometer"
         },
         "settings": {

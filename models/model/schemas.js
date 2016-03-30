@@ -57,6 +57,8 @@ var schemas = {
         "type": String,
         "exec": String,
         "user": String,
+        "start": Date,
+        "finish": Date,
         "input": {},
         "output": {}
     }

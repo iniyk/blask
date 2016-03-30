@@ -6,7 +6,9 @@ function Pages(router_now) {
     var Common = require('./Common');
 
     var pages = {};
-    pages.page_list = ['index', 'source', 'exchange', 'model', 'schema', 'display', 'dataset', 'digging'];
+    pages.page_list = ['index', 'source', 'exchange', 'model', 'schema', 'display',
+                       'dataset',
+                       'digging', 'digging/status'];
 
     _.map(pages.page_list, function(name, index) {
         pages[name] =Common.readJsonSync(`./views/json/${name}.json`);
