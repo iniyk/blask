@@ -1,13 +1,62 @@
 /**
  * Created by iniyk on 16/3/29.
  */
-var debug_running;
+function isEmpty(obj) {
+    if (obj == undefined) return true;
+    if (obj == null) return true;
+    if (obj == '') return true;
+    for (var prop in obj) {
+        return false;
+    }
+    return true;
+}
 
 $(document).ready(function () {
-    getData(function(running, helper) {
-        showInWebSite(running, helper);
-    });
+    var role = $('#status-content').attr('role');
+    if (role == "content") {
+        getData(function (running, helper) {
+            showInWebSite(running, helper);
+        });
+    } else if (role == "list") {
+        getListData(function (runnings) {
+            showList(runnings);
+        });
+    }
 });
+
+function getListData(callback) {
+    var running_data_req = $('#status-content').attr('source');
+    $.get(running_data_req, function(runnings, status) {
+        callback(runnings);
+    });
+}
+
+function showList(runnings) {
+    for (var running of runnings) {
+        var record = '';
+        record += ` <td>
+                        <a href="/demo/digging/status?id=${running['_id']}">${running['_id']}</a>
+                    </td>`;
+        record += `<td>${running['model']}</td>`;
+        //record += `<td>${running['type']}</td>`;
+        //record += `<td>${running['user']}</td>`;
+        var status = `<td><span class="label label-success">已完成</span></td>`;
+        if (isEmpty(running.finish)) {
+            status = `<td>
+                            <div class="progress progress-xs">
+                                <div class="progress-bar progress-bar-primary" style="width: ${Math.random()*100}%">
+                                </div>
+                            </div>
+                          </td>`;
+        }
+        record += status;
+        record += `<td>${running['start']==undefined?new Date().toLocaleString():new Date(running['start']).toLocaleString()}</td>`;
+        record += `<td>${running['finish']==undefined?new Date().toLocaleString():new Date(running['finish']).toLocaleString()}</td>`;
+        record = `<tr>${record}</tr>`;
+        $('#list-records-content').append(record);
+    }
+    $('#result-table').dataTable();
+}
 
 function getData(callback) {
     var running_data_req = $('#status-content').attr('source');
@@ -18,7 +67,6 @@ function getData(callback) {
 }
 
 function showInWebSite(running, helper) {
-    debug_running = running;
     $('#helper-text').text(helper['text']);
     $('#type').text(running['type']);
     //$('#exec').text(running['exec']);
