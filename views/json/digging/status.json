@@ -1,6 +1,7 @@
 {
   "name": "digging/status",
   "title": "数据挖掘进度",
+  "is_resource": true,
   "icon": "fa fa-random",
   "sidebar": {
     "overview": {

@@ -33,12 +33,17 @@ _.map(pages.page_list, function (name, index) {
     });
     page.pages = pages;
     router.get('/' + page.name, function(req, res, next) {
-        if (!Common.isEmpty(req.param('id'))) {
-            page.request = {};
-            page.request.id = req.param('id').replace(/\//gi, '');
-        }
+        page.request = undefined;
         res.render('demo/main', {page: page});
     });
+    //logger.debug(`Page ${page.name} is resource : ${page.is_resource}`);
+    if (page.is_resource) {
+        router.get(`/${page.name}/:id([a-z0-9]+)`, function(req, res, next) {
+            page.request = {};
+            page.request.id = req.params.id;
+            res.render('demo/main', {page: page});
+        });
+    }
 });
 
 module.exports = router;

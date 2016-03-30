@@ -35,7 +35,7 @@ function showList(runnings) {
     for (var running of runnings) {
         var record = '';
         record += ` <td>
-                        <a href="/demo/digging/status?id=${running['_id']}">${running['_id']}</a>
+                        <a href="/demo/digging/status/${running['_id']}">${running['_id']}</a>
                     </td>`;
         record += `<td>${running['model']}</td>`;
         //record += `<td>${running['type']}</td>`;

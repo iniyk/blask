@@ -59,7 +59,7 @@
             "model_list": "/helper",
             "dataset_list": "/data",
             "post": "/digging",
-            "after-post": "/demo/digging/status?id=",
+            "after-post": "/demo/digging/status/",
             "titles":
             [
                 "Step 1 - 模型选择",
