@@ -1,23 +1,23 @@
 <section class="content-header">
     <h1>
-        数据挖掘
+        数据挖掘进度
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-folder-open"></i> 数据挖掘</a></li>
-        <li><a href="#">挖掘配置</a></li>
+        <li><a href="#">挖掘进度</a></li>
     </ol>
 </section>
 <section class="content">
-    <div class="col-md-12">
+    <div class="col-md-12" id="status-content" source="<%= page.content['status-panel']['data-source-head']+page.request.id %>">
         <div class="row">
             <div class="col-md-4">
-                <div class="box box-primary" id="digging-model-box" source="/helper">
+                <div class="box box-default">
                     <div class="box-header with-border">
                         <h3 class="box-title">模型参数</h3>
                     </div>
                     <div class="box-body">
                         <table class="table table-bordered">
-                            <thead>
+                            <thead class="label-primary">
                                 <th>模型: </th>
                                 <th id="helper-text"></th>
                             </thead>
@@ -30,10 +30,10 @@
                                     <td>类型: </td>
                                     <td id="type"></td>
                                 </tr>
-                                <tr>
-                                    <td>执行脚本: </td>
-                                    <td id="exec"></td>
-                                </tr>
+                                <!--<tr>-->
+                                    <!--<td>执行脚本: </td>-->
+                                    <!--<td id="exec"></td>-->
+                                <!--</tr>-->
                                 <tr>
                                     <td>发起用户: </td>
                                     <td id="user"></td>
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <div class="box box-primary" id="digging-model-box" source="/helper">
+                <div class="box box-solid box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title">结果</h3>
                     </div>

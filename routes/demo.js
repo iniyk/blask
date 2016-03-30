@@ -7,6 +7,8 @@ var router = express.Router();
 var _ = require('underscore');
 
 var Common = require('../models/Common');
+var Logger = require('../models/Logger')();
+var logger = Logger.handle("RouterDemo");
 var PageController = require('../models/PageController');
 var router_now = '/demo/';
 
@@ -31,9 +33,11 @@ _.map(pages.page_list, function (name, index) {
     });
     page.pages = pages;
     router.get('/' + page.name, function(req, res, next) {
-        if (!Common.isEmpty(req.body.id)) {
+        logger.debug(req.param('id'));
+        if (!Common.isEmpty(req.param('id'))) {
             page.request = {};
-            page.request.id = req.body.id;
+            page.request.id = req.param('id')
+            logger.debug(page.request);
         }
         res.render('demo/main', {page: page});
     });
