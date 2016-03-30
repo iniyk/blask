@@ -1,0 +1,68 @@
+{
+  "name": "digging/status",
+  "title": "数据挖掘进度",
+  "is_resource": true,
+  "icon": "fa fa-random",
+  "sidebar": {
+    "overview": {
+      "name": "overview",
+      "title": "总览",
+      "href": "/demo/model",
+      "icon": "fa fa-dashboard"
+    },
+    "manage": {
+      "name": "manage",
+      "title": "挖掘模型管理",
+      "href": "#",
+      "icon": "fa fa-plug",
+      "items": {
+        "add": {
+          "name": "add-model",
+          "title": "增加模型",
+          "href": "#",
+          "icon": "fa fa-plus",
+          "attrs": {
+            "data-toggle": "modal",
+            "data-target": "#modalAddModel"
+          }
+        },
+        "list": {
+          "name": "list-model",
+          "title": "列出所有模型",
+          "href": "#",
+          "icon": "fa fa-list"
+        }
+      }
+    },
+    "start": {
+      "name": "start",
+      "title": "开始新挖掘",
+      "href": "/demo/digging",
+      "icon": "fa fa-cubes"
+    },
+    "status": {
+      "name": "status",
+      "title": "查看挖掘进度",
+      "href": "/demo/digging/status",
+      "icon": "fa fa-tachometer"
+    },
+    "settings": {
+      "name": "settings",
+      "title": "设置",
+      "href": "#",
+      "icon": "fa fa-gear"
+    }
+  },
+  "content": {
+    "status-panel": {
+      "name": "status-panel",
+      "data-source-head": "/digging/status/"
+    },
+    "status-all": {
+
+    }
+  },
+  "script": [
+    "digging_status.js"
+  ]
+}

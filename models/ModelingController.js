@@ -53,7 +53,14 @@ function init() {
             var RunningModel = MongoController.gModel('running', 'auto');
             RunningModel.findOne({_id: req.params.id}, function (err, running) {
                 if (! err) {
-                    res.json(running);
+                    var HelperModel = MongoController.gModel('model', 'auto');
+                    HelperModel.findOne({name: running.model}, function(err, helper) {
+                        var res_json = {
+                            running: running,
+                            helper: helper
+                        };
+                        res.json(res_json);
+                    });
                 } else {
                     logger.error(`On find running status ${req.params.id}.`);
                     logger.error(err);
