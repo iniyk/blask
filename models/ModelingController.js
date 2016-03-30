@@ -101,7 +101,8 @@ function execModel(data_post, callback) {  //callback is for return run_id
         "input": {
             "fields": {}
         },
-        "output": {}
+        "output": {},
+        "start": new Date()
     };
     logger.debug('Field Selected:');
     logger.debug(data_post.fields_selected);
@@ -217,10 +218,12 @@ function startExec(running, model_running) {
                                         if (! err) {
                                             running.output = result;
                                             model_running.output = result;
+                                            model_running.finish = new Date();
                                             model_running.markModified('output');
                                             model_running.save(function(err) {
                                                 if (!err) {
                                                     //TODO: I think it should do something, but I couldn't realize what should it do here.
+                                                    logger.info(`Run ID ${run_id} has finished.`);
                                                 } else {
                                                     //Error on saving running result to database.
                                                     logger.error("Error on writing result to database.");
