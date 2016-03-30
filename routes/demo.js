@@ -33,11 +33,9 @@ _.map(pages.page_list, function (name, index) {
     });
     page.pages = pages;
     router.get('/' + page.name, function(req, res, next) {
-        logger.debug(req.param('id'));
         if (!Common.isEmpty(req.param('id'))) {
             page.request = {};
-            page.request.id = req.param('id')
-            logger.debug(page.request);
+            page.request.id = req.param('id').replace(/\//gi, '');
         }
         res.render('demo/main', {page: page});
     });
