@@ -1,0 +1,16 @@
+<section class="content-header">
+    <h1>
+        数据集管理
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-folder-open"></i> 数据集管理</a></li>
+        <li><a href="#">总览</a></li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <%- include('modules/json_table.ejs', {table: page.content['table-dataset']}); %>
+        </div>
+    </div>
+</section>

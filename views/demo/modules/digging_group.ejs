@@ -1,0 +1,105 @@
+<div class="col-md-12">
+    <div class="row">
+        <div class="box box-solid box-primary"
+             id="digging-model-box"
+             source="<%= selector["model_list"] %>" >
+            <div class="box-header with-border">
+                <h3 class="box-title"><%- selector["titles"][0] %></h3>
+            </div>
+            <div class="box-body collapse in">
+                <div class="row model-selector">
+                    <div class="col-md-4">
+                        <h4><i class="fa fa-cubes"></i>&nbsp;&nbsp;算法与模型选择</h4>
+                        <div id="model-selector">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <h4><i class="fa fa-comment"></i>&nbsp;&nbsp;说明</h4>
+                        <div id="model-description">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer collapse in">
+                <div class="btn-group pull-right">
+                    <a type="button" class="btn btn-primary" href="javascript:void(0)" id="btn-model-next">下一步</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="box box-solid box-primary"
+             id="digging-fields-box"
+             source="<%= selector["dataset_list"] %>" >
+            <div class="box-header with-border">
+                <h3 class="box-title"><%- selector["titles"][1] %></h3>
+            </div>
+            <div class="box-body collapse">
+                <div class="row order-selector" >
+                    <div class="col-md-4">
+                        <h4><i class="fa fa-database"></i>&nbsp;&nbsp;数据集</h4>
+                        <div id="dataset-selector">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h4><i class="fa fa-columns"></i>&nbsp;&nbsp;字段</h4>
+                        <ul id="fields-selector" class="list-group in-selector">
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h4><i class="fa fa-align-justify"></i>&nbsp;&nbsp;模型参数字段</h4>
+                        <ul id="fields-result" class="list-group" style="list-style-type: none">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer collapse">
+                <div class="btn-group pull-right">
+                    <a type="button" class="btn btn-default" href="javascript:void(0)" id="btn-fields-prev">上一步</a>
+                    <a type="button" class="btn btn-primary" href="javascript:void(0)" id="btn-fields-next">下一步</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="box box-solid box-primary"
+             id="digging-arguments-box"
+             source="<%= selector["dataset_list"] %>" >
+            <div class="box-header with-border">
+                <h3 class="box-title"><%- selector["titles"][2] %></h3>
+            </div>
+            <div class="box-body collapse">
+                <div class="col-md-8">
+                    <h4><i class="fa fa-share-alt"></i> 参数设置</h4>
+                    <div class="row">
+                        <form id="arguments-form" role="form">
+                            <div class="col-md-6 arguments-form"></div>
+                            <div class="col-md-6 arguments-form"></div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4><i class="fa fa-sign-out"></i> 结果预览</h4>
+                    <ul class="list-group" id="model-result"></ul>
+                </div>
+            </div>
+            <div class="box-footer collapse">
+                <div class="btn-group pull-right">
+                    <a type="button" class="btn btn-default" href="javascript:void(0)" id="btn-arguments-prev">上一步</a>
+                    <a type="button" class="btn btn-primary" href="javascript:void(0)" id="btn-arguments-submit">提交</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+<div class="col-md-4">
+    <div class="box box-solid box-default"
+         id="digging-arguments-box">
+        <div class="box-header with-border">
+            <h3 class="box-title">模型字段说明</h3>
+        </div>
+        <div class="box-body">
+        </div>
+    </div>
+</div>-->

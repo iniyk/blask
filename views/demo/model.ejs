@@ -1,0 +1,20 @@
+<section class="content-header">
+    <h1>
+        数据挖掘
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dollar"></i> 数据挖掘</a></li>
+        <li><a href="#">总览</a></li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-4">
+            <%- include('modules/tree_selector', {tree: page.content['model-selector']}); %>
+        </div>
+        <div class="col-md-8">
+            <%- include('modules/table.ejs', {table:  page.content['digging-table']}); %>
+            <%- include('modules/table.ejs', {table:  page.content['warehouse-table']}); %>
+        </div>
+    </div>
+</section>

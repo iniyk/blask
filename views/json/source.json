@@ -1,0 +1,61 @@
+{
+    "name": "source",
+    "title": "数据源管理",
+    "icon": "fa fa-database",
+    "sidebar": {
+        "overview": {
+            "name": "overview",
+            "title": "总览",
+            "href": "./source",
+            "icon": "fa fa-dashboard"
+        },
+        "list": {
+            "name": "list",
+            "title": "显示全部数据源",
+            "href": "#",
+            "icon": "fa fa-list"
+        },
+        "add": {
+            "name": "add",
+            "title": "添加数据源",
+            "href": "#",
+            "icon": "fa fa-plus",
+            "items": {
+                "oracle": {
+                    "name": "add-oracle",
+                    "title": "Oracle数据源",
+                    "href": "#",
+                    "icon": "fa fa-circle-o",
+                    "attrs": {
+                        "data-toggle": "modal",
+                        "data-target": "#modalAddMysql"
+                    }
+                },
+                "mysql": {
+                    "name": "add-mysql",
+                    "title": "MySQL数据源",
+                    "href": "#",
+                    "icon": "fa fa-circle-o"
+                },
+                "mongodb": {
+                    "name": "add-mongodb",
+                    "title": "MongoDB数据源",
+                    "href": "#",
+                    "icon": "fa fa-circle-o"
+                }
+            }
+        },
+        "upload": {
+            "name": "upload",
+            "title": "由文件上传",
+            "href": "#",
+            "icon": "fa fa-upload"
+        },
+        "settings": {
+            "name": "settings",
+            "title": "设置",
+            "href": "#",
+            "icon": "fa fa-gear"
+        }
+    }
+}

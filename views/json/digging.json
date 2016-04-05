@@ -1,0 +1,74 @@
+{
+    "name": "digging",
+    "title": "数据转换",
+    "icon": "fa fa-random",
+    "sidebar": {
+        "overview": {
+            "name": "overview",
+            "title": "总览",
+            "href": "/demo/model",
+            "icon": "fa fa-dashboard"
+        },
+        "manage": {
+            "name": "manage",
+            "title": "挖掘模型管理",
+            "href": "#",
+            "icon": "fa fa-plug",
+            "items": {
+                "add": {
+                    "name": "add-model",
+                    "title": "增加模型",
+                    "href": "#",
+                    "icon": "fa fa-plus",
+                    "attrs": {
+                        "data-toggle": "modal",
+                        "data-target": "#modalAddModel"
+                    }
+                },
+                "list": {
+                    "name": "list-model",
+                    "title": "列出所有模型",
+                    "href": "#",
+                    "icon": "fa fa-list"
+                }
+            }
+        },
+        "start": {
+            "name": "start",
+            "title": "开始新挖掘",
+            "href": "/demo/digging",
+            "icon": "fa fa-cubes"
+        },
+        "status": {
+            "name": "status",
+            "title": "查看挖掘进度",
+            "href": "/demo/digging/status",
+            "icon": "fa fa-tachometer"
+        },
+        "settings": {
+            "name": "settings",
+            "title": "设置",
+            "href": "#",
+            "icon": "fa fa-gear"
+        }
+    },
+    "content": {
+        "digging-group": {
+            "name": "digging-group",
+            "type": "digging_group",
+            "model_list": "/helper",
+            "dataset_list": "/data",
+            "post": "/digging",
+            "after-post": "/demo/digging/status/",
+            "titles":
+            [
+                "Step 1 - 模型选择",
+                "Step 2 - 字段选择",
+                "Step 3 - 参数配置"
+            ]
+        }
+    },
+    "script": [
+        "digging.js"
+    ]
+}

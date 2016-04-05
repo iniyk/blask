@@ -1,0 +1,46 @@
+<%
+/*
+var table_example = {
+    name: 'table-warehouse',
+    title: '当前数据仓库',
+    color: 'primary',
+    source: '/json/schemas.json',
+    buttons: {
+        refresh: {
+            title: "<i class=\"fa fa-refresh\"></i>",
+            type: 'btn btn-default btn-refresh',
+            for: 'table-warehouse'，
+            href: '#'
+        }
+    }
+};
+*/
+%>
+
+<div class="box box-<%= table.color %>">
+    <div class="box-header">
+        <h3 class="box-title"><%- table.title %></h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive no-padding">
+        <table id="<%= table.name %>" class="table table-hover table table-striped table-bordered table-ajax" source="<%= table.source %>">
+            <thead>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer">
+        <div class="btn-group pull-right">
+            <%  for (var btn_name in table.buttons) { %>
+            <a type="button" class="<%= table.buttons[btn_name].type%>"
+               id="<%= `${table.name}-${btn_name}` %>"
+               href="<%= table.buttons[btn_name].href%>">
+                <%- table.buttons[btn_name].title %>
+            </a>
+            <%  } %>
+        </div>
+    </div>
+</div>
+<!-- /.box -->

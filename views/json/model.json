@@ -1,0 +1,122 @@
+{
+    "name": "model",
+    "title": "数据挖掘",
+    "icon": "fa fa-dollar",
+    "sidebar": {
+        "overview": {
+            "name": "overview",
+            "title": "总览",
+            "href": "/demo/model",
+            "icon": "fa fa-dashboard"
+        },
+        "manage": {
+            "name": "manage",
+            "title": "挖掘模型管理",
+            "href": "#",
+            "icon": "fa fa-plug",
+            "items": {
+                "add": {
+                    "name": "add-model",
+                    "title": "增加模型",
+                    "href": "#",
+                    "icon": "fa fa-plus",
+                    "attrs": {
+                        "data-toggle": "modal",
+                        "data-target": "#modalAddModel"
+                    }
+                },
+                "list": {
+                    "name": "list-model",
+                    "title": "列出所有模型",
+                    "href": "#",
+                    "icon": "fa fa-list"
+                }
+            }
+        },
+        "start": {
+            "name": "start",
+            "title": "开始新挖掘",
+            "href": "/demo/digging",
+            "icon": "fa fa-cubes"
+        },
+        "status": {
+            "name": "status",
+            "title": "查看挖掘进度",
+            "href": "/demo/digging/status",
+            "icon": "fa fa-tachometer"
+        },
+        "settings": {
+            "name": "settings",
+            "title": "设置",
+            "href": "#",
+            "icon": "fa fa-gear"
+        }
+    },
+    "content": {
+        "model-selector" : {
+            "name": "model-selector",
+            "title": "数据挖掘模型",
+            "type": "tree_selector",
+            "color": "primary"
+        },
+        "digging-table" : {
+            "name": "digging-table",
+            "title": "正在进行的挖掘",
+            "color": "primary",
+            "type": "table",
+            "data": {
+                "ID": ["183", "219", "312", "314"],
+                "数据集名称": ["Retail", "House-price", "Irises", "Traffic"],
+                "规模": ["12Mb", "12Gb", "12Kb", "12byte"],
+                "挖掘进度": [
+                    "<div class=\"progress progress-xs\"><div class=\"progress-bar progress-bar-primary\" style=\"width: 90%\"></div></div>",
+                    "<div class=\"progress progress-xs\"><div class=\"progress-bar progress-bar-primary\" style=\"width: 40%\"></div></div>",
+                    "<span class=\"label label-success\">完成</span>",
+                    "<span class=\"label label-danger\">失败</span>"
+                ],
+                "使用模型": ["Apriori算法", "FP Growth", "Naive Bayes classifier", "K-means"],
+                "备注": ["零售数据.", "北京市近三年商品房交易数据.", "鸢尾花数据.", "贵州市一周交通统计数据."]
+            },
+            "buttons": {
+                "refresh": {
+                    "title": "<i class=\"fa fa-refresh\"></i>",
+                    "type": "btn btn-default",
+                    "href": "#"
+                },
+                "more": {
+                    "title": "<i class=\"fa fa-ellipsis-h\"></i>",
+                    "type": "btn btn-default",
+                    "href": "#"
+                }
+            }
+        },
+        "warehouse-table": {
+            "name": "warehouse-table",
+            "title": "数据仓库",
+            "color": "primary",
+            "type": "table",
+            "data": {
+                "ID": ["183", "219", "312", "314"],
+                "数据集名称": ["Retail", "House-price", "Irises", "Traffic"],
+                "规模": ["12Mb", "12Gb", "12Kb", "12byte"],
+                "更新日期": ["11-7-2014", "11-7-2014", "11-7-2014", "11-7-2014"],
+                "备注": ["零售数据.", "北京市近三年商品房交易数据.", "鸢尾花数据.", "贵州市一周交通统计数据."]
+            },
+            "buttons": {
+                "refresh": {
+                    "title": "<i class=\"fa fa-refresh\"></i>",
+                    "type": "btn btn-default",
+                    "href": "#"
+                },
+                "more": {
+                    "title": "<i class=\"fa fa-ellipsis-h\"></i>",
+                    "type": "btn btn-default",
+                    "href": "#"
+                }
+            }
+        }
+    },
+    "script": [
+        "model.js"
+    ]
+}

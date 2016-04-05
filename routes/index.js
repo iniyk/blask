@@ -2,7 +2,27 @@ var express = require('express');
 var router = express.Router();
 var Panel = require("../models/Panel");
 
-/* GET home page. */
+var users = require('./users');
+var demo = require('./demo');
+var json_router = require('./json');
+var mongo_controller = require('../models/MongoController');
+var data_controller = require('../models/DataController');
+var helper_controller = require('../models/HelperController');
+var test_controller = require('../models/TestController');
+var modeling_controller = require('../models/ModelingController');
+
+mongo_controller.init();
+
+router.use('/users', users);
+router.use('/mongodb', mongo_controller.router);
+router.use('/data', data_controller.router);
+router.use('/helper', helper_controller.router);
+router.use('/test', test_controller.router);
+router.use('/digging', modeling_controller.router);
+router.use('/demo', demo);
+router.use('/json', json_router);
+
+/* GET home page. */    
 router.get('/', function(req, res, next) {
     res.render('index', { project_name: 'Blask', current_page: 'index'});
 });
@@ -15,10 +35,6 @@ router.get('/data', function(req, res, next) {
     datas.push(Panel.Panel(1, "A Data Folder", "Dataset Folder", "fa fa-folder-open fa-5x", "panel panel-primary"));
 
     res.render('data', { project_name: 'Blask', title: 'Data Management', current_page: 'data', models: datas});
-});
-
-router.get('/data/u/:uid(\\d+)', function(req, res, next) {
-    res.render('data/data', { project_name: 'Blask', title: 'Data Management', current_page: 'data', uid: req.params.uid});
 });
 
 /* GET data mining modules page. */

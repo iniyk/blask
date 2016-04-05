@@ -1,0 +1,87 @@
+<%
+function is_empty(obj) {
+    if (obj == undefined) return true;
+    if (obj == null) return true;
+    for (var prop in obj) {
+        return false;
+    }
+    return true;
+}
+
+function item_tree(item) {
+    var attr_str = gAttrs(item.attrs);
+%>
+    <li>
+        <a href="<%= item.href %>" <%= attr_str %> >
+            <i class="<%= item.icon %>"></i>
+            <%= item.title %>
+            <%
+                if (!is_empty(item.items)) {
+            %>
+                    <ul class="treeview-menu">
+                        <%
+                            for (var item_key_next in item.items) {
+                                var item_next =item.items[item_key_next];
+                                item_tree(item_next);
+                            }
+                        %>
+                    </ul>
+            <%
+                }
+            %>
+        </a>
+    </li>
+<%
+}
+
+function gAttrs(attrs) {
+    if (is_empty(attrs)) {
+        return '';
+    }
+    var ret_class_str = '';
+    for (var attr_name in attrs) {
+        ret_class_str += ` ${attr_name} = `;
+        ret_class_str += `${attrs[attr_name]}`;
+    }
+    return ret_class_str;
+}
+%>
+<section class="sidebar">
+    <ul class="sidebar-menu">
+        <%
+            for (var li_key in page.sidebar) {
+                var li = page.sidebar[li_key];
+                var attr_str = gAttrs(li.attrs);
+        %>
+                <li class="treeview">
+                    <a href="<%= li.href %>" <%= attr_str %> >
+                        <i class="<%= li.icon %>"></i>
+                        <span><%= li.title %></span>
+                        <%
+                            if (!is_empty(li.items)) {
+                        %>
+                                <i class="fa fa-angle-left pull-right"></i>
+                        <%
+                            }
+                        %>
+                    </a>
+                    <%
+                        if (!is_empty(li.items)) {
+                    %>
+                            <ul class="treeview-menu">
+                    <%
+                            for (var item_key in li.items) {
+                                var item = li.items[item_key];
+                                item_tree(item);
+                            }
+                    %>
+                            </ul>
+                    <%
+                        }
+                    %>
+                </li>
+        <%
+            }
+        %>
+    </ul>
+</section>

@@ -1,0 +1,233 @@
+<!-- TODO
+    Link to Oracle -> Select cols.
+    Show all data sources.
+    Show one data source's all table.
+
+    DataSet ->  Show as a table.
+                Show in charts.
+                Show schema.
+-->
+
+<%
+var form_add_oracle = {
+    name: 'addOracle',
+    title: '添加Oracle数据库',
+    attrs: {
+        action: '#',
+        method: 'post',
+        class: 'form-horizontal'
+    },
+    container: 'modal',
+    buttons: {
+        cancel: {
+            'title': '取消',
+            'type': 'button',
+            'class': 'btn-default',
+            'data-dismiss': 'modal'
+        },
+        submit: {
+            'title': '连接',
+            'type': 'submit',
+            'class': 'btn-primary'
+        }
+    },
+    fields: {
+        'oracleURL': {
+            type: 'url',
+            title: '数据库地址',
+            auto: '数据库地址'
+        },
+        'oraclePort': {
+            type: 'number',
+            title: '数据库端口',
+            auto: '数据库端口'
+        },
+        'oracleDatabase': {
+            type: 'text',
+            title: '数据库名称',
+            auto: '数据库名称'
+        },
+        'oracleUser': {
+            type: 'text',
+            title: '用户名',
+            auto: '用户名'
+        },
+        'oraclePassword': {
+            type: 'password',
+            title: '密码',
+            auto: '密码'
+        }
+    }
+};
+
+var modal_add_oracle = {
+    name: 'modalAddMysql',
+    title: '添加Oracle数据库',
+    role: {
+        tab: 'form',
+        data: form_add_oracle
+    },
+    attrs: {
+        tabindex: '-1',
+        class: 'modal fade'
+    }
+};
+
+var table_warehouse = {
+    name: 'table-warehouse',
+    title: '当前数据仓库',
+    color: 'primary',
+    data: {
+        'ID': ['183', '219', '312', '314'],
+        '数据集名称': ['Retail', 'House-price', 'Irises', 'Traffic'],
+        '规模': ['12Mb', '12Gb', '12Kb', '12byte'],
+        '更新日期': ['11-7-2014', '11-7-2014', '11-7-2014', '11-7-2014']
+    },
+    buttons: {
+        refresh: {
+            title: "<i class=\"fa fa-refresh\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        },
+        more: {
+            title: "<i class=\"fa fa-ellipsis-h\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        }
+    }
+};
+
+var table_tmp = {
+    name: 'table-tmp',
+    title: '暂存库',
+    color: 'primary',
+    data: {
+        'ID': ['183', '219', '312', '314'],
+        '数据集名称': ['Retail', 'House-price', 'Irises', 'Traffic'],
+        '规模': ['12Mb', '12Gb', '12Kb', '12byte'],
+        '导入进度': [
+                "<div class=\"progress progress-xs\"><div class=\"progress-bar progress-bar-primary\" style=\"width: 90%\"></div></div>",
+                "<div class=\"progress progress-xs\"><div class=\"progress-bar progress-bar-primary\" style=\"width: 40%\"></div></div>",
+                "<span class=\"label label-success\">完成</span>",
+                "<span class=\"label label-danger\">失败</span>"
+        ],
+        '备注': ['零售数据.', '北京市近三年商品房交易数据.', '鸢尾花数据.', '贵州市一周交通统计数据.']
+    },
+    buttons: {
+        refresh: {
+            title: "<i class=\"fa fa-refresh\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        },
+        more: {
+            title: "<i class=\"fa fa-ellipsis-h\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        }
+    }
+};
+
+var table_education = {
+    name: 'table-education',
+    title: "教务管理系统 <small><span class=\"label label-success\">连接正常</span></small>",
+    color: 'default',
+    data: {
+        '表名': ['student', 'teacher', 'class'],
+        '字段数': [12, 14, 8],
+        '记录数': [6313, 216, 173],
+        '备注': ['学生基本信息', '教师基本信息', '课程信息']
+    },
+    buttons: {
+        refresh: {
+            title: "<i class=\"fa fa-refresh\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        },
+        more: {
+            title: "<i class=\"fa fa-ellipsis-h\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        }
+    }
+}
+
+var table_failed = {
+    name: 'table-failed',
+    title: "北医三院档案库 <small><span class=\"label label-danger\">连接正常</span></small>",
+    color: 'default',
+    data: {
+        '表名': ['&nbsp;'],
+        '字段数': ['&nbsp;'],
+        '记录数': ['&nbsp;'],
+        '备注': ['&nbsp;']
+    },
+    'tr-style': ['danger'],
+    buttons: {
+        refresh: {
+            title: "<i class=\"fa fa-refresh\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        },
+        more: {
+            title: "<i class=\"fa fa-ellipsis-h\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        }
+    }
+}
+
+var table_trade = {
+    name: 'table-trade',
+    title: "西安市房地产交易系统 <small><span class=\"label label-success\">连接正常</span></small>",
+    color: 'default',
+    data: {
+        '表名': ['house', 'owner', 'trade', 'rent', 'other'],
+        '字段数': [15, 14, 8, 10, 13],
+        '记录数': [738034, 123824, 6313, 216, 173],
+        '备注': ['房产信息', '业主信息', '房产交易情况', '房屋出租情况', '其它']
+    },
+    buttons: {
+        refresh: {
+            title: "<i class=\"fa fa-refresh\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        },
+        more: {
+            title: "<i class=\"fa fa-ellipsis-h\"></i>",
+            type: 'btn btn-default',
+            href: '#'
+        }
+    }
+}
+%>
+
+<section class="content-header">
+    <h1>
+        数据源
+        <a class="btn btn-primary btn-flat btn-xs">全部显示</a>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database"></i> 数据源管理</a></li>
+        <li><a href="#">总览</a></li>
+    </ol>
+</section>
+<section class="content">
+    <%- include('modules/modal.ejs', {modal: modal_add_oracle}); %>
+    <div class="row">
+        <div class="col-md-4">
+            <%- include('modules/table.ejs', {table: table_warehouse}); %>
+        </div>
+        <div class="col-md-8">
+            <%- include('modules/table.ejs', {table: table_tmp}); %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <%- include('modules/table.ejs', {table: table_education}); %>
+            <%- include('modules/table.ejs', {table: table_failed}); %>
+        </div>
+        <div class="col-md-6">
+            <%- include('modules/table.ejs', {table: table_trade}); %>
+        </div>
+    </div>
+</section>
