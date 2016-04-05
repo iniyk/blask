@@ -5,7 +5,7 @@ function refresh_a_table(table_element) {
     var req_url = table_element.attr('source');
     $.get(req_url, function(table, status) {
         if (status == 'success') {
-            table_element.children('thead').text('');
+            table_element.children('thead').html('');
             table_element.children('thead').append('<tr></tr>');
             table_element.children('tbody').text('');
             for (var data_head in table.schema) {

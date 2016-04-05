@@ -15,7 +15,9 @@ $(document).ready(function () {
     var role = $('#status-content').attr('role');
     if (role == "content") {
         getData(function (running, helper) {
-            showInWebSite(running, helper);
+            showInWebSite(running, helper, function(running, helper) {
+                setupDatabaseModel(running, helper);
+            });
         });
     } else if (role == "list") {
         getListData(function (runnings) {
@@ -66,7 +68,7 @@ function getData(callback) {
     });
 }
 
-function showInWebSite(running, helper) {
+function showInWebSite(running, helper, callback) {
     $('#helper-text').text(helper['text']);
     $('#type').text(running['type']);
     //$('#exec').text(running['exec']);
@@ -122,4 +124,50 @@ function showInWebSite(running, helper) {
         $('#output-records-content').append(tr);
     }
     $('#result-table').DataTable();
+
+    callback(running, helper);
+}
+
+function setupDatabaseModel(running, helper) {
+    $("#btn-model-database").click(function() {
+        $('#model-to-database').modal('show');
+        $('#database-tbody').html('');
+        for (var field_name in running.output) {
+            //var field = running['output'][field_name];
+            var tr = `
+                <tr>
+                    <td>${field_name}</td>
+                    <td>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" checked="true">导出
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            $('#database-tbody').append(tr);
+        }
+        $('#btn-to-database').click(function() {
+            var table_name = $('#input-collection').val();
+            var req = {
+                name: table_name,
+                data: running.output
+            };
+            $('#model-to-database').modal('hide');
+            $.post('/data/create', req, function(res, status) {
+                $('#status-content').prepend(`
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="alert alert-success alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <h4><i class="icon fa fa-ban"></i> 完成</h4>
+                                导出到数据仓库完成!
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        });
+    });
 }

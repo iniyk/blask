@@ -45,6 +45,17 @@ router.get('/', function(req, res, next) {
     });
 });
 
+router.post('/create', function (req, res, next) {
+    var name = req.body.name;
+    var data = req.body.data;
+    logger.debug(`Post Data:`);
+    logger.debug(req.body);
+
+    registerJson(name, data);
+
+    res.json({status: 'success'});
+});
+
 //POST /data/upload
 router.post('/upload', upload.single('datafile'), function (req, res, next) {
     logger.debug('Upload file : ');
@@ -64,21 +75,22 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                 logger.error('On reading json file.');
                 logger.error(err);
             } else {
-                var keys = _.allKeys(_.first(json_arr));
-                var pairs = _.pairs(_.first(json_arr));
-                var schema = {};
-
-                _.each(pairs, function (pair) {
-                    var key = pair[0], value = pair[1];
-                    schema[key] = value.constructor;
-                });
-
-                // logger.debug(schema);
-                MongoController.registerSchema(name, schema, 'datasets');
-
-                _.each(_.values(json_arr), function (json) {
-                    MongoController.insert('datasets', name, json);
-                });
+                registerJson(name, json_arr);
+                //var keys = _.allKeys(_.first(json_arr));
+                //var pairs = _.pairs(_.first(json_arr));
+                //var schema = {};
+                //
+                //_.each(pairs, function (pair) {
+                //    var key = pair[0], value = pair[1];
+                //    schema[key] = value.constructor;
+                //});
+                //
+                //// logger.debug(schema);
+                //MongoController.registerSchema(name, schema, 'datasets');
+                //
+                //_.each(_.values(json_arr), function (json) {
+                //    MongoController.insert('datasets', name, json);
+                //});
             }
         });
         res.status(201).send({info: 'Upload successed.'});
@@ -145,4 +157,42 @@ function transDatasetToTree(datasets) {
 }
 
 module.exports.router = router;
+module.exports._registerJson = registerJson;
 //module.exports.transDatasetToTree = transDatasetToTree;
+
+function registerJson(name, json_arr) {
+    if (!_.isArray(json_arr)) {
+        var real_json_arr = [];
+        var json_length = 0;
+        for (var field_name in json_arr) {
+            var field = json_arr[field_name];
+            json_length = json_length > field.length ? json_length : field.length;
+        }
+        for (var index=0; index<json_length; index++) {
+            var record = {};
+            for (var field_name in json_arr) {
+                record[field_name] = json_arr[field_name][index];
+            }
+            real_json_arr.push(record);
+        }
+        json_arr = real_json_arr;
+    }
+
+    var keys = _.allKeys(_.first(json_arr));
+    var pairs = _.pairs(_.first(json_arr));
+    var schema = {};
+
+    _.each(pairs, function (pair) {
+        var key = pair[0], value = pair[1];
+        schema[key] = common.gSchema(value.constructor);
+    });
+
+    logger.debug(schema);
+    MongoController.registerSchema(name, schema, 'datasets');
+
+    logger.debug(json_arr[0]);
+
+    _.each(_.values(json_arr), function (json) {
+        MongoController.insert('datasets', name, json);
+    });
+}
