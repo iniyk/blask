@@ -284,29 +284,54 @@ function registerOneDataSet(Model, data, res, callbacks) {
 }
 
 function insert(database, schema, data) {
+    logger.debug(`Insert : ${database}, ${schema}`);
     schema = schema.charAt(0).toLowerCase() + schema.slice(1);
     if (database == 'blask') {
         database = 'auto';
     }
 
-    if (_.has(Models, database)) {
-        if (_.has(Models[database], schema)) {
-            var Model = Models[database][schema];
-        } else {
-            logger.error(`Trying to insert into a unregistered schema of ${schema}.`);
-            return 2;
-        }
-    } else {
-        logger.error(`Trying to insert into a inexistent database of ${database}.`);
-        return 2;
+    logger.debug('gModel for save.');
+    var InsertModel = gModel(schema, database);
+    //if (_.has(Models, database)) {
+    //    if (_.has(Models[database], schema)) {
+    //        Model = Models[database][schema];
+    //    } else {
+    //        logger.error(`Trying to insert into a unregistered schema of ${schema}.`);
+    //    }
+    //} else {
+    //    logger.error(`Trying to insert into a inexistent database of ${database}.`);
+    //}
+
+    logger.debug('Prepare to save.');
+    if (null != InsertModel) {
+        logger.debug('g model for save.');
+        //logger.debug(InsertModel);
+        var model = new InsertModel;
+        logger.debug('g model not stacked.');
+        _.map(data, function(value, key) {
+            if (_.isArray(value)) {
+                for (var item of value) {
+                    model[key].push(item);
+                }
+            } else {
+                model[key] = value;
+            }
+            if (common.shouldMarked(value.constructor)) {
+                model.markModified(key);
+                logger.debug(`Modified Key : ${key}`);
+            }
+        });
+        logger.debug('Start to save.');
+        model.save(function (err) {
+            if (err) {
+                logger.error(`Error in Insert into ${database}`);
+                logger.error(err);
+            } else {
+                logger.debug(`Inserted into collection [${schema}] in database [${database}].`);
+                logger.debug(`Data Head : ${data._id}`);
+            }
+        });
     }
-
-    model_save(Model, data, null, [function(err) {
-        // logger.debug(`Inserted into collection [${schema}] in database [${database}].`);
-        // logger.debug(`Data Head : ${data._id}`);
-    }]);
-
-    return 0;
 }
 
 function gModel(model_name, database) {
