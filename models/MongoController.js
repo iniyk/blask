@@ -17,7 +17,7 @@ var config_datasets = require("./Common").readJsonConfig('./conf.json')['databas
 
 var Models = {};
 
-function model_save(Model, data, res, callbacks) {
+function model_save(Model, data, res) {
     var model = new Model(data);
     model.save(function (err) {
         if (err) {
@@ -27,21 +27,14 @@ function model_save(Model, data, res, callbacks) {
                 res.status(500).send({ error: err });
             }
         } else {
-            // logger.debug('Record has been inserted.');
-            // logger.debug(data);
             if (res != null) {
                 res.status(201).send({ success: 'Record has been inserted.'});
             }
         }
-
-        var next = callbacks.pop();
-        if (next != undefined) {
-            next(Model, data, res, callbacks);
-        }
     });
 }
 
-function model_update(Model, data, res, callbacks) {
+function model_update(Model, data, res) {
     Model.findOneAndUpdate(data.index, data.update, function (err) {
         if (err) {
             logger.error('On find and update step.');
@@ -50,21 +43,14 @@ function model_update(Model, data, res, callbacks) {
                 res.status(500).send({error: err});
             }
         } else {
-            // logger.debug('Record has been updated.');
-            // logger.debug(data);
-            if (res !=null) {
-                res.status(201).send({ success: 'Record has been updated.'});
+            if (res != null) {
+                res.status(201).send({success: 'Record has been updated.'});
             }
-        }
-
-        var next = callbacks.pop();
-        if (next != undefined) {
-            next(Model, data.update, res, callbacks);
         }
     });
 }
 
-function model_remove(Model, data, res, callbacks) {
+function model_remove(Model, data, res) {
     Model.findOneAndRemove({_id: data._id}, function (err) {
         if (err) {
             logger.error('On remove step.');
@@ -73,20 +59,14 @@ function model_remove(Model, data, res, callbacks) {
                 res.status(500).send({ error: err });
             }
         } else {
-            // logger.debug('Record has been removed.');
             if (res != null) {
-                res.status(201).send({ success: 'Record has been deleted.'});
+                res.status(201).send({success: 'Record has been deleted.'});
             }
-        }
-
-        var next = callbacks.pop();
-        if (next != undefined) {
-            next(Model, data, res, callbacks);
         }
     });
 }
 
-function model_list(Model, data, res, callbacks) {
+function model_list(Model, data, res) {
     Model.find({}, function (err, models) {
         if(err) {
             logger.error('On list step.');
@@ -96,24 +76,14 @@ function model_list(Model, data, res, callbacks) {
             }
             models = null;
         } else {
-            //_.map(models, function(model) {
-                //model._id = undefined;  //If it should be shown.
-                //model.__v = undefined;
-            //});
-            // logger.debug('Records listing.');
             if (res != null) {
                 res.json(models);
             }
         }
-
-        var next = callbacks.pop();
-        if (next != undefined) {
-            next(Model, models, res, callbacks);
-        }
     });
 }
 
-function model_find_one(Model, data, res, callbacks) {
+function model_find_one(Model, data, res) {
     Model.findOne(data, function (err, model) {
         if(err) {
             logger.error('On find one step.');
@@ -124,23 +94,15 @@ function model_find_one(Model, data, res, callbacks) {
             model = null;
         } else {
             if (model == null) {
-                // logger.debug('Request record not find by : ' + data);
                 if (res != null) {
                     res.status(500).send({ error: 'No such data.' });
                 }
                 model = null;
             } else {
-                //model._id = undefined;    //If it should be shown.
-                //model.__v = undefined;
                 if (res != null) {
                     res.json(model);
                 }
             }
-        }
-
-        var next = callbacks.pop();
-        if (next != undefined) {
-            next(Model, model, res, callbacks);
         }
     });
 }
@@ -149,68 +111,88 @@ function registerRouters(Model, db_name, request_name) {
     //GET ./${database}/${schema}/
     router.get(`/${db_name}/${request_name}/`, function(req, res, next) {
         var data = {};
-        model_list(Model, data, res, []);
+        model_list(Model, data, res);
     });
 
     //GET ./${database}/${schema}/${id}/
     router.get(`/${db_name}/${request_name}/:id([a-z0-9]+)/`, function(req, res, next) {
         var data = {};
         data._id = req.params.id;
-        model_find_one(Model, data, res, []);
+        model_find_one(Model, data, res);
     });
 
     //POST ./${database}/${schema}/create/
     router.post(`/${db_name}/${request_name}/create/`, function(req, res, next) {
         var data = req.body;
-        model_save(Model, data, res, []);
+        model_save(Model, data, res);
     });
 
     //POST ./${database}/${schema}/${id}/update/
     router.post(`/${db_name}/${request_name}/:id([a-z0-9]+)/update/`, function(req, res, next) {
         var data = {update: req.body, index: {_id: req.params.id}};
-        model_update(Model, data, res, []);
+        model_update(Model, data, res);
     });
 
     //GET ./${database}/${schema}/${id}/delete/
     router.post(`/${db_name}/${request_name}/:id([a-z0-9]+)/delete/`, function(req, res, next) {
         var data = {_id: req.params.id};
-        model_remove(Model, data, res, []);
+        model_remove(Model, data, res);
     });
 }
 
-function registerSchema(schema_name, schema, db_name) {
+function registerSchema(schema_name, schema, db_name, callback) {
     var db = dbs[db_name];
     schema_name = schema_name.charAt(0).toLowerCase() + schema_name.slice(1);
     var request_name = schema_name.toLowerCase();
     var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
 
     if (_.has(Models[db_name], schema_name)) {
-        return 0;
-    }
+        logger.error("Register same schema name twice.");
+    } else {
+        logger.debug(`Schema : ${schema_name}`);
+        logger.debug(schema);
+        var schemaMongoose = new mongoose.Schema(schema);
+        var Model = db.model(model_name, schemaMongoose);
+        Models[db_name][schema_name] = Model;
 
-    // logger.debug(`Schema : ${schema_name}`);
-    var schemaMongoose = new mongoose.Schema(schema);
-    var Model = db.model(model_name, schemaMongoose);
-    Models[db_name][schema_name] = Model;
+        logger.info('Register router for ' + schema_name);
 
-    logger.info('Register router for ' + schema_name);
+        registerRouters(Model, db_name, request_name);
 
-    registerRouters(Model, db_name, request_name);
-
-    if (db_name == 'datasets') {
-        var data = {name: model_name};
-        model_find_one(Models['auto']['dataset'], data, null, [function(Model, data, res, callbacks) {
-            if (data == null) {
-                var dataset_schema = {};
-                _.map(schema, function(value, key) {
-                //_.each(_.pairs(schema), function(pair) {
-                //    var key = pair[0], value = pair[1];
-                    dataset_schema[key] = common.gType(value);
-                });
-                var dataset = {name: model_name, "dataset-schema": dataset_schema};
-                model_save(Model, dataset, res, []);
-            }
-        }]);
+        if (db_name == 'datasets') {
+            var data = {name: model_name};
+            var ModelDataset = Models['auto']['dataset'];
+            ModelDataset.findOne(data, function (dataset, err) {
+                if (err) {
+                    logger.error("Error on find dataset in blask.");
+                    logger.error(err);
+                    if (callback) {
+                        callback(err);
+                    }
+                } else {
+                    if (dataset == null) {
+                        var dataset_schema = {};
+                        _.map(schema, function (value, key) {
+                            dataset_schema[key] = common.gType(value);
+                        });
+                        var dataset = {name: model_name, "dataset-schema": dataset_schema};
+                        logger.debug(dataset);
+                        var model_dataset = new ModelDataset(dataset);
+                        model_dataset.save(function (err) {
+                            if (err) {
+                                logger.error("Error on save dataset in blask.");
+                                logger.error(err);
+                            } else {
+                                logger.debug(`${schema_name} has been saved into database.`);
+                            }
+                            if (callback) {
+                                callback(err);
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
 }
 
@@ -243,24 +225,16 @@ function init() {
 }
 
 function registerAllDataSets() {
-    //var db = dbs['auto'];
     var Model = Models['auto']['dataset'];
 
-    //logger.debug(Model);
-
-    model_list(Model, {}, null, [registerOneDataSet,
-        function (Model, data, res, callbacks) {
-            var next = callbacks.pop();
-            _.each(data, function (model) {
-                if (next != undefined) {
-                    next(Model, model, res, callbacks);
-                }
-            });
-        }
-    ]);
+    Model.find({}, function (datasets, err) {
+        _.each(datasets, function (dataset) {
+            registerOneDataSet(Model, dataset);
+        });
+    });
 }
 
-function registerOneDataSet(Model, data, res, callbacks) {
+function registerOneDataSet(Model, data) {
     var db = dbs['datasets'];
     var schema = data['dataset-schema'];
 
@@ -276,14 +250,9 @@ function registerOneDataSet(Model, data, res, callbacks) {
     logger.debug(`Register Model for '${schema_name}' in database 'datasets'`);
 
     registerRouters(DatasetModel, 'datasets', request_name);
-
-    var next = callbacks.pop();
-    if (next != undefined) {
-        next(Model, data, res, callbacks);
-    }
 }
 
-function insert(database, schema, data) {
+function insert(database, schema, data, callback) {
     logger.debug(`Insert : ${database}, ${schema}`);
     schema = schema.charAt(0).toLowerCase() + schema.slice(1);
     if (database == 'blask') {
@@ -292,30 +261,13 @@ function insert(database, schema, data) {
 
     logger.debug('gModel for save.');
     var InsertModel = gModel(schema, database);
-    //if (_.has(Models, database)) {
-    //    if (_.has(Models[database], schema)) {
-    //        Model = Models[database][schema];
-    //    } else {
-    //        logger.error(`Trying to insert into a unregistered schema of ${schema}.`);
-    //    }
-    //} else {
-    //    logger.error(`Trying to insert into a inexistent database of ${database}.`);
-    //}
 
     logger.debug('Prepare to save.');
     if (null != InsertModel) {
         logger.debug('g model for save.');
-        //logger.debug(InsertModel);
-        var model = new InsertModel;
+        var model = new InsertModel(data);
         logger.debug('g model not stacked.');
         _.map(data, function(value, key) {
-            if (_.isArray(value)) {
-                for (var item of value) {
-                    model[key].push(item);
-                }
-            } else {
-                model[key] = value;
-            }
             if (common.shouldMarked(value.constructor)) {
                 model.markModified(key);
                 logger.debug(`Modified Key : ${key}`);
@@ -329,6 +281,9 @@ function insert(database, schema, data) {
             } else {
                 logger.debug(`Inserted into collection [${schema}] in database [${database}].`);
                 logger.debug(`Data Head : ${data._id}`);
+            }
+            if (callback) {
+                callback(err);
             }
         });
     }
@@ -347,6 +302,5 @@ function gModel(model_name, database) {
 module.exports.router = router;
 module.exports.init = init;
 module.exports.registerSchema = registerSchema;
-//module.exports.registerDatasetSchema = registerDatasetSchema;
 module.exports.insert = insert;
 module.exports.gModel = gModel;
