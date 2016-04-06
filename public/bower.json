@@ -27,7 +27,7 @@
     "dist/js/sb-admin-2.js"
   ],
   "dependencies": {
-    "jquery": "<3.0.0",
+    "jquery": "~2.2.3",
     "bootstrap": "~3.3.6",
     "datatables": "~1.10.4",
     "datatables-plugins": "~1.0.1",

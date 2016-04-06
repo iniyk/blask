@@ -1,6 +1,8 @@
 /**
  * Created by iniyk on 16/2/4.
  */
+var mongoose = require('mongoose');
+
 var Common = {
     isEmpty: function(obj) {
         if (obj == undefined) return true;
@@ -70,7 +72,33 @@ var Common = {
         if (_.has(types, type)) {
             return types[type];
         } else {
-            return null;
+            return '{}';
+        }
+    },
+    gSchema: function(type) {
+        var _ = require('underscore');
+        var types = {};
+        types[String] = String;
+        types[Number] = Number;
+        types[Array] = [mongoose.Schema.Types.Mixed];
+        types[Boolean] = Boolean;
+        types[Date] = Date;
+        if (_.has(types, type)) {
+            return types[type];
+        } else {
+            return mongoose.Schema.Types.Mixed;
+        }
+    },
+    shouldMarked: function(type) {
+        var _ = require('underscore');
+        var types = {};
+        types[String] = false;
+        types[Number] = false;
+        types[Boolean] = false;
+        if (_.has(types, type)) {
+            return types[type];
+        } else {
+            return true;
         }
     },
     isParse: function(str, type) {
