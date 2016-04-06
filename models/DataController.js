@@ -5,6 +5,8 @@
 var express = require('express');
 var router = express.Router();
 
+var async = require('async');
+
 var common = require('./Common');
 var _ = require('underscore');
 var multer  = require('multer');
@@ -51,9 +53,13 @@ router.post('/create', function (req, res, next) {
     logger.debug(`Post Data:`);
     logger.debug(req.body);
 
-    registerJson(name, data);
-
-    res.json({status: 'success'});
+    registerJson(name, data, function(err) {
+        if (err) {
+            res.json({status: 'failed', info: err});
+        } else {
+            res.json({status: 'success'});
+        }
+    });
 });
 
 //POST /data/upload
@@ -75,22 +81,10 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                 logger.error('On reading json file.');
                 logger.error(err);
             } else {
-                registerJson(name, json_arr);
-                //var keys = _.allKeys(_.first(json_arr));
-                //var pairs = _.pairs(_.first(json_arr));
-                //var schema = {};
-                //
-                //_.each(pairs, function (pair) {
-                //    var key = pair[0], value = pair[1];
-                //    schema[key] = value.constructor;
-                //});
-                //
-                //// logger.debug(schema);
-                //MongoController.registerSchema(name, schema, 'datasets');
-                //
-                //_.each(_.values(json_arr), function (json) {
-                //    MongoController.insert('datasets', name, json);
-                //});
+                registerJson(name, json_arr, function(err) {
+                    logger.error('On insert json file.');
+                    logger.error(err);
+                });
             }
         });
         res.status(201).send({info: 'Upload successed.'});
@@ -157,10 +151,8 @@ function transDatasetToTree(datasets) {
 }
 
 module.exports.router = router;
-module.exports._registerJson = registerJson;
-//module.exports.transDatasetToTree = transDatasetToTree;
 
-function registerJson(name, json_arr) {
+function registerJson(name, json_arr, callback) {
     if (!_.isArray(json_arr)) {
         var real_json_arr = [];
         var json_length = 0;
@@ -181,18 +173,38 @@ function registerJson(name, json_arr) {
     var keys = _.allKeys(_.first(json_arr));
     var pairs = _.pairs(_.first(json_arr));
     var schema = {};
+    var RESERVED_KEY = ['on', 'emit', '_events',
+                        'db', 'get', 'set', 'init',
+                        'isNew', 'errors', 'schema',
+                        'options', 'modelName',
+                        'collection', '_pres',
+                        '_posts', 'toObject'
+                        ];
 
     _.each(pairs, function (pair) {
         var key = pair[0], value = pair[1];
         schema[key] = common.gSchema(value.constructor);
+        if (_.indexOf(RESERVED_KEY, key) >= 0) {
+            callback(`不可使用MongoDB保留字${key}`);
+        }
     });
 
-    logger.debug(schema);
-    MongoController.registerSchema(name, schema, 'datasets');
-
-    logger.debug(json_arr[0]);
-
-    _.each(_.values(json_arr), function (json) {
-        MongoController.insert('datasets', name, json);
+    MongoController.registerSchema(name, schema, 'datasets', function (err) {
+        if (err) {
+            logger.error("Error on register Schema.");
+            logger.error(err);
+        } else {
+            async.each(_.values(json_arr), function(json, callback) {
+                MongoController.insert('datasets', name, json, callback);
+            }, function(err) {
+                if (err) {
+                    logger.error('Error on insert data to new collection.');
+                    logger.error(err);
+                    callback('服务器错误,导入数据失败');
+                } else {
+                    callback(null);
+                }
+            });
+        }
     });
 }
