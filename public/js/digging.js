@@ -110,7 +110,7 @@ function onDrop(event, ui) {
 
 function renderFieldsSelectorBox() {
     onLoadingBox('fields');
-    var get_model = `/helper/${data_post.model_selected}`;
+    var get_model = `/helper/u/${data_post.model_selected}`;
     var get_datasets = $("#digging-fields-box").attr('source');
     $.get(get_model, function(model, status) {
         if (status == 'success') {

@@ -1,0 +1,169 @@
+<%
+function isEmpty(obj) {
+    if (obj == undefined) return true;
+    if (obj == null) return true;
+    if (obj == '') return true;
+    for (var prop in obj) {
+        return false;
+    }
+    return true;
+}
+%>
+
+<section class="content-header">
+    <h1>
+        数据转换进度
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-folder-open"></i> 数据转换</a></li>
+        <li><a href="#">转换进度</a></li>
+    </ol>
+</section>
+<% if (isEmpty(page.request) || isEmpty(page.request.id)) { %>
+<section class="content">
+    <div class="col-md-12" id="status-content" role="list" source="<%= page.content['status-panel']['data-source-head'] %>">
+        <div class="box box-solid box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">数据转换任务</h3>
+            </div>
+            <div class="box-body">
+                <table class="table table-bordered display" id="result-table" cellspacing="0" width="100%">
+                    <thead>
+                    <tr id="list-fields-content">
+                        <th>ID</th>
+                        <th>算法与模型</th>
+                        <!--<th>类型</th>-->
+                        <!--<th>发起用户</th>-->
+                        <th>状态</th>
+                        <th>开始时间</th>
+                        <th>结束时间</th>
+                    </tr>
+                    </thead>
+                    <tbody id="list-records-content">
+                    <!-- output records will append here by jquery ajax. -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<% } else { %>
+<section class="content">
+    <div class="modal fade" tabindex="-1" role="dialog" id="model-to-database">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">导出到数据仓库</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="collection">表名</label>
+                            <input type="text" class="form-control" id="input-collection" placeholder="表名">
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        字段名
+                                    </th>
+                                    <th>
+                                        是否导出
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="database-tbody">
+                                <!-- Add fields info and a checkbox to choose which is the cherry. -->
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="btn-to-database">导出</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div class="col-md-12" id="status-content" role="content" source="<%= page.content['status-panel']['data-source-head']+page.request.id %>">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">模型参数</h3>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-bordered">
+                            <thead class="label-primary">
+                                <th>模型: </th>
+                                <th id="helper-text"></th>
+                            </thead>
+                            <tbody id="arguments-content">
+                                <tr>
+                                    <td>ID: </td>
+                                    <td id="id"></td>
+                                </tr>
+                                <tr>
+                                    <td>状态: </td>
+                                    <td id="status"></td>
+                                </tr>
+                                <tr>
+                                    <td>开始时间: </td>
+                                    <td id="start"></td>
+                                </tr>
+                                <tr>
+                                    <td>结束时间: </td>
+                                    <td id="finish"></td>
+                                </tr>
+                                <tr>
+                                    <td>类型: </td>
+                                    <td id="type"></td>
+                                </tr>
+                                <!--<tr>-->
+                                    <!--<td>执行脚本: </td>-->
+                                    <!--<td id="exec"></td>-->
+                                <!--</tr>-->
+                                <!--<tr>-->
+                                    <!--<td>发起用户: </td>-->
+                                    <!--<td id="user"></td>-->
+                                <!--</tr>-->
+                                <!-- other arguments will append here by jquery ajax. -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="box box-solid box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">结果</h3>
+                        <div class="btn-group pull-right">
+                            <a class="btn btn-xs btn-default" id="btn-model-database">
+                                <i class="fa fa-share"></i>
+                                导出到数据仓库
+                            </a>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-bordered display" id="result-table" cellspacing="0" width="100%">
+                            <thead>
+                                <tr id="output-fields-content">
+
+                                </tr>
+                                <!-- output fields text will append here by jquery ajax. -->
+                            </thead>
+                            <tbody id="output-records-content">
+                                <!-- output records will append here by jquery ajax. -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        &nbsp;
+    </div>
+</section>
+<% } %>
