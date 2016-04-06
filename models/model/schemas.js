@@ -8,8 +8,8 @@ var schemas = {
     "dataset": {
         "name": String,
         "text": String,
-        "field-number": String,
-        "record-number": String,
+        "field-number": Number,
+        "record-number": Number,
         "source": String,
         "source-name": String,
         "storage": String,

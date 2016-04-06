@@ -49,15 +49,27 @@ router.get('/', function(req, res, next) {
 
 router.post('/create', function (req, res, next) {
     var name = req.body.name;
+    var text = req.body.text;
     var data = req.body.data;
-    logger.debug(`Post Data:`);
-    logger.debug(req.body);
 
     registerJson(name, data, function(err) {
         if (err) {
             res.json({status: 'failed', info: err});
         } else {
-            res.json({status: 'success'});
+            MongoController.update(
+                'auto', 'dataset',
+                {name: common.gName(name)['model_name']},
+                {text: text, source: 'datasets', "source-name": '数据仓库'},
+                function (err) {
+                    if (err) {
+                        logger.error("Error on update extra info of datasets.");
+                        logger.error(err);
+                        res.json({status: 'failed', info: '服务器错误,导入数据失败'});
+                    } else {
+                        res.json({status: 'success'});
+                    }
+                }
+            );
         }
     });
 });

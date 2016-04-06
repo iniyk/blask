@@ -4,6 +4,16 @@
 var mongoose = require('mongoose');
 
 var Common = {
+    gName: function(name) {
+        var schema_name = name.charAt(0).toLowerCase() + name.slice(1);
+        var request_name = schema_name.toLowerCase();
+        var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
+        return {
+            "schema_name": schema_name,
+            "request_name": request_name,
+            "model_name": model_name
+        };
+    },
     isEmpty: function(obj) {
         if (obj == undefined) return true;
         if (obj == null) return true;
@@ -72,7 +82,7 @@ var Common = {
         if (_.has(types, type)) {
             return types[type];
         } else {
-            return '{}';
+            return 'Object';
         }
     },
     gSchema: function(type) {
@@ -80,7 +90,7 @@ var Common = {
         var types = {};
         types[String] = String;
         types[Number] = Number;
-        types[Array] = [mongoose.Schema.Types.Mixed];
+        types[Array] = Array;
         types[Boolean] = Boolean;
         types[Date] = Date;
         if (_.has(types, type)) {

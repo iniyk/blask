@@ -150,8 +150,10 @@ function setupDatabaseModel(running, helper) {
         }
         $('#btn-to-database').click(function() {
             var table_name = $('#input-collection').val();
+            var table_text = $('#input-text').val();
             var req = {
                 name: table_name,
+                text: table_text,
                 data: running.output
             };
             $('#model-to-database').modal('hide');

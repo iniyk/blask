@@ -253,34 +253,45 @@ function registerOneDataSet(Model, data) {
 }
 
 function insert(database, schema, data, callback) {
-    logger.debug(`Insert : ${database}, ${schema}`);
     schema = schema.charAt(0).toLowerCase() + schema.slice(1);
     if (database == 'blask') {
         database = 'auto';
     }
 
-    logger.debug('gModel for save.');
     var InsertModel = gModel(schema, database);
 
-    logger.debug('Prepare to save.');
-    if (null != InsertModel) {
-        logger.debug('g model for save.');
+    if (InsertModel) {
         var model = new InsertModel(data);
-        logger.debug('g model not stacked.');
         _.map(data, function(value, key) {
             if (common.shouldMarked(value.constructor)) {
                 model.markModified(key);
-                logger.debug(`Modified Key : ${key}`);
             }
         });
-        logger.debug('Start to save.');
         model.save(function (err) {
             if (err) {
                 logger.error(`Error in Insert into ${database}`);
                 logger.error(err);
-            } else {
-                logger.debug(`Inserted into collection [${schema}] in database [${database}].`);
-                logger.debug(`Data Head : ${data._id}`);
+            }
+            if (callback) {
+                callback(err);
+            }
+        });
+    }
+}
+
+function update(database, schema, index, data, callback) {
+    schema = schema.charAt(0).toLowerCase() + schema.slice(1);
+    if (database == 'blask') {
+        database = 'auto';
+    }
+
+    var UpdateModel = gModel(schema, database);
+
+    if (UpdateModel) {
+        UpdateModel.findOneAndUpdate(index, data, function(err) {
+            if (err) {
+                logger.error(`Error in Update ${database} of ${schema}`);
+                logger.error(err);
             }
             if (callback) {
                 callback(err);
@@ -303,4 +314,5 @@ module.exports.router = router;
 module.exports.init = init;
 module.exports.registerSchema = registerSchema;
 module.exports.insert = insert;
+module.exports.update = update;
 module.exports.gModel = gModel;
