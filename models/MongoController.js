@@ -134,7 +134,7 @@ function registerRouters(Model, db_name, request_name) {
     });
 
     //GET ./${database}/${schema}/${id}/delete/
-    router.post(`/${db_name}/${request_name}/:id([a-z0-9]+)/delete/`, function(req, res, next) {
+    router.get(`/${db_name}/${request_name}/:id([a-z0-9]+)/delete/`, function(req, res, next) {
         var data = {_id: req.params.id};
         model_remove(Model, data, res);
     });
