@@ -57,7 +57,9 @@ function showList(runnings) {
         record = `<tr>${record}</tr>`;
         $('#list-records-content').append(record);
     }
-    $('#result-table').dataTable();
+    $('#result-table').DataTable({
+        order: [[0, 'desc']]
+    });
 }
 
 function getData(callback) {
