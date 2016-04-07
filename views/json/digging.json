@@ -56,6 +56,7 @@
         "digging-group": {
             "name": "digging-group",
             "type": "digging_group",
+            "helper-type": "digging",
             "model_list": "/helper/t/digging",
             "dataset_list": "/data",
             "post": "/digging",

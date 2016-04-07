@@ -56,9 +56,10 @@
     "digging-group": {
       "name": "digging-group",
       "type": "digging_group",
+      "helper-type": "exchanging",
       "model_list": "/helper/t/exchange",
       "dataset_list": "/data",
-      "post": "/digging",
+      "post": "/exchanging",
       "after-post": "/demo/exchanging/status/",
       "titles":
       [

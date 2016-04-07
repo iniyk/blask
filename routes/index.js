@@ -18,7 +18,8 @@ router.use('/mongodb', mongo_controller.router);
 router.use('/data', data_controller.router);
 router.use('/helper', helper_controller.router);
 router.use('/test', test_controller.router);
-router.use('/digging', modeling_controller.router);
+router.use('/digging', modeling_controller.router_digging);
+router.use('/exchanging', modeling_controller.router_exchanging);
 router.use('/demo', demo);
 router.use('/json', json_router);
 

@@ -283,7 +283,7 @@ function renderArgumentsBox(model) {
 
             data_post.arguments[arg_name] = value;
         }
-        data_post["model_type"] = "digging";
+        data_post["model_type"] = $('#digging-content').attr('helper-type');
 
         $.ajax({
             type: "POST",

@@ -9,6 +9,7 @@
 </section>
 <section class="content" id="digging-content"
          post="<%= page.content['digging-group']['post'] %>"
+         helper-type="<%= page.content['digging-group']['helper-type'] %>"
          after-post="<%= page.content['digging-group']['after-post'] %>">
     <%- include('modules/digging_group.ejs', {selector: page.content['digging-group']}); %>
     <div class="row">

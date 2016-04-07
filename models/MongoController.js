@@ -192,6 +192,8 @@ function registerSchema(schema_name, schema, db_name, callback) {
                     }
                 }
             });
+        } else {
+            callback(null);
         }
     }
 }
@@ -200,37 +202,59 @@ function init() {
     Models['auto'] = {};
     Models['datasets'] = {};
 
-    dbs['auto'] = mongoose.createConnection(config.host);
-    dbs['auto'].on('error', function (err) {
-        logger.error(err);
+    var tasks = [
+        function (callback) {
+            dbs['auto'] = mongoose.createConnection(config.host);
+            dbs['auto'].on('error', function (err) {
+                logger.error(err);
+            });
+            dbs['auto'].once('open',function(){
+                logger.info('MongoDB for Blask connected.');
+                callback();
+            });
+        },
+        function (callback) {
+            dbs['datasets'] = mongoose.createConnection(config_datasets.host);
+            dbs['datasets'].on('error', function (err) {
+                logger.error(err);
+            });
+            dbs['datasets'].once('open',function(){
+                logger.info('MongoDB for Datasets connected.');
+                callback();
+            });
+        }
+    ];
+    async.parallel(tasks, function(err) {
+        if (err) {
+            logger.error(err);
+        } else {
+            var schemas = require('./model/schemas.js').schemas;
+            async.forEachOf(schemas, function(schema, name, callback) {
+                registerSchema(name, schema, 'auto', callback);
+            }, function(err) {
+                if (err) {
+                    logger.error(err);
+                } else {
+                    logger.debug('Start to register all datasets.');
+                    registerAllDataSets();
+                }
+            });
+        }
     });
-    dbs['auto'].once('open',function(){
-        logger.info('MongoDB for Blask connected.');
-    });
-
-    dbs['datasets'] = mongoose.createConnection(config_datasets.host);
-    dbs['datasets'].on('error', function (err) {
-        logger.error(err);
-    });
-    dbs['datasets'].once('open',function(){
-        logger.info('MongoDB for Datasets connected.');
-    });
-
-    var schemas = require('./model/schemas.js').schemas;
-    _.map(schemas, function(schema, name) {
-        registerSchema(name, schema, 'auto');
-    });
-
-    registerAllDataSets();
 }
 
 function registerAllDataSets() {
     var Model = Models['auto']['dataset'];
 
-    Model.find({}, function (datasets, err) {
-        _.each(datasets, function (dataset) {
-            registerOneDataSet(Model, dataset);
-        });
+    Model.find({}, function (err, datasets) {
+        if (err) {
+            logger.error('Error on find all dataset in register All Datasets.');
+            logger.error(err);
+        } else {
+            _.each(datasets, function (dataset) {
+                registerOneDataSet(Model, dataset);
+            });
+        }
     });
 }
 
@@ -243,6 +267,7 @@ function registerOneDataSet(Model, data) {
     var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
 
     var schemaMongoose = new mongoose.Schema();
+    logger.debug(schema);
     schemaMongoose.add(schema);
     var DatasetModel = db.model(model_name, schemaMongoose);
     Models['datasets'][schema_name] = DatasetModel;
@@ -301,7 +326,7 @@ function update(database, schema, index, data, callback) {
 }
 
 function gModel(model_name, database) {
-    logger.debug(`Gen Model for '${model_name}' in '${database}'`);
+    model_name = common.gName(model_name)['schema_name'];
     if (_.has(Models[database], model_name)) {
         return Models[database][model_name];
     } else {

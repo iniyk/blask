@@ -76,13 +76,13 @@ var Common = {
         var types = {};
         types[String] = 'String';
         types[Number] = 'Number';
-        types[Array] = 'Array';
+        types[Array] = 'Mixed';
         types[Boolean] = 'Boolean';
         types[Date] = 'Date';
         if (_.has(types, type)) {
             return types[type];
         } else {
-            return 'Object';
+            return 'Mixed';
         }
     },
     gSchema: function(type) {
