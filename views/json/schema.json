@@ -6,7 +6,7 @@
         "list": {
             "name": "list",
             "title": "显示全部元数据",
-            "href": "./schema",
+            "href": "/demo/schema",
             "icon": "fa fa-list"
         },
         "add": {
@@ -23,8 +23,8 @@
                 },
                 "by-file": {
                     "name": "by-file",
-                    "title": "由json文件上传",
-                    "href": "#",
+                    "title": "由文件上传",
+                    "href": "/demo/schema/upload",
                     "icon": "fa fa-upload"
                 },
                 "by-database": {

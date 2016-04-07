@@ -1,0 +1,77 @@
+<section class="content-header">
+    <h1>
+        元数据管理
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dollar"></i> 元数据管理</a></li>
+        <li><a href="#">数据上传</a></li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">文件上传</h3>
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#json_panel" aria-controls="json_panel" role="tab" data-toggle="tab">JSON</a></li>
+                        <li role="presentation"><a href="#xml_panel" aria-controls="xml_panel" role="tab" data-toggle="tab">XML</a></li>
+                        <li role="presentation"><a href="#csv_panel" aria-controls="csv_panel" role="tab" data-toggle="tab">CSV</a></li>
+                    </ul>
+                </div><!-- /.box-header -->
+                <!-- Nav tabs -->
+                <div class="box-body">
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="json_panel">
+                            <div>
+                                <form role="form" action="/data/upload/json" method="post" enctype='multipart/form-data' id="upload-form-json">
+                                    <div class="form-group">
+                                        <label for="name" id="name-label">表名</label>
+                                        <input type="text" id="name" name="name" placeholder="表名">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="text" id="text-label">显示名称</label>
+                                        <input type="text" id="text" name="text" placeholder="显示名称">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="datafile" id="datafile-label">文件选择</label>
+                                        <input type="file" id="datafile" name="datafile">
+                                        <p class="help-block">选择一个json格式的文件上传.</p>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">提交</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="xml_panel">
+
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="csv_panel">
+                            <div>
+                                <form role="form" action="/data/upload/csv" method="post" enctype='multipart/form-data' id="upload-form-csv">
+                                    <div class="form-group">
+                                        <label for="name" id="name-label">表名</label>
+                                        <input type="text" id="name" name="name" placeholder="表名">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="text" id="text-label">显示名称</label>
+                                        <input type="text" id="text" name="text" placeholder="显示名称">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="datafile" id="datafile-label">文件选择</label>
+                                        <input type="file" id="datafile" name="datafile">
+                                        <p class="help-block">选择一个csv或txt格式的文件上传.</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="separator" id="separator-label">分隔符</label>
+                                        <input type="text" id="separator" name="separator" value=",">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">提交</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

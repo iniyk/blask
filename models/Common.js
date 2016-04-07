@@ -113,7 +113,7 @@ var Common = {
     },
     isParse: function(str, type) {
         if (type == Number) {
-            return (str == parseInt(str).toString());
+            return (str == parseInt(str).toString() || str.match(/^(-?\d+)(\.\d+)?$/i) != null);
         } else if (type == Boolean) {
             str = str.charAt(0).toLowerCase() + str.slice(1);
             if (str == 'true' || str == 'false') {
@@ -139,7 +139,11 @@ var Common = {
     realType: function(str) {
         if (str == '') return '';
         if (Common.gStringType(str) == Number) {
-            return parseInt(str);
+            if (str == parseInt(str).toString()) {
+                return parseInt(str);
+            } else {
+                return parseFloat(str);
+            }
         }
         if (Common.gStringType(str) == Boolean) {
             str = str.charAt(0).toLowerCase() + str.slice(1);
