@@ -47,6 +47,44 @@ router.get('/', function(req, res, next) {
     });
 });
 
+router.post('/export', function(req, res, next) {
+    var name = req.body.name;
+    var text = req.body.text;
+    var data_selected = req.body.data;
+    var run_id = req.body.run_id;
+
+    var data = {};
+    MongoController.find('auto', 'running', {_id: run_id}, function(err, running) {
+        _.map(data_selected, function (selected, index) {
+           data[selected] = running[0].output[selected];
+        });
+
+        logger.debug("Export Data into database.");
+        logger.debug(data);
+
+        registerJson(name, data, function(err) {
+            if (err) {
+                res.json({status: 'failed', info: err});
+            } else {
+                MongoController.update(
+                    'auto', 'dataset',
+                    {name: common.gName(name)['model_name']},
+                    {text: text, source: 'datasets', "source-name": '数据仓库'},
+                    function (err) {
+                        if (err) {
+                            logger.error("Error on update extra info of datasets.");
+                            logger.error(err);
+                            res.json({status: 'failed', info: '服务器错误,导入数据失败'});
+                        } else {
+                            res.json({status: 'success'});
+                        }
+                    }
+                );
+            }
+        });
+    });
+});
+
 router.post('/create', function (req, res, next) {
     var name = req.body.name;
     var text = req.body.text;

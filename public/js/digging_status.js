@@ -37,7 +37,7 @@ function showList(runnings) {
     for (var running of runnings) {
         var record = '';
         record += ` <td>
-                        <a href="/demo/digging/status/${running['_id']}">${running['_id']}</a>
+                        <a href="/demo/${$('#status-content').attr('type')}/status/${running['_id']}">${running['_id']}</a>
                     </td>`;
         record += `<td>${running['model']}</td>`;
         //record += `<td>${running['type']}</td>`;
@@ -140,7 +140,7 @@ function setupDatabaseModel(running, helper) {
                     <td>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" checked="true">导出
+                                <input type="checkbox" checked="true" field="${field_name}" class="checkbox-field">导出
                             </label>
                         </div>
                     </td>
@@ -151,13 +151,20 @@ function setupDatabaseModel(running, helper) {
         $('#btn-to-database').click(function() {
             var table_name = $('#input-collection').val();
             var table_text = $('#input-text').val();
+            var data_selected = [];
+            $('.checkbox-field').each(function() {
+                if ($(this).is(':checked')) {
+                    data_selected.push($(this).attr('field'));
+                }
+            });
             var req = {
                 name: table_name,
                 text: table_text,
-                data: running.output
+                data: data_selected,
+                run_id: running._id
             };
             $('#model-to-database').modal('hide');
-            $.post('/data/create', req, function(res, status) {
+            $.post('/data/export', req, function(res, status) {
                 $('#status-content').prepend(`
                     <div class="row">
                         <div class="col-lg-12">

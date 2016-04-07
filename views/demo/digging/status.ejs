@@ -21,7 +21,7 @@ function isEmpty(obj) {
 </section>
 <% if (isEmpty(page.request) || isEmpty(page.request.id)) { %>
 <section class="content">
-    <div class="col-md-12" id="status-content" role="list" source="<%= page.content['status-panel']['data-source-head'] %>">
+    <div class="col-md-12" id="status-content" role="list" source="<%= page.content['status-panel']['data-source-head'] %>" type="digging">
         <div class="box box-solid box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">数据挖掘任务</h3>

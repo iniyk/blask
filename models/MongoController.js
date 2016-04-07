@@ -325,6 +325,27 @@ function update(database, schema, index, data, callback) {
     }
 }
 
+function find(database, schema, index, callback) {
+    schema = common.gName(schema)['schema_name'];
+    if (database == 'blask') {
+        database = 'auto';
+    }
+
+    var FindModel = gModel(schema, database);
+
+    if (FindModel) {
+        FindModel.find(index, function(err, data) {
+            if (err) {
+                logger.error(`Error in Find ${database} of ${schema} in condition ${index}`);
+                logger.error(err);
+            }
+            if (callback) {
+                callback(err, data);
+            }
+        })
+    }
+}
+
 function gModel(model_name, database) {
     model_name = common.gName(model_name)['schema_name'];
     if (_.has(Models[database], model_name)) {
@@ -340,4 +361,5 @@ module.exports.init = init;
 module.exports.registerSchema = registerSchema;
 module.exports.insert = insert;
 module.exports.update = update;
+module.exports.find = find;
 module.exports.gModel = gModel;
