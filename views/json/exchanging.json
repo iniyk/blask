@@ -1,0 +1,75 @@
+{
+  "name": "exchanging",
+  "title": "数据转换",
+  "icon": "fa fa-random",
+  "sidebar": {
+    "overview": {
+      "name": "overview",
+      "title": "总览",
+      "href": "/demo/exchange",
+      "icon": "fa fa-dashboard"
+    },
+    "manage": {
+      "name": "manage",
+      "title": "转换模型管理",
+      "href": "#",
+      "icon": "fa fa-plug",
+      "items": {
+        "add": {
+          "name": "add-exchange",
+          "title": "增加模型",
+          "href": "#",
+          "icon": "fa fa-plus",
+          "attrs": {
+            "data-toggle": "modal",
+            "data-target": "#modalAddExchange"
+          }
+        },
+        "list": {
+          "name": "list-exchange",
+          "title": "列出所有模型",
+          "href": "#",
+          "icon": "fa fa-list"
+        }
+      }
+    },
+    "start": {
+      "name": "start",
+      "title": "开始新转换",
+      "href": "/demo/exchanging",
+      "icon": "fa fa-cubes"
+    },
+    "status": {
+      "name": "status",
+      "title": "查看转换进度",
+      "href": "/demo/exchanging/status",
+      "icon": "fa fa-tachometer"
+    },
+    "settings": {
+      "name": "settings",
+      "title": "设置",
+      "href": "#",
+      "icon": "fa fa-gear"
+    }
+  },
+  "content": {
+    "digging-group": {
+      "name": "digging-group",
+      "type": "digging_group",
+      "helper-type": "exchanging",
+      "model_list": "/helper/t/exchange",
+      "dataset_list": "/data",
+      "post": "/exchanging",
+      "after-post": "/demo/exchanging/status/",
+      "titles":
+      [
+        "Step 1 - 模型选择",
+        "Step 2 - 字段选择",
+        "Step 3 - 参数配置"
+      ]
+    }
+  },
+  "script": [
+    "digging.js"
+  ]
+}

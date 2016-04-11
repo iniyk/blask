@@ -110,7 +110,7 @@ function onDrop(event, ui) {
 
 function renderFieldsSelectorBox() {
     onLoadingBox('fields');
-    var get_model = `/helper/${data_post.model_selected}`;
+    var get_model = `/helper/u/${data_post.model_selected}`;
     var get_datasets = $("#digging-fields-box").attr('source');
     $.get(get_model, function(model, status) {
         if (status == 'success') {
@@ -283,7 +283,7 @@ function renderArgumentsBox(model) {
 
             data_post.arguments[arg_name] = value;
         }
-        data_post["model_type"] = "digging";
+        data_post["model_type"] = $('#digging-content').attr('helper-type');
 
         $.ajax({
             type: "POST",

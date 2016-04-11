@@ -11,8 +11,8 @@ var Logger = require('./Logger')();
 var logger = Logger.handle("HelperController");
 var MongoController = require('./MongoController');
 
-router.get('/:name([a-z0-9]+)', function(req, res, next) {
-    //TODO 显示单个数据集
+router.get('/u/:name([a-z0-9]+)', function(req, res, next) {
+    //查看name的算法与模型
     var ModelModel = MongoController.gModel('model', 'auto');
     ModelModel.findOne({name: req.params.name}, function (err, model) {
         if (!err) {
@@ -26,9 +26,24 @@ router.get('/:name([a-z0-9]+)', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
-    //TODO 列出所有算法与模型
+    //列出所有算法与模型
     var ModelModel = MongoController.gModel('model', 'auto');
     ModelModel.find({}, function (err, models) {
+        if (! err) {
+            var models_tree_arr = transModelToTree(models);
+            res.json(models_tree_arr);
+        } else {
+            logger.error("List Datasets Error!");
+            logger.error(err);
+            res.status(500).send({error: err});
+        }
+    });
+});
+
+router.get('/t/:type([a-z0-9]+)', function(req, res, next) {
+    //列出特定类型的所有算法与模型
+    var ModelModel = MongoController.gModel('model', 'auto');
+    ModelModel.find({type: req.params.type}, function (err, models) {
         if (! err) {
             var models_tree_arr = transModelToTree(models);
             res.json(models_tree_arr);

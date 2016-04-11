@@ -1,0 +1,78 @@
+<section class="content-header">
+    <h1>
+        元数据管理
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dollar"></i> 元数据管理</a></li>
+        <li><a href="#">数据上传</a></li>
+    </ol>
+</section>
+<section class="content container" id="main-content">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">文件上传</h3>
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="panel-nav active" target="json">
+                            <a href="#json_panel" aria-controls="json_panel" role="tab" data-toggle="tab">JSON</a>
+                        </li>
+                        <li role="presentation" class="panel-nav" target="xml">
+                            <a href="#xml_panel" aria-controls="xml_panel" role="tab" data-toggle="tab">XML</a>
+                        </li>
+                        <li role="presentation" class="panel-nav" target="csv">
+                            <a href="#csv_panel" aria-controls="csv_panel" role="tab" data-toggle="tab">CSV / TXT</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <form role="form" enctype='multipart/form-data' id="upload-form">
+                    <div class="box-body">
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="json_panel">
+                                <div class="form-group">
+                                    <label for="name">表名</label>
+                                    <input class="form-control" type="text" id="json-name" name="name" placeholder="表名">
+                                </div>
+                                <div class="form-group">
+                                    <label for="text">显示名称</label>
+                                    <input class="form-control" type="text" id="json-text" name="text" placeholder="显示名称">
+                                </div>
+                                <div class="form-group">
+                                    <label for="datafile">文件选择</label>
+                                    <input type="file" id="json-datafile" name="datafile">
+                                    <p class="help-block">选择一个json格式的文件上传.</p>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="xml_panel">
+
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="csv_panel">
+                                <div class="form-group">
+                                    <label for="name">表名</label>
+                                    <input class="form-control" type="text" id="csv-name" name="name" placeholder="表名">
+                                </div>
+                                <div class="form-group">
+                                    <label for="text">显示名称</label>
+                                    <input class="form-control" type="text" id="csv-text" name="text" placeholder="显示名称">
+                                </div>
+                                <div class="form-group">
+                                    <label for="datafile">文件选择</label>
+                                    <input type="file" id="csv-datafile" name="datafile">
+                                    <p class="help-block">选择一个csv或txt格式的文件上传.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="separator">分隔符</label>
+                                    <input class="form-control" type="text" id="csv-separator" name="separator" value=",">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <a class="btn btn-primary" id="file-submit">提交</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

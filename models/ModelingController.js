@@ -4,26 +4,25 @@
 var child_process = require('child_process');
 
 var express = require('express');
-var router = express.Router();
+var router_digging = express.Router();
+var router_exchanging = express.Router();
 
 var _ = require('underscore');
 var async = require('async');
-//var lodash = require('lodash');
 
 var common = require('./Common');
 var Logger = require('./Logger')();
 var MongoController = require('./MongoController');
 
 var logger;
-//var models;
 var playground_path;
 var scripts;
 
 init();
 
-function show_running_list(res) {
+function show_running_list(res, condition) {
     var RunningModel = MongoController.gModel('running', 'auto');
-    RunningModel.find({}, function (err, running_list) {
+    RunningModel.find(condition, function (err, running_list) {
         if (! err) {
             res.json(running_list);
         } else {
@@ -37,19 +36,18 @@ function show_running_list(res) {
 function init() {
     if (!logger) {
         logger = Logger.handle("ModelingController");
-        //models = {};
         playground_path = require("./Common").readJsonConfig('./conf.json')['playground']['path'];
         scripts = require("./Common").readJsonConfig('./conf.json')['playground']['scripts'];
 
-        router.get('/', function(req, res, next) {
-            show_running_list(res);
+        router_digging.get('/', function(req, res, next) {
+            show_running_list(res, {type: 'digging'});
         });
 
-        router.get('/status', function(req, res, next) {
-            show_running_list(res);
+        router_digging.get('/status', function(req, res, next) {
+            show_running_list(res, {type: 'digging'});
         });
 
-        router.get('/status/:id([a-z0-9]+)', function(req, res, next) {
+        router_digging.get('/status/:id([a-z0-9]+)', function(req, res, next) {
             var RunningModel = MongoController.gModel('running', 'auto');
             RunningModel.findOne({_id: req.params.id}, function (err, running) {
                 if (! err) {
@@ -69,7 +67,43 @@ function init() {
             });
         });
 
-        router.post('/', function(req, res, next) {
+        router_digging.post('/', function(req, res, next) {
+            logger.debug("Post Request:");
+            logger.debug(req.body);
+            execModel(req.body, function(run_id) {
+                res.json({"run-id": run_id});
+            });
+        });
+
+        router_exchanging.get('/', function(req, res, next) {
+            show_running_list(res, {type: 'exchanging'});
+        });
+
+        router_exchanging.get('/status', function(req, res, next) {
+            show_running_list(res, {type: 'exchanging'});
+        });
+
+        router_exchanging.get('/status/:id([a-z0-9]+)', function(req, res, next) {
+            var RunningModel = MongoController.gModel('running', 'auto');
+            RunningModel.findOne({_id: req.params.id}, function (err, running) {
+                if (! err) {
+                    var HelperModel = MongoController.gModel('model', 'auto');
+                    HelperModel.findOne({name: running.model}, function(err, helper) {
+                        var res_json = {
+                            running: running,
+                            helper: helper
+                        };
+                        res.json(res_json);
+                    });
+                } else {
+                    logger.error(`On find running status ${req.params.id}.`);
+                    logger.error(err);
+                    res.status(500).send({error: err});
+                }
+            });
+        });
+
+        router_exchanging.post('/', function(req, res, next) {
             logger.debug("Post Request:");
             logger.debug(req.body);
             execModel(req.body, function(run_id) {
@@ -78,17 +112,6 @@ function init() {
         });
     }
 }
-
-// function registerModel(model) {
-//     init();
-//     models[model.name] = model;
-//     var ModelInMongo = MongoController.gModel('model', 'auto');
-//     var model_in_mongo = new ModelInMongo(model);
-//     model_in_mongo.markModified('fields');
-//     model_in_mongo.markModified('arguments');
-//     model_in_mongo.markModified('outputs');
-//     model_in_mongo.save();
-// }
 
 function execModel(data_post, callback) {  //callback is for return run_id
     init();
@@ -104,40 +127,14 @@ function execModel(data_post, callback) {  //callback is for return run_id
         "output": {},
         "start": new Date()
     };
-    logger.debug('Field Selected:');
-    logger.debug(data_post.fields_selected);
-/*
-    _.map(data_post.fields_selected, function(field_info, field_name) {
-        var db_name = field_info['from-database'],
-            collection = field_info['from-table'],
-            col_name = field_info['field-name'];
-        logger.debug(`Field info of ${field_name}`);
-        logger.debug(field_info);
-        logger.debug(`gModel of ${collection} in ${db_name}`);
-        logger.debug(`col name is ${col_name}`);
-        var ModelTarget = MongoController.gModel(collection, db_name);
-        var query = ModelTarget.find({}, `${col_name}`, function(err, records) {
-            logger.debug('Records : ');
-            logger.debug(records);
-            var cols = [];
-            _.map(records, function(record, key) {
-                cols.push(record);
-            });
 
-            running.input.fields[field_info.target_field_name] = cols;
-        });
-    });
-*/
     async.eachSeries(_.pairs(data_post.fields_selected), function(field, callback) {
         var field_name = field[0];
         var field_info = field[1];
         var db_name = field_info['from-database'],
             collection = field_info['from-table'],
             col_name = field_info['field-name'];
-        //logger.debug(`Field info of ${field_name}`);
-        //logger.debug(field_info);
-        //logger.debug(`gModel of ${collection} in ${db_name}`);
-        //logger.debug(`col name is ${col_name}`);
+
         var ModelTarget = MongoController.gModel(collection, db_name);
         var query = ModelTarget.find({}, `${col_name}`, function(err, records) {
             var cols = [];
@@ -177,7 +174,6 @@ function replaceArguments(exec_str, args_table) {
         var re = new RegExp("\\$\\{" + key + "\\}", 'gi');
         logger.debug(re);
         ret = ret.replace(re, value);
-        //ret = lodash.replace(ret, "${" + key + "}", value);
     });
     return ret;
 }
@@ -186,8 +182,7 @@ function startExec(running, model_running) {
     var run_id = model_running._id;
     var fs = require('fs');
     var arg0 =running.exec.split(' ')[0];
-    //logger.debug(scripts);
-    //logger.debug(_.indexOf(scripts, arg0));
+
     if (_.indexOf(scripts, arg0) != -1) {
         arg0 = running.exec.split(' ')[1];
     }
@@ -195,7 +190,7 @@ function startExec(running, model_running) {
     logger.debug(`Arg0 : ${arg0}`);
     var dir_path = `./playground/${run_id}`;
     var mkdir = `mkdir ${dir_path}`;
-    var copy_files = `${mkdir} && cp ./runnable/${arg0} ${dir_path}/`;
+    var copy_files = `${mkdir} && cp ./runnable/${arg0.replace(/\.\//gi, '')} ${dir_path}/`;
     var remove_files = `rm -r ${dir_path}`;
     var args_table = {
         "run_id": run_id
@@ -276,6 +271,6 @@ function gRunning(running, callback) {
     });
 }
 
-module.exports.router = router;
-//module.exports.registerModel = registerModel;
+module.exports.router_digging = router_digging;
+module.exports.router_exchanging = router_exchanging;
 module.exports.execModel = execModel;

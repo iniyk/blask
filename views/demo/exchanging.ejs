@@ -1,0 +1,18 @@
+<section class="content-header">
+    <h1>
+        数据转换
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-folder-open"></i> 数据转换</a></li>
+        <li><a href="#">转换配置</a></li>
+    </ol>
+</section>
+<section class="content" id="digging-content"
+         post="<%= page.content['digging-group']['post'] %>"
+         helper-type="<%= page.content['digging-group']['helper-type'] %>"
+         after-post="<%= page.content['digging-group']['after-post'] %>">
+    <%- include('modules/digging_group.ejs', {selector: page.content['digging-group']}); %>
+    <div class="row">
+        &nbsp;
+    </div>
+</section>

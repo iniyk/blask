@@ -43,7 +43,8 @@ describe('mongo_controller.test.js - MongoController Test', function() {
             done();
         });*/
         var data_post = {
-            name: 'apriori_bug',
+            name: 'apriori_debug',
+            text: '关联规则结果-测试',
             data:
             {
                 pre:
