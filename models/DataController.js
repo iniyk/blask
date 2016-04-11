@@ -83,6 +83,7 @@ router.post('/upload/:filetype([a-z0-9]+)', upload.single('datafile'), function 
             if (err) {
                 logger.error('On reading json file.');
                 logger.error(err);
+                if (res) res.json({status: 'failed', info: '服务器错误,导入数据失败'});
             } else {
                 registerJsonAndUpdateInfo(name, text, data, res);
             }
@@ -93,7 +94,7 @@ router.post('/upload/:filetype([a-z0-9]+)', upload.single('datafile'), function 
             if (err) {
                 logger.error('On reading txt / csv file.');
                 logger.error(err);
-                res.status(500).send({info: 'Upload failed.'});
+                if (res) res.json({status: 'failed', info: '服务器错误,导入数据失败'});
             } else {
                 var keys = lines[0].split(separator);
                 var schema = {};
@@ -115,9 +116,9 @@ router.post('/upload/:filetype([a-z0-9]+)', upload.single('datafile'), function 
                         if (err) {
                             logger.error("Error while insert from csv /txt file.");
                             logger.error(err);
-                            res.status(500).send({info: 'Upload failed.'});
+                            if (res) res.json({status: 'failed', info: '服务器错误,导入数据失败'});
                         } else {
-                            res.status(201).send({info: 'Upload successed.'});
+                            if (res) res.json({status: 'success', info: '导入成功'});
                         }
                     });
                 });
@@ -126,7 +127,7 @@ router.post('/upload/:filetype([a-z0-9]+)', upload.single('datafile'), function 
     } else {
         var err = type + ' is not a support data set file type.';
         logger.warn(err);
-        res.status(500).send({ error: err });
+        if (res) res.json({status: 'failed', info: '服务器错误,导入数据失败'});
     }
 });
 
@@ -161,7 +162,7 @@ module.exports.router = router;
 function registerJsonAndUpdateInfo(name, text, data, res, callback) {
     registerJson(name, data, function(err) {
         if (err) {
-            if (res) res.json({status: 'failed', info: err});
+            if (res) res.json({status: 'failed', info: '服务器错误,导入数据失败'});
             if (callback) {
                 callback(err);
             }
