@@ -77,8 +77,13 @@ function onDrop(event, ui) {
     if (ui.draggable.hasClass('in-selector')) {
         var dragged_field_type = ui.draggable.attr('field-type');
         var target_field_type = $(this).attr('target-field-type');
+        var accept_field_type = $(this).attr('target-field-type');
 
-        if (dragged_field_type != target_field_type) {
+        if (target_field_type.split('.')[0] === 'Vector') {
+            accept_field_type = target_field_type.split('.')[1];
+        }
+
+        if (dragged_field_type != accept_field_type) {
             box_alert("fields", "danger", "错误", "类型不符合");
         } else {
             var text = $(this).attr('target-field-text') + " : " +
@@ -103,7 +108,10 @@ function onDrop(event, ui) {
             $(this).prev().droppable({
                 drop: onDrop
             });
-            $(this).remove();
+
+            if (target_field_type.split('.')[0] !== 'Vector' || $(this).attr('field-name') != null) {
+                $(this).remove();
+            }
         }
     }
 }
@@ -163,11 +171,11 @@ function onFieldsLoadReady(model, datasets) {
     for (var item of model.fields) {
         $("#fields-result").append(
             `<li class="list-group-item list-group-item-warning placeholder"
-            target-field-name="${item.name}" target-field-type="${item.type}" target-field-text="${item.text}">
-            字段名: <span class="label label-danger">${item.text}</span>
-            <span class="pull-right">
-            字段类型: <span class="label label-warning">${item.type}</span>
-            </span></li>`
+        target-field-name="${item.name}" target-field-type="${item.type}" target-field-text="${item.text}">
+        字段名: <span class="label label-danger">${item.text}</span>
+        <span class="pull-right">
+        字段类型: <span class="label label-warning">${item.type}</span>
+        </span></li>`
         );
     }
 
@@ -195,17 +203,28 @@ function onFieldsLoadReady(model, datasets) {
         $("#fields-result li").each(function () {
             var selection = {
                 "target-field-name": $(this).attr('target-field-name'),
+                "target-field-type": $(this).attr('target-field-type'),
                 "field-name": $(this).attr('field-name'),
                 "field-type": $(this).attr('field-type'),
                 "from-database": $(this).attr('from-database'),
                 "from-table": $(this).attr('from-table')
             };
-            if (selection["field-name"] == undefined ||
-                selection["field-name"] == null ||
-                selection["field-name"] == "") {
+            if (selection['target-field-type'].split('.')[0] !== 'Vector' &&
+                (   selection["field-name"] == undefined ||
+                    selection["field-name"] == null ||
+                    selection["field-name"] == "") ) {
                 checked = false;
             } else {
-                data_post.fields_selected[selection['target-field-name']] = selection;
+                if (selection["field-name"] != null) {
+                    if (selection['target-field-type'].split('.')[0] === 'Vector') {
+                        if (data_post.fields_selected[selection['target-field-name']] == undefined) {
+                            data_post.fields_selected[selection['target-field-name']] = [];
+                        }
+                        data_post.fields_selected[selection['target-field-name']].push(selection);
+                    } else {
+                        data_post.fields_selected[selection['target-field-name']] = selection;
+                    }
+                }
             }
         });
         if (checked) {
@@ -257,8 +276,11 @@ function renderArgumentsBox(model) {
             $(`#${arg["input-type"]}-${arg.name}`).ionRangeSlider({
                 min: arg.range.min,
                 max: arg.range.max,
-                step: arg.range.step
+                step: arg.range.step,
             });
+        } else {
+            var content = `<input class="form-control" type="${arg['input-type']}" id="${arg["input-type"]}-${arg.name}" name="${arg.name}" value="" />`;
+            $(`#${arg.name}-group`).append(content);
         }
 
         which_col = which_col ^ 1;
