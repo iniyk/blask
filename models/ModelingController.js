@@ -128,24 +128,27 @@ function execModel(data_post, callback) {  //callback is for return run_id
         "start": new Date()
     };
 
-    async.eachSeries(_.pairs(data_post.fields_selected), function(field, callback) {
+    async.each(_.pairs(data_post.fields_selected), function(field, callback) {
         var field_name = field[0];
         var field_info = field[1];
-        var db_name = field_info['from-database'],
-            collection = field_info['from-table'],
-            col_name = field_info['field-name'];
-
-        var ModelTarget = MongoController.gModel(collection, db_name);
-        var query = ModelTarget.find({}, `${col_name}`, function(err, records) {
-            var cols = [];
-            _.map(records, function(record, key) {
-                cols.push(record[col_name]);
+        if (_.isArray(field_info)) {
+            logger.debug('One post field is an Array.');
+            async.map(field_info, function(field_value, callback) {
+                gCol(field_value['field-name'], field_value['from-table'], field_value['from-database'], callback);
+            }, function(err, vector_cols) {
+                if (! err) {
+                    running.input.fields[field_name] = vector_cols;
+                }
+                callback(err);
             });
-
-            running.input.fields[field_info['target-field-name']] = cols;
-
-            callback(err, cols);
-        });
+        } else {
+            gCol(field_info['field-name'], field_info['from-table'], field_info['from-database'], function(err, cols) {
+                if (! err) {
+                    running.input.fields[field_info['target-field-name']] = cols;
+                }
+                callback(err);
+            });
+        }
     }, function(err) {
         if (err) {
             logger.error("Error in async func.");
@@ -158,6 +161,8 @@ function execModel(data_post, callback) {  //callback is for return run_id
             var HelperModel = MongoController.gModel('model', 'auto');
             HelperModel.findOne({name: data_post.model_selected}, function(err, helper) {
                 running.exec = helper.exec;
+                logger.info('Running : ');
+                logger.info(running);
 
                 gRunning(running, function (model_running) {
                     startExec(running, model_running);
@@ -165,6 +170,24 @@ function execModel(data_post, callback) {  //callback is for return run_id
                 });
             });
         }
+    });
+}
+
+function gCol(col_name, collection, db_name, callback) {
+    var ModelTarget = MongoController.gModel(collection, db_name);
+    var query_obj = {};
+    query_obj[col_name] = 1;
+    var query = ModelTarget.find({}, query_obj, function(err, records) {
+        logger.debug(`Records in ${col_name}`);
+        logger.debug(records);
+        var cols = [];
+        if (! err) {
+            _.map(records, function (record, key) {
+                cols.push(record[col_name]);
+            });
+        }
+
+        callback(err, cols);
     });
 }
 
