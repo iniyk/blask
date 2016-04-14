@@ -126,7 +126,7 @@ def printResults(items, rules, outFile):
         pre, post = rule
         pre_list = list()
         post_list = list()
-        result['confidence'].append(confidence)
+        result['confidence'].append(float(confidence))
         for pre_item, post_item in zip(pre, post):
             pre_list.append(pre_item)
             post_list.append(post_item)

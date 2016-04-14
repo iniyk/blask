@@ -12,19 +12,19 @@ function isEmpty(obj) {
 
 <section class="content-header">
     <h1>
-        数据挖掘进度
+        数据转换进度
     </h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-folder-open"></i> 数据挖掘</a></li>
-        <li><a href="#">挖掘进度</a></li>
+        <li><a href="#"><i class="fa fa-folder-open"></i> 数据转换</a></li>
+        <li><a href="#">转换进度</a></li>
     </ol>
 </section>
 <% if (isEmpty(page.request) || isEmpty(page.request.id)) { %>
 <section class="content">
-    <div class="col-md-12" id="status-content" role="list" source="<%= page.content['status-panel']['data-source-head'] %>" type="digging">
+    <div class="col-md-12" id="status-content" role="list" source="<%= page.content['status-panel']['data-source-head'] %>" type="exchanging">
         <div class="box box-solid box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">数据挖掘任务</h3>
+                <h3 class="box-title">数据转换任务</h3>
             </div>
             <div class="box-body">
                 <table class="table table-bordered display" id="result-table" cellspacing="0" width="100%">

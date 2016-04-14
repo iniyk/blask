@@ -8,7 +8,9 @@ function Pages(router_now) {
     var pages = {};
     pages.page_list = ['index', 'source', 'exchange', 'model', 'schema', 'display',
                        'dataset',
-                       'digging', 'digging/status'];
+                       'digging', 'digging/status',
+                       'exchanging', 'exchanging/status',
+                       'schema/upload'];
 
     _.map(pages.page_list, function(name, index) {
         pages[name] =Common.readJsonSync(`./views/json/${name}.json`);

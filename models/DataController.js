@@ -47,54 +47,54 @@ router.get('/', function(req, res, next) {
     });
 });
 
-router.post('/create', function (req, res, next) {
+router.post('/export', function(req, res, next) {
     var name = req.body.name;
-    var data = req.body.data;
-    logger.debug(`Post Data:`);
-    logger.debug(req.body);
+    var text = req.body.text;
+    var data_selected = req.body.data;
+    var run_id = req.body.run_id;
 
-    registerJson(name, data, function(err) {
-        if (err) {
-            res.json({status: 'failed', info: err});
-        } else {
-            res.json({status: 'success'});
-        }
+    var data = {};
+    MongoController.find('auto', 'running', {_id: run_id}, function(err, running) {
+        _.map(data_selected, function (selected, index) {
+           data[selected] = running[0].output[selected];
+        });
+
+        registerJsonAndUpdateInfo(name, text, data, res);
     });
 });
 
-//POST /data/upload
-router.post('/upload', upload.single('datafile'), function (req, res, next) {
-    logger.debug('Upload file : ');
-    logger.debug(req.file);
+router.post('/create', function (req, res, next) {
+    var name = req.body.name;
+    var text = req.body.text;
+    var data = req.body.data;
 
-    var name = req.file.originalname.split('.')[0];
+    registerJsonAndUpdateInfo(name, text, data, res);
+});
+
+//POST /data/upload/:filetype
+router.post('/upload/:filetype([a-z0-9]+)', upload.single('datafile'), function (req, res, next) {
+    var type = req.params.filetype;
+    var name = req.body.name;
+    var text = req.body.text;
     var tmp_path = req.file.path;
-    var type = req.file.originalname.split('.')[1];
-
-    logger.info('Receive file : ' + name);
-    logger.info('File type : ' + type);
 
     if (type == 'json') {
-        // logger.debug('Set read json callback.');
-        common.readJson(tmp_path, function (err, json_arr) {
+        common.readJson(tmp_path, function (err, data) {
             if (err) {
                 logger.error('On reading json file.');
                 logger.error(err);
+                if (res) res.json({status: 'failed', info: '服务器错误,导入数据失败'});
             } else {
-                registerJson(name, json_arr, function(err) {
-                    logger.error('On insert json file.');
-                    logger.error(err);
-                });
+                registerJsonAndUpdateInfo(name, text, data, res);
             }
         });
-        res.status(201).send({info: 'Upload successed.'});
-    } else if (type == 'txt' || type == 'csv') {
+    } else if (type == 'csv') {
         var separator = req.body.separator;
-        // logger.debug('Set read txt / csv callback.');
         common.readPlainTextByLine(tmp_path, function(err, lines) {
             if (err) {
                 logger.error('On reading txt / csv file.');
                 logger.error(err);
+                if (res) res.json({status: 'failed', info: '服务器错误,导入数据失败'});
             } else {
                 var keys = lines[0].split(separator);
                 var schema = {};
@@ -103,25 +103,32 @@ router.post('/upload', upload.single('datafile'), function (req, res, next) {
                     schema[keys[index]] = common.gStringType(cell);
                 });
 
-                // logger.debug(schema);
-                MongoController.registerSchema(name, schema, 'datasets');
+                MongoController.registerSchema(name, schema, 'datasets', function(err) {
+                    updateDatasetInfo(name, text);
 
-                _.each(lines.slice(1), function (line) {
-                    var record = {};
-                    _.map(line.split(separator), function (cell, index) {
-                        record[keys[index]] = common.realType(cell);
+                    async.each(lines.slice(1), function (line, callback) {
+                        var record = {};
+                        _.map(line.split(separator), function (cell, index) {
+                            record[keys[index]] = common.realType(cell);
+                        });
+                        MongoController.insert('datasets', name, record, callback);
+                    }, function(err, results) {
+                        if (err) {
+                            logger.error("Error while insert from csv /txt file.");
+                            logger.error(err);
+                            if (res) res.json({status: 'failed', info: '服务器错误,导入数据失败'});
+                        } else {
+                            if (res) res.json({status: 'success', info: '导入成功'});
+                        }
                     });
-                    MongoController.insert('datasets', name, record);
                 });
             }
-            res.status(201).send({info: 'Upload successed.'});
         });
     } else {
         var err = type + ' is not a support data set file type.';
         logger.warn(err);
-        res.status(500).send({ error: err });
+        if (res) res.json({status: 'failed', info: '服务器错误,导入数据失败'});
     }
-
 });
 
 function transDatasetToTree(datasets) {
@@ -151,6 +158,39 @@ function transDatasetToTree(datasets) {
 }
 
 module.exports.router = router;
+
+function registerJsonAndUpdateInfo(name, text, data, res, callback) {
+    registerJson(name, data, function(err) {
+        if (err) {
+            if (res) res.json({status: 'failed', info: '服务器错误,导入数据失败'});
+            if (callback) {
+                callback(err);
+            }
+        } else {
+            updateDatasetInfo(name, text, res, callback);
+        }
+    });
+}
+
+function updateDatasetInfo(name, text, res, callback) {
+    MongoController.update(
+        'auto', 'dataset',
+        {name: common.gName(name)['model_name']},
+        {text: text, source: 'datasets', "source-name": '数据仓库'},
+        function (err) {
+            if (err) {
+                logger.error("Error on update extra info of datasets.");
+                logger.error(err);
+                if (res) res.json({status: 'failed', info: '服务器错误,导入数据失败'});
+            } else {
+                if (res) res.json({status: 'success'});
+            }
+            if (callback) {
+                callback(err);
+            }
+        }
+    );
+}
 
 function registerJson(name, json_arr, callback) {
     if (!_.isArray(json_arr)) {

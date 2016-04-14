@@ -134,7 +134,7 @@ function registerRouters(Model, db_name, request_name) {
     });
 
     //GET ./${database}/${schema}/${id}/delete/
-    router.post(`/${db_name}/${request_name}/:id([a-z0-9]+)/delete/`, function(req, res, next) {
+    router.get(`/${db_name}/${request_name}/:id([a-z0-9]+)/delete/`, function(req, res, next) {
         var data = {_id: req.params.id};
         model_remove(Model, data, res);
     });
@@ -192,6 +192,8 @@ function registerSchema(schema_name, schema, db_name, callback) {
                     }
                 }
             });
+        } else {
+            callback(null);
         }
     }
 }
@@ -200,37 +202,59 @@ function init() {
     Models['auto'] = {};
     Models['datasets'] = {};
 
-    dbs['auto'] = mongoose.createConnection(config.host);
-    dbs['auto'].on('error', function (err) {
-        logger.error(err);
+    var tasks = [
+        function (callback) {
+            dbs['auto'] = mongoose.createConnection(config.host);
+            dbs['auto'].on('error', function (err) {
+                logger.error(err);
+            });
+            dbs['auto'].once('open',function(){
+                logger.info('MongoDB for Blask connected.');
+                callback();
+            });
+        },
+        function (callback) {
+            dbs['datasets'] = mongoose.createConnection(config_datasets.host);
+            dbs['datasets'].on('error', function (err) {
+                logger.error(err);
+            });
+            dbs['datasets'].once('open',function(){
+                logger.info('MongoDB for Datasets connected.');
+                callback();
+            });
+        }
+    ];
+    async.parallel(tasks, function(err) {
+        if (err) {
+            logger.error(err);
+        } else {
+            var schemas = require('./model/schemas.js').schemas;
+            async.forEachOf(schemas, function(schema, name, callback) {
+                registerSchema(name, schema, 'auto', callback);
+            }, function(err) {
+                if (err) {
+                    logger.error(err);
+                } else {
+                    logger.debug('Start to register all datasets.');
+                    registerAllDataSets();
+                }
+            });
+        }
     });
-    dbs['auto'].once('open',function(){
-        logger.info('MongoDB for Blask connected.');
-    });
-
-    dbs['datasets'] = mongoose.createConnection(config_datasets.host);
-    dbs['datasets'].on('error', function (err) {
-        logger.error(err);
-    });
-    dbs['datasets'].once('open',function(){
-        logger.info('MongoDB for Datasets connected.');
-    });
-
-    var schemas = require('./model/schemas.js').schemas;
-    _.map(schemas, function(schema, name) {
-        registerSchema(name, schema, 'auto');
-    });
-
-    registerAllDataSets();
 }
 
 function registerAllDataSets() {
     var Model = Models['auto']['dataset'];
 
-    Model.find({}, function (datasets, err) {
-        _.each(datasets, function (dataset) {
-            registerOneDataSet(Model, dataset);
-        });
+    Model.find({}, function (err, datasets) {
+        if (err) {
+            logger.error('Error on find all dataset in register All Datasets.');
+            logger.error(err);
+        } else {
+            _.each(datasets, function (dataset) {
+                registerOneDataSet(Model, dataset);
+            });
+        }
     });
 }
 
@@ -243,6 +267,7 @@ function registerOneDataSet(Model, data) {
     var model_name = schema_name.charAt(0).toUpperCase() + schema_name.slice(1);
 
     var schemaMongoose = new mongoose.Schema();
+    logger.debug(schema);
     schemaMongoose.add(schema);
     var DatasetModel = db.model(model_name, schemaMongoose);
     Models['datasets'][schema_name] = DatasetModel;
@@ -253,34 +278,24 @@ function registerOneDataSet(Model, data) {
 }
 
 function insert(database, schema, data, callback) {
-    logger.debug(`Insert : ${database}, ${schema}`);
     schema = schema.charAt(0).toLowerCase() + schema.slice(1);
     if (database == 'blask') {
         database = 'auto';
     }
 
-    logger.debug('gModel for save.');
     var InsertModel = gModel(schema, database);
 
-    logger.debug('Prepare to save.');
-    if (null != InsertModel) {
-        logger.debug('g model for save.');
+    if (InsertModel) {
         var model = new InsertModel(data);
-        logger.debug('g model not stacked.');
         _.map(data, function(value, key) {
             if (common.shouldMarked(value.constructor)) {
                 model.markModified(key);
-                logger.debug(`Modified Key : ${key}`);
             }
         });
-        logger.debug('Start to save.');
         model.save(function (err) {
             if (err) {
                 logger.error(`Error in Insert into ${database}`);
                 logger.error(err);
-            } else {
-                logger.debug(`Inserted into collection [${schema}] in database [${database}].`);
-                logger.debug(`Data Head : ${data._id}`);
             }
             if (callback) {
                 callback(err);
@@ -289,8 +304,50 @@ function insert(database, schema, data, callback) {
     }
 }
 
+function update(database, schema, index, data, callback) {
+    schema = schema.charAt(0).toLowerCase() + schema.slice(1);
+    if (database == 'blask') {
+        database = 'auto';
+    }
+
+    var UpdateModel = gModel(schema, database);
+
+    if (UpdateModel) {
+        UpdateModel.findOneAndUpdate(index, data, function(err) {
+            if (err) {
+                logger.error(`Error in Update ${database} of ${schema}`);
+                logger.error(err);
+            }
+            if (callback) {
+                callback(err);
+            }
+        });
+    }
+}
+
+function find(database, schema, index, callback) {
+    schema = common.gName(schema)['schema_name'];
+    if (database == 'blask') {
+        database = 'auto';
+    }
+
+    var FindModel = gModel(schema, database);
+
+    if (FindModel) {
+        FindModel.find(index, function(err, data) {
+            if (err) {
+                logger.error(`Error in Find ${database} of ${schema} in condition ${index}`);
+                logger.error(err);
+            }
+            if (callback) {
+                callback(err, data);
+            }
+        })
+    }
+}
+
 function gModel(model_name, database) {
-    logger.debug(`Gen Model for '${model_name}' in '${database}'`);
+    model_name = common.gName(model_name)['schema_name'];
     if (_.has(Models[database], model_name)) {
         return Models[database][model_name];
     } else {
@@ -303,4 +360,6 @@ module.exports.router = router;
 module.exports.init = init;
 module.exports.registerSchema = registerSchema;
 module.exports.insert = insert;
+module.exports.update = update;
+module.exports.find = find;
 module.exports.gModel = gModel;

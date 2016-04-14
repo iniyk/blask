@@ -1,0 +1,68 @@
+{
+  "name": "exchanging/status",
+  "title": "数据转换进度",
+  "is_resource": true,
+  "icon": "fa fa-random",
+  "sidebar": {
+    "overview": {
+      "name": "overview",
+      "title": "总览",
+      "href": "/demo/exchange",
+      "icon": "fa fa-dashboard"
+    },
+    "manage": {
+      "name": "manage",
+      "title": "转换模型管理",
+      "href": "#",
+      "icon": "fa fa-plug",
+      "items": {
+        "add": {
+          "name": "add-exchange",
+          "title": "增加模型",
+          "href": "#",
+          "icon": "fa fa-plus",
+          "attrs": {
+            "data-toggle": "modal",
+            "data-target": "#modalAddExchange"
+          }
+        },
+        "list": {
+          "name": "list-exchange",
+          "title": "列出所有模型",
+          "href": "#",
+          "icon": "fa fa-list"
+        }
+      }
+    },
+    "start": {
+      "name": "start",
+      "title": "开始新转换",
+      "href": "/demo/exchanging",
+      "icon": "fa fa-cubes"
+    },
+    "status": {
+      "name": "status",
+      "title": "查看转换进度",
+      "href": "/demo/exchanging/status",
+      "icon": "fa fa-tachometer"
+    },
+    "settings": {
+      "name": "settings",
+      "title": "设置",
+      "href": "#",
+      "icon": "fa fa-gear"
+    }
+  },
+  "content": {
+    "status-panel": {
+      "name": "status-panel",
+      "data-source-head": "/exchanging/status/"
+    },
+    "status-all": {
+
+    }
+  },
+  "script": [
+    "digging_status.js"
+  ]
+}
