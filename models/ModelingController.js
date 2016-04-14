@@ -179,82 +179,74 @@ function replaceArguments(exec_str, args_table) {
 }
 
 function startExec(running, model_running) {
-    var run_id = model_running._id;
-    var fs = require('fs');
-    var arg0 =running.exec.split(' ')[0];
-
-    if (_.indexOf(scripts, arg0) != -1) {
-        arg0 = running.exec.split(' ')[1];
-    }
-    logger.debug(`Exec : ${running.exec}`);
-    logger.debug(`Arg0 : ${arg0}`);
-    var dir_path = `./playground/${run_id}`;
-    var mkdir = `mkdir ${dir_path}`;
-    var copy_files = `${mkdir} && cp ./runnable/${arg0.replace(/\.\//gi, '')} ${dir_path}/`;
-    var remove_files = `rm -r ${dir_path}`;
-    var args_table = {
-        "run_id": run_id
-    };
-    var real_exec = replaceArguments(running.exec, args_table);
-    logger.debug(`Real Exec : ${real_exec}`);
-    logger.debug(`Copy Files : ${copy_files}`);
-    real_exec = `cd ${dir_path} && ${real_exec}`;
-    child_process.exec(copy_files, function(err, stdout, stderr) {
-        if (! err) {
-            fs.writeFile(`${dir_path}/${run_id}.json`, JSON.stringify(running.input), 'utf-8', function(err) {
-                if (! err) {
-                    logger.debug(`Executing command : ${real_exec}`);
-
-                    child_process.exec(real_exec, function(err, stdout, stderr) {
-                        if (! err) {
-                            common.readJson(`${dir_path}/${run_id}-result.json`, function(err, result) {
-                                if (! err) {
-                                    child_process.exec(remove_files, function(err, stdout, stderr) {
-                                        if (! err) {
-                                            running.output = result;
-                                            model_running.output = result;
-                                            model_running.finish = new Date();
-                                            model_running.markModified('output');
-                                            model_running.save(function(err) {
-                                                if (!err) {
-                                                    //TODO: I think it should do something, but I couldn't realize what should it do here.
-                                                    logger.info(`Run ID ${run_id} has finished.`);
-                                                } else {
-                                                    //Error on saving running result to database.
-                                                    logger.error("Error on writing result to database.");
-                                                }
-                                            });
-                                        } else {
-                                            //Remove files error.
-                                            logger.error("Error on removing temp files.");
-                                            logger.debug(stdout);
-                                            logger.debug(stderr);
-                                        }
-                                    });
-                                } else {
-                                    //Read back helper result error.
-                                    logger.error("Error on reading back the result file of json.");
-                                }
-                            });
-                        } else {
-                            //Exec third helper error.
-                            logger.error("Error on executing helper.");
-                            logger.debug(stdout);
-                            logger.debug(stderr);
-                        }
-                    });
-                } else {
-                    //Write json input error.
-                    logger.error("Error on writing json file for helper's input.");
+    var tasks = [
+        {
+            "func": putInput,
+            "name": 'copy input files'
+        },
+        {
+            "func": doExec,
+            "name": 'exec helper program'
+        },
+        {
+            "func": exportOutput,
+            "name": "import output to database"
+        },
+        {
+            "func": removeFiles,
+            "name": "remove temp files"
+        }
+    ];
+    async.eachSeries(tasks, function(task, callback) {
+        task.func(running, model_running, function(err, stdout, stderr) {
+            if (err) {
+                logger.error(`Error while ${tasks.name}.`);
+                if (stdout) {
+                    logger.error(stdout);
                 }
-            });
+                if (stderr) {
+                    logger.error(stderr);
+                }
+            }
+            callback(err);
+        });
+    });
+}
+
+function putInput(running, model_running, callback) {
+    var fs = require('fs');
+    var run_id = model_running._id;
+    fs.writeFile(`runnable/${run_id}.json`, JSON.stringify(running.input), 'utf-8', callback);
+}
+
+function exportOutput(running, model_running, callback) {
+    var run_id = model_running._id;
+    common.readJson(`runnable/${run_id}-result.json`, function(err, result) {
+        if (! err) {
+            running.output = result;
+            model_running.output = result;
+            model_running.finish = new Date();
+            model_running.markModified('output');
+            model_running.save(callback);
         } else {
-            //Copy files error.
-            logger.error("Error on copy files.");
-            logger.debug(stdout);
-            logger.debug(stderr);
+            callback(err);
         }
     });
+}
+
+function doExec(running, model_running, callback) {
+    var args_table = {
+        "run_id": model_running._id
+    };
+    var real_exec = replaceArguments(running.exec, args_table);
+    real_exec = `cd runnable && ${real_exec}`;
+    child_process.exec(real_exec, callback);
+}
+
+function removeFiles(running, model_running, callback) {
+    var run_id = model_running._id;
+    var remove_files = `rm runnable/${run_id}.json && rm runnable/${run_id}-result.json`;
+    child_process.exec(remove_files, callback);
 }
 
 function gRunning(running, callback) {

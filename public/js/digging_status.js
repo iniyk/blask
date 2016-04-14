@@ -59,7 +59,7 @@ function showList(runnings) {
         $('#list-records-content').append(record);
     }
     $('#result-table').DataTable({
-        order: [[3, 'desc']]
+        order: [[0, 'asc']]
     });
     $('.btn-delete-record').click(function () {
         var run_id = $(this).attr('for');
