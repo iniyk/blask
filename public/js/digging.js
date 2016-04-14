@@ -277,6 +277,7 @@ function renderArgumentsBox(model) {
                 min: arg.range.min,
                 max: arg.range.max,
                 step: arg.range.step,
+                from: arg.range.from
             });
         } else {
             var content = `<input class="form-control" type="${arg['input-type']}" id="${arg["input-type"]}-${arg.name}" name="${arg.name}" value="" />`;
