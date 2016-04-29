@@ -223,7 +223,7 @@ function startExec(running, model_running) {
     async.eachSeries(tasks, function(task, callback) {
         task.func(running, model_running, function(err, stdout, stderr) {
             if (err) {
-                logger.error(`Error while ${tasks.name}.`);
+                logger.error(`Error while ${task.name}.`);
                 if (stdout) {
                     logger.error(stdout);
                 }
