@@ -47,7 +47,8 @@
     "datatables.net": "^1.10.11",
     "datatables.net-bs": "^1.10.11",
     "jquery-ui": "^1.11.4",
-    "ion.rangeslider": "ionrangeslider#^2.1.2"
+    "ion.rangeslider": "ionrangeslider#^2.1.2",
+    "Chart.js": "^2.0.2"
   },
   "moduleType": [
     "node"

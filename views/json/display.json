@@ -1,5 +1,34 @@
 {
     "name": "display",
     "title": "数据展示",
-    "icon": "fa fa-bar-chart"
+    "icon": "fa fa-bar-chart",
+    "sidebar": {
+        "overview": {
+            "name": "overview",
+            "title": "总览",
+            "href": "/demo/display",
+            "icon": "fa fa-dashboard"
+        },
+        "settings": {
+            "name": "settings",
+            "title": "设置",
+            "href": "#",
+            "icon": "fa fa-gear"
+        }
+    },
+    "content": {
+        "data-selector" : {
+            "name": "data-selector",
+            "title": "数据集选择",
+            "color": "primary"
+        },
+        "charts" : {
+            "name": "charts",
+            "title": "数据展示",
+            "color": "primary"
+        }
+    },
+    "script": [
+        "display.js"
+    ]
 }
